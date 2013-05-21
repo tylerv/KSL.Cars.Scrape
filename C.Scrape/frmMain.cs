@@ -21,6 +21,8 @@ namespace C.Scrape
 
         private void btnScrape_Click(object sender, EventArgs e)
         {
+            flowYears.Controls.Clear();
+            flowMakes.Controls.Clear();
             carListings.Listings.Clear();
 
             string url = "http://www.ksl.com/auto/search/index?"
@@ -259,7 +261,6 @@ namespace C.Scrape
 
         private void computeStats()
         {
-            flowYears.Controls.Clear();
             //Get list of unique Years, Makes, and //Models
             List<string> Years = new List<string>();
             List<string> Makes = new List<string>();
