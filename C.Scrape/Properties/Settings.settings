@@ -1,0 +1,99 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="C.Scrape.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="priceLow" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="priceHigh" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="milesLow" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="milesHigh" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="yearLow" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="yearHigh" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="zipCode" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="distance" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="Keyword" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="VIN_LINK" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">http://vsvin.info/vin/{VIN}.html</Value>
+    </Setting>
+    <Setting Name="LAST_PAGE_NODE" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">//div[@class="solidNavBar"]/a</Value>
+    </Setting>
+    <Setting Name="LISTING_SEARCH_RESULTS" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">//div[@class="srp-listing-body-right"]</Value>
+    </Setting>
+    <Setting Name="LISTING_RESULT_PRICE" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">div[@class="srp-listing-price"]</Value>
+    </Setting>
+    <Setting Name="LISTING_RESULT_LINK" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">div[@class="srp-listing-title"]/a</Value>
+    </Setting>
+    <Setting Name="LISTING_RESULT_ID" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">div[@class="srp-listing-title"]/a</Value>
+    </Setting>
+    <Setting Name="LISTING_VIN" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">//table[@id="specificationsTable"]/tr/td[text()='VIN:']</Value>
+    </Setting>
+    <Setting Name="LISTING_MILEAGE" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">//table[@id="specificationsTable"]/tr/td[text()='Mileage:']</Value>
+    </Setting>
+    <Setting Name="LISTING_EXT_COLOR" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">//table[@id="specificationsTable"]/tr/td[text()='Exterior Color:']</Value>
+    </Setting>
+    <Setting Name="LISTING_INT_COLOR" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">//table[@id="specificationsTable"]/tr/td[text()='Interior Color:']</Value>
+    </Setting>
+    <Setting Name="LISTING_YEAR" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">//table[@id="specificationsTable"]/tr/td[text()='Year:']</Value>
+    </Setting>
+    <Setting Name="LISTING_MAKE" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">//table[@id="specificationsTable"]/tr/td[text()='Make:']</Value>
+    </Setting>
+    <Setting Name="LISTING_MODEL" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">//table[@id="specificationsTable"]/tr/td[text()='Model:']</Value>
+    </Setting>
+    <Setting Name="LISTING_TRIM" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">//table[@id="specificationsTable"]/tr/td[text()='Trim:']</Value>
+    </Setting>
+    <Setting Name="LISTING_BODY" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">//table[@id="specificationsTable"]/tr/td[text()='Body:']</Value>
+    </Setting>
+    <Setting Name="LISTING_TITLE" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">//table[@id="specificationsTable"]/tr/td[text()='Title:']</Value>
+    </Setting>
+    <Setting Name="LISTING_TRANSMISSION" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">//table[@id="specificationsTable"]/tr/td[text()='Transmission:']</Value>
+    </Setting>
+    <Setting Name="LISTING_LITERS" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">//table[@id="specificationsTable"]/tr/td[text()='Liters:']</Value>
+    </Setting>
+    <Setting Name="LISTING_CYLINDERS" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">//table[@id="specificationsTable"]/tr/td[text()='Cylinders:']</Value>
+    </Setting>
+    <Setting Name="LISTING_CITY" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">//h2[@class="location"]</Value>
+    </Setting>
+    <Setting Name="LISTING_DESCRIPTION" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">//div[@id="description"]</Value>
+    </Setting>
+    <Setting Name="LISTING_LINK" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">http://www.ksl.com/auto/listing/{LISTING_ID}</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
