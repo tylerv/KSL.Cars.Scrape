@@ -12,7 +12,7 @@
   <xs:element name="CarListings" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="CarListings" msprop:Generator_UserDSName="CarListings">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element name="Listings" msprop:Generator_TableClassName="ListingsDataTable" msprop:Generator_TableVarName="tableListings" msprop:Generator_TablePropName="Listings" msprop:Generator_RowDeletingName="ListingsRowDeleting" msprop:Generator_RowChangingName="ListingsRowChanging" msprop:Generator_RowEvHandlerName="ListingsRowChangeEventHandler" msprop:Generator_RowDeletedName="ListingsRowDeleted" msprop:Generator_UserTableName="Listings" msprop:Generator_RowChangedName="ListingsRowChanged" msprop:Generator_RowEvArgName="ListingsRowChangeEvent" msprop:Generator_RowClassName="ListingsRow">
+        <xs:element name="Listings" msprop:Generator_TableClassName="ListingsDataTable" msprop:Generator_TableVarName="tableListings" msprop:Generator_RowChangedName="ListingsRowChanged" msprop:Generator_TablePropName="Listings" msprop:Generator_RowDeletingName="ListingsRowDeleting" msprop:Generator_RowChangingName="ListingsRowChanging" msprop:Generator_RowEvHandlerName="ListingsRowChangeEventHandler" msprop:Generator_RowDeletedName="ListingsRowDeleted" msprop:Generator_RowClassName="ListingsRow" msprop:Generator_UserTableName="Listings" msprop:Generator_RowEvArgName="ListingsRowChangeEvent">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="ListingID" msprop:Generator_ColumnVarNameInTable="columnListingID" msprop:Generator_ColumnPropNameInRow="ListingID" msprop:Generator_ColumnPropNameInTable="ListingIDColumn" msprop:Generator_UserColumnName="ListingID" type="xs:int" />
@@ -28,11 +28,65 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
+        <xs:element name="StatsByYear" msprop:Generator_TableClassName="StatsByYearDataTable" msprop:Generator_TableVarName="tableStatsByYear" msprop:Generator_TablePropName="StatsByYear" msprop:Generator_RowDeletingName="StatsByYearRowDeleting" msprop:Generator_RowChangingName="StatsByYearRowChanging" msprop:Generator_RowEvHandlerName="StatsByYearRowChangeEventHandler" msprop:Generator_RowDeletedName="StatsByYearRowDeleted" msprop:Generator_UserTableName="StatsByYear" msprop:Generator_RowChangedName="StatsByYearRowChanged" msprop:Generator_RowEvArgName="StatsByYearRowChangeEvent" msprop:Generator_RowClassName="StatsByYearRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Year" msprop:Generator_ColumnVarNameInTable="columnYear" msprop:Generator_ColumnPropNameInRow="Year" msprop:Generator_ColumnPropNameInTable="YearColumn" msprop:Generator_UserColumnName="Year" type="xs:int" />
+              <xs:element name="Sum" msprop:Generator_ColumnVarNameInTable="columnSum" msprop:Generator_ColumnPropNameInRow="Sum" msprop:Generator_ColumnPropNameInTable="SumColumn" msprop:Generator_UserColumnName="Sum" type="xs:double" minOccurs="0" />
+              <xs:element name="Min" msprop:Generator_ColumnVarNameInTable="columnMin" msprop:Generator_ColumnPropNameInRow="Min" msprop:Generator_ColumnPropNameInTable="MinColumn" msprop:Generator_UserColumnName="Min" type="xs:double" minOccurs="0" />
+              <xs:element name="Max" msprop:Generator_ColumnVarNameInTable="columnMax" msprop:Generator_ColumnPropNameInRow="Max" msprop:Generator_ColumnPropNameInTable="MaxColumn" msprop:Generator_UserColumnName="Max" type="xs:double" minOccurs="0" />
+              <xs:element name="Avg" msprop:Generator_ColumnVarNameInTable="columnAvg" msprop:Generator_ColumnPropNameInRow="Avg" msprop:Generator_ColumnPropNameInTable="AvgColumn" msprop:Generator_UserColumnName="Avg" type="xs:double" minOccurs="0" />
+              <xs:element name="StDev" msprop:Generator_ColumnVarNameInTable="columnStDev" msprop:Generator_ColumnPropNameInRow="StDev" msprop:Generator_ColumnPropNameInTable="StDevColumn" msprop:Generator_UserColumnName="StDev" type="xs:double" minOccurs="0" />
+              <xs:element name="Count" msprop:Generator_ColumnVarNameInTable="columnCount" msprop:Generator_ColumnPropNameInRow="Count" msprop:Generator_ColumnPropNameInTable="CountColumn" msprop:Generator_UserColumnName="Count" type="xs:int" minOccurs="0" />
+              <xs:element name="Var" msprop:Generator_ColumnVarNameInTable="columnVar" msprop:Generator_ColumnPropNameInRow="Var" msprop:Generator_ColumnPropNameInTable="VarColumn" msprop:Generator_UserColumnName="Var" type="xs:double" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="StatsByMake" msprop:Generator_TableClassName="StatsByMakeDataTable" msprop:Generator_TableVarName="tableStatsByMake" msprop:Generator_TablePropName="StatsByMake" msprop:Generator_RowDeletingName="StatsByMakeRowDeleting" msprop:Generator_RowChangingName="StatsByMakeRowChanging" msprop:Generator_RowEvHandlerName="StatsByMakeRowChangeEventHandler" msprop:Generator_RowDeletedName="StatsByMakeRowDeleted" msprop:Generator_UserTableName="StatsByMake" msprop:Generator_RowChangedName="StatsByMakeRowChanged" msprop:Generator_RowEvArgName="StatsByMakeRowChangeEvent" msprop:Generator_RowClassName="StatsByMakeRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Make" msdata:Caption="Year" msprop:Generator_ColumnVarNameInTable="columnMake" msprop:Generator_ColumnPropNameInRow="Make" msprop:Generator_ColumnPropNameInTable="MakeColumn" msprop:Generator_UserColumnName="Make" type="xs:string" />
+              <xs:element name="Sum" msprop:Generator_ColumnVarNameInTable="columnSum" msprop:Generator_ColumnPropNameInRow="Sum" msprop:Generator_ColumnPropNameInTable="SumColumn" msprop:Generator_UserColumnName="Sum" type="xs:double" minOccurs="0" />
+              <xs:element name="Min" msprop:Generator_ColumnVarNameInTable="columnMin" msprop:Generator_ColumnPropNameInRow="Min" msprop:Generator_ColumnPropNameInTable="MinColumn" msprop:Generator_UserColumnName="Min" type="xs:double" minOccurs="0" />
+              <xs:element name="Max" msprop:Generator_ColumnVarNameInTable="columnMax" msprop:Generator_ColumnPropNameInRow="Max" msprop:Generator_ColumnPropNameInTable="MaxColumn" msprop:Generator_UserColumnName="Max" type="xs:double" minOccurs="0" />
+              <xs:element name="Avg" msprop:Generator_ColumnVarNameInTable="columnAvg" msprop:Generator_ColumnPropNameInRow="Avg" msprop:Generator_ColumnPropNameInTable="AvgColumn" msprop:Generator_UserColumnName="Avg" type="xs:double" minOccurs="0" />
+              <xs:element name="StDev" msprop:Generator_ColumnVarNameInTable="columnStDev" msprop:Generator_ColumnPropNameInRow="StDev" msprop:Generator_ColumnPropNameInTable="StDevColumn" msprop:Generator_UserColumnName="StDev" type="xs:double" minOccurs="0" />
+              <xs:element name="Count" msprop:Generator_ColumnVarNameInTable="columnCount" msprop:Generator_ColumnPropNameInRow="Count" msprop:Generator_ColumnPropNameInTable="CountColumn" msprop:Generator_UserColumnName="Count" type="xs:int" minOccurs="0" />
+              <xs:element name="Var" msprop:Generator_ColumnVarNameInTable="columnVar" msprop:Generator_ColumnPropNameInRow="Var" msprop:Generator_ColumnPropNameInTable="VarColumn" msprop:Generator_UserColumnName="Var" type="xs:double" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="StatsByModel" msprop:Generator_TableClassName="StatsByModelDataTable" msprop:Generator_TableVarName="tableStatsByModel" msprop:Generator_TablePropName="StatsByModel" msprop:Generator_RowDeletingName="StatsByModelRowDeleting" msprop:Generator_RowChangingName="StatsByModelRowChanging" msprop:Generator_RowEvHandlerName="StatsByModelRowChangeEventHandler" msprop:Generator_RowDeletedName="StatsByModelRowDeleted" msprop:Generator_UserTableName="StatsByModel" msprop:Generator_RowChangedName="StatsByModelRowChanged" msprop:Generator_RowEvArgName="StatsByModelRowChangeEvent" msprop:Generator_RowClassName="StatsByModelRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Model" msdata:Caption="Year" msprop:Generator_ColumnVarNameInTable="columnModel" msprop:Generator_ColumnPropNameInRow="Model" msprop:Generator_ColumnPropNameInTable="ModelColumn" msprop:Generator_UserColumnName="Model" type="xs:string" />
+              <xs:element name="Sum" msprop:Generator_ColumnVarNameInTable="columnSum" msprop:Generator_ColumnPropNameInRow="Sum" msprop:Generator_ColumnPropNameInTable="SumColumn" msprop:Generator_UserColumnName="Sum" type="xs:double" minOccurs="0" />
+              <xs:element name="Min" msprop:Generator_ColumnVarNameInTable="columnMin" msprop:Generator_ColumnPropNameInRow="Min" msprop:Generator_ColumnPropNameInTable="MinColumn" msprop:Generator_UserColumnName="Min" type="xs:double" minOccurs="0" />
+              <xs:element name="Max" msprop:Generator_ColumnVarNameInTable="columnMax" msprop:Generator_ColumnPropNameInRow="Max" msprop:Generator_ColumnPropNameInTable="MaxColumn" msprop:Generator_UserColumnName="Max" type="xs:double" minOccurs="0" />
+              <xs:element name="Avg" msprop:Generator_ColumnVarNameInTable="columnAvg" msprop:Generator_ColumnPropNameInRow="Avg" msprop:Generator_ColumnPropNameInTable="AvgColumn" msprop:Generator_UserColumnName="Avg" type="xs:double" minOccurs="0" />
+              <xs:element name="StDev" msprop:Generator_ColumnVarNameInTable="columnStDev" msprop:Generator_ColumnPropNameInRow="StDev" msprop:Generator_ColumnPropNameInTable="StDevColumn" msprop:Generator_UserColumnName="StDev" type="xs:double" minOccurs="0" />
+              <xs:element name="Count" msprop:Generator_ColumnVarNameInTable="columnCount" msprop:Generator_ColumnPropNameInRow="Count" msprop:Generator_ColumnPropNameInTable="CountColumn" msprop:Generator_UserColumnName="Count" type="xs:int" minOccurs="0" />
+              <xs:element name="Var" msprop:Generator_ColumnVarNameInTable="columnVar" msprop:Generator_ColumnPropNameInRow="Var" msprop:Generator_ColumnPropNameInTable="VarColumn" msprop:Generator_UserColumnName="Var" type="xs:double" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
       </xs:choice>
     </xs:complexType>
     <xs:unique name="Constraint1" msdata:PrimaryKey="true">
       <xs:selector xpath=".//mstns:Listings" />
       <xs:field xpath="mstns:ListingID" />
+    </xs:unique>
+    <xs:unique name="StatsByYear_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:StatsByYear" />
+      <xs:field xpath="mstns:Year" />
+    </xs:unique>
+    <xs:unique name="StatsByMake_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:StatsByMake" />
+      <xs:field xpath="mstns:Make" />
+    </xs:unique>
+    <xs:unique name="StatsByModel_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:StatsByModel" />
+      <xs:field xpath="mstns:Model" />
     </xs:unique>
   </xs:element>
 </xs:schema>

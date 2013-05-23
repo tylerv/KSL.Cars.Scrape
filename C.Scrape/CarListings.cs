@@ -2,8 +2,5 @@
     
     
     public partial class CarListings {
-        partial class ListingsDataTable
-        {
-        }
     }
 }

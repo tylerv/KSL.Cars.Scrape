@@ -24,6 +24,9 @@ namespace C.Scrape
             flowYears.Controls.Clear();
             flowMakes.Controls.Clear();
             carListings.Listings.Clear();
+            carListings.StatsByYear.Clear();
+            carListings.StatsByMake.Clear();
+            carListings.StatsByModel.Clear();
 
             string url = "http://www.ksl.com/auto/search/index?"
                 + "&keyword=" + txtKeyword.Text
@@ -257,6 +260,8 @@ namespace C.Scrape
             dgvResults.AutoResizeColumns();
             dgvResults.Update();
             computeStats();
+
+            dgvResults.Sort(dgvResults.Columns["Price"], ListSortDirection.Ascending);
         }
 
         private void computeStats()
@@ -264,6 +269,7 @@ namespace C.Scrape
             //Get list of unique Years, Makes, and //Models
             List<string> Years = new List<string>();
             List<string> Makes = new List<string>();
+            List<string> Models = new List<string>();
 
             foreach (DataRow row in carListings.Listings.Rows)
             {
@@ -272,36 +278,129 @@ namespace C.Scrape
 
                 string tempMake = row["Make"].ToString().Trim();
                 if (!Makes.Contains(tempMake)) Makes.Add(tempMake);
+
+                string tempModel = row["Model"].ToString().Trim();
+                if (!Models.Contains(tempModel)) Models.Add(tempModel);
             }
             Years.Sort();
             Makes.Sort();
+            Models.Sort();
 
             foreach (string Year in Years)
             {
+                string filter = "Year=" + Year;
+
                 LinkLabel temp = new LinkLabel();
                 temp.AutoSize = true;
                 temp.Click += new System.EventHandler(this.openGraph);
                 temp.Tag = "Year";
-                temp.Text = Year + " (" + carListings.Listings.Compute("Count(Year)", "Year=" + Year) + ")";
+                temp.Text = Year + " (" + carListings.Listings.Compute("Count(Year)", filter) + ")";
                 toolTip.SetToolTip(temp,
-                    String.Format("{0:C}", (double)carListings.Listings.Compute("Min(Price)", "Year=" + Year)) + "/"
-                    + String.Format("{0:C}", (double)carListings.Listings.Compute("Max(Price)", "Year=" + Year)) + "/"
-                    + String.Format("{0:C}", (double)carListings.Listings.Compute("Avg(Price)", "Year=" + Year)));
+                    String.Format("{0:C}", (double)carListings.Listings.Compute("Min(Price)", filter)) + "/"
+                    + String.Format("{0:C}", (double)carListings.Listings.Compute("Max(Price)", filter)) + "/"
+                    + String.Format("{0:C}", (double)carListings.Listings.Compute("Avg(Price)", filter)));
                 flowYears.Controls.Add(temp);
+
+                CarListings.StatsByYearRow newRow = carListings.StatsByYear.NewStatsByYearRow();
+
+                newRow["Year"] = int.Parse(Year);
+                newRow["Min"] = carListings.Listings.Compute("Min(Price)", filter);
+                newRow["Max"] = carListings.Listings.Compute("Max(Price)", filter);
+
+                double avg;
+                if (double.TryParse(carListings.Listings.Compute("Avg(Price)", filter).ToString(), out avg)) newRow["Avg"] = avg;
+                else newRow["Avg"] = 0;
+
+                double stDev;
+                if (double.TryParse(carListings.Listings.Compute("StDev(Price)", filter).ToString(), out stDev)) newRow["StDev"] = stDev;
+                else newRow["StDev"] = 0;
+
+                newRow["Count"] = carListings.Listings.Compute("Count(Price)", filter);
+                newRow["Sum"] = carListings.Listings.Compute("Sum(Price)", filter);
+
+                double var;
+                if (double.TryParse(carListings.Listings.Compute("Var(Price)", filter).ToString(), out var)) newRow["Var"] = stDev;
+                else newRow["Var"] = 0;
+
+                carListings.StatsByYear.AddStatsByYearRow(newRow);
             }
 
             foreach (string Make in Makes)
             {
+                string filter = "Make='" + Make + "'";
+
                 LinkLabel temp = new LinkLabel();
                 temp.AutoSize = true;
                 temp.Click += new System.EventHandler(this.openGraph);
                 temp.Tag = "Make";
-                temp.Text = Make + " (" + carListings.Listings.Compute("Count(Make)", "Make='" + Make + "'") + ")";
+                temp.Text = Make + " (" + carListings.Listings.Compute("Count(Make)", filter) + ")";
                 toolTip.SetToolTip(temp,
-                    String.Format("{0:C}", (double)carListings.Listings.Compute("Min(Price)", "Make='" + Make + "'")) + "/"
-                    + String.Format("{0:C}", (double)carListings.Listings.Compute("Max(Price)", "Make='" + Make + "'")) + "/"
-                    + String.Format("{0:C}", (double)carListings.Listings.Compute("Avg(Price)", "Make='" + Make + "'")));
+                    String.Format("{0:C}", (double)carListings.Listings.Compute("Min(Price)", filter)) + "/"
+                    + String.Format("{0:C}", (double)carListings.Listings.Compute("Max(Price)", filter)) + "/"
+                    + String.Format("{0:C}", (double)carListings.Listings.Compute("Avg(Price)", filter)));
                 flowMakes.Controls.Add(temp);
+
+                CarListings.StatsByMakeRow newRow = carListings.StatsByMake.NewStatsByMakeRow();
+
+                newRow["Make"] = Make;
+                newRow["Min"] = carListings.Listings.Compute("Min(Price)", filter);
+                newRow["Max"] = carListings.Listings.Compute("Max(Price)", filter);
+
+                double avg;
+                if (double.TryParse(carListings.Listings.Compute("Avg(Price)", filter).ToString(), out avg)) newRow["Avg"] = avg;
+                else newRow["Avg"] = 0;
+
+                double stDev;
+                if (double.TryParse(carListings.Listings.Compute("StDev(Price)", filter).ToString(), out stDev)) newRow["StDev"] = stDev;
+                else newRow["StDev"] = 0;
+
+                newRow["Count"] = carListings.Listings.Compute("Count(Price)", filter);
+                newRow["Sum"] = carListings.Listings.Compute("Sum(Price)", filter);
+
+                double var;
+                if (double.TryParse(carListings.Listings.Compute("Var(Price)", filter).ToString(), out var)) newRow["Var"] = stDev;
+                else newRow["Var"] = 0;
+
+                carListings.StatsByMake.AddStatsByMakeRow(newRow);
+            }
+
+            foreach (string Model in Models)
+            {
+                string filter = "Make='" + Model + "'";
+
+                /*LinkLabel temp = new LinkLabel();
+                temp.AutoSize = true;
+                temp.Click += new System.EventHandler(this.openGraph);
+                temp.Tag = "Model";
+                temp.Text = Model + " (" + carListings.Listings.Compute("Count(Model)", filter) + ")";
+                toolTip.SetToolTip(temp,
+                    String.Format("{0:C}", (double)carListings.Listings.Compute("Min(Price)", filter)) + "/"
+                    + String.Format("{0:C}", (double)carListings.Listings.Compute("Max(Price)", filter)) + "/"
+                    + String.Format("{0:C}", (double)carListings.Listings.Compute("Avg(Price)", filter)));
+                flowModels.Controls.Add(temp);*/
+
+                CarListings.StatsByModelRow newRow = carListings.StatsByModel.NewStatsByModelRow();
+
+                newRow["Model"] = Model;
+                newRow["Min"] = carListings.Listings.Compute("Min(Price)", filter);
+                newRow["Max"] = carListings.Listings.Compute("Max(Price)", filter);
+
+                double avg;
+                if (double.TryParse(carListings.Listings.Compute("Avg(Price)", filter).ToString(), out avg)) newRow["Avg"] = avg;
+                else newRow["Avg"] = 0;
+
+                double stDev;
+                if (double.TryParse(carListings.Listings.Compute("StDev(Price)", filter).ToString(), out stDev)) newRow["StDev"] = stDev;
+                else newRow["StDev"] = 0;
+
+                newRow["Count"] = carListings.Listings.Compute("Count(Price)", filter);
+                newRow["Sum"] = carListings.Listings.Compute("Sum(Price)", filter);
+
+                double var;
+                if (double.TryParse(carListings.Listings.Compute("Var(Price)", filter).ToString(), out var)) newRow["Var"] = stDev;
+                else newRow["Var"] = 0;
+
+                carListings.StatsByModel.AddStatsByModelRow(newRow);
             }
         }
 
@@ -335,6 +434,47 @@ namespace C.Scrape
 
             Graph myChartForm = new Graph(dataForChart);
             myChartForm.Show();
+        }
+
+        private void highlight()
+        {
+            foreach (DataGridViewRow row in dgvResults.Rows)
+            {
+                CarListings.StatsByYearRow yearStats = carListings.StatsByYear.FindByYear(int.Parse(row.Cells["Year"].Value.ToString()));
+                CarListings.StatsByMakeRow makeStats = carListings.StatsByMake.FindByMake(row.Cells["Make"].Value.ToString());
+                CarListings.StatsByModelRow modelStats = carListings.StatsByModel.FindByModel(row.Cells["Model"].Value.ToString());
+
+                CarListings.ListingsRow matchingListing = carListings.Listings.FindByListingID(int.Parse(row.Cells["ListingID"].Value.ToString()));
+
+                if (yearStats != null && makeStats != null && matchingListing != null)
+                {
+                    bool highlight = false;
+                    string matchingColumn = "";
+                    if ((matchingListing.Price < (yearStats.Avg - yearStats.StDev)))
+                    {
+                        matchingColumn = "Year";
+                        highlight = true;
+
+                    }
+                    else if ((matchingListing.Price < (modelStats.Avg - modelStats.StDev)))
+                    {
+                        matchingColumn = "Model";
+                        highlight = true;
+                    }
+                    else if ((matchingListing.Price < (makeStats.Avg - makeStats.StDev)))
+                    {
+                        matchingColumn = "Make";
+                        highlight = true;
+                    }
+
+                    if (highlight)
+                    {
+                        row.Cells["Highlighted"].ToolTipText = "Price is significantly lower than average for a " + row.Cells[matchingColumn].Value.ToString();
+                        row.Cells["Highlighted"].Value = true;
+                        row.DefaultCellStyle.BackColor = Color.Yellow;
+                    }
+                }
+            }
         }
 
         private void KeyDown_LimitToNumbers(object sender, KeyEventArgs e)
@@ -384,7 +524,11 @@ namespace C.Scrape
                 cell.ToolTipText = Properties.Settings.Default.LISTING_LINK.Replace("{LISTING_ID}", cell.OwningRow.Cells["ListingID"].Value.ToString());
                 e.FormattingApplied = true;
             }
+        }
 
+        private void dgvResults_Sorted(object sender, EventArgs e)
+        {
+            highlight();
         }
     }
 }

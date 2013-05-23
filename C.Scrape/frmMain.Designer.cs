@@ -53,6 +53,8 @@
             this.grpResults = new System.Windows.Forms.GroupBox();
             this.dgvResults = new System.Windows.Forms.DataGridView();
             this.listingsBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.carListingsBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.carListings = new C.Scrape.CarListings();
             this.pageScrapeProgress = new System.Windows.Forms.ProgressBar();
             this.minimumWageWorker = new System.ComponentModel.BackgroundWorker();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -61,9 +63,8 @@
             this.flowMakes = new System.Windows.Forms.FlowLayoutPanel();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.totalScrapeProgress = new System.Windows.Forms.ProgressBar();
-            this.carListingsBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.carListings = new C.Scrape.CarListings();
-            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Highlighted = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.Price = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Mileage = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ListingID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.VIN = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -80,13 +81,13 @@
             this.grpResults.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvResults)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.listingsBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.carListingsBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.carListings)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.carListingsBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.carListings)).BeginInit();
             this.SuspendLayout();
             // 
             // grpDistance
@@ -300,7 +301,8 @@
             this.dgvResults.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.DisplayedCellsExceptHeader;
             this.dgvResults.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvResults.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.dataGridViewTextBoxColumn1,
+            this.Highlighted,
+            this.Price,
             this.Mileage,
             this.ListingID,
             this.VIN,
@@ -321,11 +323,22 @@
             this.dgvResults.Visible = false;
             this.dgvResults.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvResults_CellContentClick);
             this.dgvResults.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgvResults_CellFormatting);
+            this.dgvResults.Sorted += new System.EventHandler(this.dgvResults_Sorted);
             // 
             // listingsBindingSource
             // 
             this.listingsBindingSource.DataMember = "Listings";
             this.listingsBindingSource.DataSource = this.carListingsBindingSource;
+            // 
+            // carListingsBindingSource
+            // 
+            this.carListingsBindingSource.DataSource = this.carListings;
+            this.carListingsBindingSource.Position = 0;
+            // 
+            // carListings
+            // 
+            this.carListings.DataSetName = "CarListings";
+            this.carListings.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
             // 
             // pageScrapeProgress
             // 
@@ -400,23 +413,23 @@
             this.totalScrapeProgress.Size = new System.Drawing.Size(721, 23);
             this.totalScrapeProgress.TabIndex = 16;
             // 
-            // carListingsBindingSource
+            // Highlighted
             // 
-            this.carListingsBindingSource.DataSource = this.carListings;
-            this.carListingsBindingSource.Position = 0;
-            // 
-            // carListings
-            // 
-            this.carListings.DataSetName = "CarListings";
-            this.carListings.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
+            this.Highlighted.HeaderText = "";
+            this.Highlighted.Name = "Highlighted";
+            this.Highlighted.ReadOnly = true;
+            this.Highlighted.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.Highlighted.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.Highlighted.Visible = false;
+            this.Highlighted.Width = 5;
             // 
             // dataGridViewTextBoxColumn1
             // 
-            this.dataGridViewTextBoxColumn1.DataPropertyName = "Price";
-            this.dataGridViewTextBoxColumn1.HeaderText = "Price";
-            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
-            this.dataGridViewTextBoxColumn1.ReadOnly = true;
-            this.dataGridViewTextBoxColumn1.Width = 5;
+            this.Price.DataPropertyName = "Price";
+            this.Price.HeaderText = "Price";
+            this.Price.Name = "Price";
+            this.Price.ReadOnly = true;
+            this.Price.Width = 5;
             // 
             // Mileage
             // 
@@ -529,13 +542,13 @@
             this.grpResults.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvResults)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.listingsBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.carListingsBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.carListings)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.carListingsBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.carListings)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -576,6 +589,7 @@
         private System.Windows.Forms.TextBox txtMiles;
         private System.Windows.Forms.TextBox txtZip;
         private System.Windows.Forms.TextBox txtYearFrom;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn Highlighted;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Mileage;
         private System.Windows.Forms.DataGridViewTextBoxColumn ListingID;
