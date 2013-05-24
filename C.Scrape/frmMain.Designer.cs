@@ -63,6 +63,9 @@
             this.flowMakes = new System.Windows.Forms.FlowLayoutPanel();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.totalScrapeProgress = new System.Windows.Forms.ProgressBar();
+            this.mainMenu = new System.Windows.Forms.MenuStrip();
+            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.Highlighted = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.Price = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Mileage = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -74,6 +77,7 @@
             this.City = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Listing_Link = new System.Windows.Forms.DataGridViewLinkColumn();
             this.VIN_Link = new System.Windows.Forms.DataGridViewLinkColumn();
+            this.Description = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.grpDistance.SuspendLayout();
             this.grpMileage.SuspendLayout();
             this.grpPrice.SuspendLayout();
@@ -88,6 +92,7 @@
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            this.mainMenu.SuspendLayout();
             this.SuspendLayout();
             // 
             // grpDistance
@@ -95,7 +100,7 @@
             this.grpDistance.Controls.Add(this.txtMiles);
             this.grpDistance.Controls.Add(this.txtZip);
             this.grpDistance.Controls.Add(this.Label4);
-            this.grpDistance.Location = new System.Drawing.Point(190, 72);
+            this.grpDistance.Location = new System.Drawing.Point(183, 87);
             this.grpDistance.Name = "grpDistance";
             this.grpDistance.Size = new System.Drawing.Size(165, 55);
             this.grpDistance.TabIndex = 3;
@@ -131,7 +136,7 @@
             // 
             // btnScrape
             // 
-            this.btnScrape.Location = new System.Drawing.Point(361, 12);
+            this.btnScrape.Location = new System.Drawing.Point(354, 27);
             this.btnScrape.Name = "btnScrape";
             this.btnScrape.Size = new System.Drawing.Size(117, 141);
             this.btnScrape.TabIndex = 5;
@@ -153,7 +158,7 @@
             this.grpMileage.Controls.Add(this.txtMileageTo);
             this.grpMileage.Controls.Add(this.txtMileageFrom);
             this.grpMileage.Controls.Add(this.Label3);
-            this.grpMileage.Location = new System.Drawing.Point(19, 12);
+            this.grpMileage.Location = new System.Drawing.Point(12, 27);
             this.grpMileage.Name = "grpMileage";
             this.grpMileage.Size = new System.Drawing.Size(165, 55);
             this.grpMileage.TabIndex = 0;
@@ -194,7 +199,7 @@
             this.grpPrice.Controls.Add(this.txtPriceFrom);
             this.grpPrice.Controls.Add(this.txtPriceTo);
             this.grpPrice.Controls.Add(this.Label2);
-            this.grpPrice.Location = new System.Drawing.Point(19, 72);
+            this.grpPrice.Location = new System.Drawing.Point(12, 87);
             this.grpPrice.Name = "grpPrice";
             this.grpPrice.Size = new System.Drawing.Size(165, 55);
             this.grpPrice.TabIndex = 1;
@@ -226,7 +231,7 @@
             this.grpYear.Controls.Add(this.txtYearFrom);
             this.grpYear.Controls.Add(this.txtYearTo);
             this.grpYear.Controls.Add(this.Label1);
-            this.grpYear.Location = new System.Drawing.Point(190, 12);
+            this.grpYear.Location = new System.Drawing.Point(183, 27);
             this.grpYear.Name = "grpYear";
             this.grpYear.Size = new System.Drawing.Size(165, 55);
             this.grpYear.TabIndex = 2;
@@ -264,7 +269,7 @@
             // 
             // txtKeyword
             // 
-            this.txtKeyword.Location = new System.Drawing.Point(79, 133);
+            this.txtKeyword.Location = new System.Drawing.Point(72, 148);
             this.txtKeyword.Name = "txtKeyword";
             this.txtKeyword.Size = new System.Drawing.Size(276, 20);
             this.txtKeyword.TabIndex = 4;
@@ -272,7 +277,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(22, 136);
+            this.label5.Location = new System.Drawing.Point(15, 151);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(51, 13);
             this.label5.TabIndex = 1;
@@ -284,9 +289,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.grpResults.Controls.Add(this.dgvResults);
-            this.grpResults.Location = new System.Drawing.Point(19, 159);
+            this.grpResults.Location = new System.Drawing.Point(12, 174);
             this.grpResults.Name = "grpResults";
-            this.grpResults.Size = new System.Drawing.Size(714, 352);
+            this.grpResults.Size = new System.Drawing.Size(714, 372);
             this.grpResults.TabIndex = 15;
             this.grpResults.TabStop = false;
             this.grpResults.Text = "Results";
@@ -311,16 +316,16 @@
             this.Model,
             this.City,
             this.Listing_Link,
-            this.VIN_Link});
+            this.VIN_Link,
+            this.Description});
             this.dgvResults.DataSource = this.listingsBindingSource;
             this.dgvResults.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvResults.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.dgvResults.Location = new System.Drawing.Point(3, 16);
             this.dgvResults.Name = "dgvResults";
             this.dgvResults.ReadOnly = true;
-            this.dgvResults.Size = new System.Drawing.Size(708, 333);
+            this.dgvResults.Size = new System.Drawing.Size(708, 353);
             this.dgvResults.TabIndex = 0;
-            this.dgvResults.Visible = false;
             this.dgvResults.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvResults_CellContentClick);
             this.dgvResults.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgvResults_CellFormatting);
             this.dgvResults.Sorted += new System.EventHandler(this.dgvResults_Sorted);
@@ -344,7 +349,7 @@
             // 
             this.pageScrapeProgress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pageScrapeProgress.Location = new System.Drawing.Point(12, 517);
+            this.pageScrapeProgress.Location = new System.Drawing.Point(12, 552);
             this.pageScrapeProgress.Name = "pageScrapeProgress";
             this.pageScrapeProgress.Size = new System.Drawing.Size(721, 23);
             this.pageScrapeProgress.TabIndex = 16;
@@ -361,7 +366,7 @@
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.splitContainer1);
-            this.groupBox1.Location = new System.Drawing.Point(484, 11);
+            this.groupBox1.Location = new System.Drawing.Point(477, 26);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(249, 142);
             this.groupBox1.TabIndex = 17;
@@ -408,22 +413,45 @@
             // 
             this.totalScrapeProgress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.totalScrapeProgress.Location = new System.Drawing.Point(12, 546);
+            this.totalScrapeProgress.Location = new System.Drawing.Point(12, 581);
             this.totalScrapeProgress.Name = "totalScrapeProgress";
             this.totalScrapeProgress.Size = new System.Drawing.Size(721, 23);
             this.totalScrapeProgress.TabIndex = 16;
             // 
+            // mainMenu
+            // 
+            this.mainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.settingsToolStripMenuItem,
+            this.aboutToolStripMenuItem});
+            this.mainMenu.Location = new System.Drawing.Point(0, 0);
+            this.mainMenu.Name = "mainMenu";
+            this.mainMenu.Size = new System.Drawing.Size(745, 24);
+            this.mainMenu.TabIndex = 18;
+            // 
+            // settingsToolStripMenuItem
+            // 
+            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.settingsToolStripMenuItem.Text = "&Settings";
+            this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
+            // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
+            this.aboutToolStripMenuItem.Text = "&About";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            // 
             // Highlighted
             // 
-            this.Highlighted.HeaderText = "";
+            this.Highlighted.HeaderText = "(X)";
             this.Highlighted.Name = "Highlighted";
             this.Highlighted.ReadOnly = true;
             this.Highlighted.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.Highlighted.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.Highlighted.Visible = false;
             this.Highlighted.Width = 5;
             // 
-            // dataGridViewTextBoxColumn1
+            // Price
             // 
             this.Price.DataPropertyName = "Price";
             this.Price.HeaderText = "Price";
@@ -509,12 +537,21 @@
             this.VIN_Link.UseColumnTextForLinkValue = true;
             this.VIN_Link.Width = 5;
             // 
+            // Description
+            // 
+            this.Description.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.Description.DataPropertyName = "Description";
+            this.Description.HeaderText = "Description";
+            this.Description.Name = "Description";
+            this.Description.ReadOnly = true;
+            this.Description.Width = 500;
+            // 
             // frmMain
             // 
             this.AcceptButton = this.btnScrape;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(745, 581);
+            this.ClientSize = new System.Drawing.Size(745, 616);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.grpYear);
             this.Controls.Add(this.totalScrapeProgress);
@@ -526,7 +563,9 @@
             this.Controls.Add(this.btnScrape);
             this.Controls.Add(this.grpMileage);
             this.Controls.Add(this.grpPrice);
+            this.Controls.Add(this.mainMenu);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MainMenuStrip = this.mainMenu;
             this.Name = "frmMain";
             this.Text = "KSL Cars Search";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmMain_FormClosing);
@@ -549,6 +588,8 @@
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            this.mainMenu.ResumeLayout(false);
+            this.mainMenu.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -580,7 +621,6 @@
         private System.Windows.Forms.FlowLayoutPanel flowMakes;
         private System.Windows.Forms.ToolTip toolTip;
         private System.Windows.Forms.ProgressBar totalScrapeProgress;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Price;
         private System.Windows.Forms.TextBox txtPriceTo;
         private System.Windows.Forms.TextBox txtMileageTo;
         private System.Windows.Forms.TextBox txtMileageFrom;
@@ -589,8 +629,12 @@
         private System.Windows.Forms.TextBox txtMiles;
         private System.Windows.Forms.TextBox txtZip;
         private System.Windows.Forms.TextBox txtYearFrom;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn Highlighted;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
+        private System.Windows.Forms.MenuStrip mainMenu;
+        private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn Highlighted;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Price;
         private System.Windows.Forms.DataGridViewTextBoxColumn Mileage;
         private System.Windows.Forms.DataGridViewTextBoxColumn ListingID;
         private System.Windows.Forms.DataGridViewTextBoxColumn VIN;
@@ -600,6 +644,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn City;
         private System.Windows.Forms.DataGridViewLinkColumn Listing_Link;
         private System.Windows.Forms.DataGridViewLinkColumn VIN_Link;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Description;
     }
 }
 

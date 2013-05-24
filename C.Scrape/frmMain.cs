@@ -28,6 +28,21 @@ namespace C.Scrape
             carListings.StatsByMake.Clear();
             carListings.StatsByModel.Clear();
 
+            CarListings.SearchesRow newRow = carListings.Searches.NewSearchesRow();
+
+            newRow[carListings.Searches.TimeOfSearchColumn.ColumnName] = DateTime.Now;
+            newRow[carListings.Searches.YearFromColumn.ColumnName] = int.Parse(txtYearFrom.Text);
+            newRow[carListings.Searches.YearToColumn.ColumnName] = int.Parse(txtYearTo.Text);
+            newRow[carListings.Searches.PriceFromColumn.ColumnName] = double.Parse(txtPriceFrom.Text);
+            newRow[carListings.Searches.PriceToColumn.ColumnName] = double.Parse(txtPriceTo.Text);
+            newRow[carListings.Searches.MilesFromColumn.ColumnName] = int.Parse(txtMileageFrom.Text);
+            newRow[carListings.Searches.MilesToColumn.ColumnName] = int.Parse(txtMileageTo.Text);
+            newRow[carListings.Searches.ZipColumn.ColumnName] = int.Parse(txtZip.Text);
+            newRow[carListings.Searches.DistanceColumn.ColumnName] = int.Parse(txtMiles.Text);
+            newRow[carListings.Searches.KeywordColumn.ColumnName] = txtKeyword.Text;
+
+            carListings.Searches.AddSearchesRow(newRow);
+
             string url = "http://www.ksl.com/auto/search/index?"
                 + "&keyword=" + txtKeyword.Text
                 + "&yearFrom=" + txtYearFrom.Text
@@ -140,7 +155,7 @@ namespace C.Scrape
                                     if (specTable != null) newRow.VIN = specTable.NextSibling.NextSibling.InnerText;
 
                                     specTable = listingBodyNode.SelectSingleNode(Properties.Settings.Default.LISTING_DESCRIPTION);
-                                    try { newRow.Description = specTable.InnerText; }
+                                    try { newRow.Description = specTable.InnerText.Trim(); }
                                     catch { newRow.Description = ""; }//No Description for listing                                
 
                                     specTable = listingBodyNode.SelectSingleNode(Properties.Settings.Default.LISTING_MILEAGE);
@@ -202,33 +217,76 @@ namespace C.Scrape
         {
             try
             {
-                Properties.Settings.Default.priceLow = double.Parse(txtPriceFrom.Text);
-                Properties.Settings.Default.priceHigh = double.Parse(txtPriceTo.Text);
-                Properties.Settings.Default.milesLow = int.Parse(txtMileageFrom.Text);
-                Properties.Settings.Default.milesHigh = int.Parse(txtMileageTo.Text);
-                Properties.Settings.Default.yearLow = int.Parse(txtYearFrom.Text);
-                Properties.Settings.Default.yearHigh = int.Parse(txtYearTo.Text);
-                Properties.Settings.Default.zipCode = int.Parse(txtZip.Text);
-                Properties.Settings.Default.distance = int.Parse(txtMiles.Text);
-                Properties.Settings.Default.Keyword = txtKeyword.Text;
+                if (!carListings.Settings.First<CarListings.SettingsRow>().Field<Boolean>(carListings.Settings.SaveSearchResultsColumn))
+                {
+                    carListings.Listings.Clear();
+                }
 
-                //apply the changes to the settings file
-                Properties.Settings.Default.Save();
+                if (!carListings.Settings.First<CarListings.SettingsRow>().Field<Boolean>(carListings.Settings.SaveStatsColumn))
+                {
+                    carListings.StatsByYear.Clear();
+                    carListings.StatsByMake.Clear();
+                    carListings.StatsByModel.Clear();
+                }
+
+                if (carListings.Settings.First<CarListings.SettingsRow>().Field<Boolean>(carListings.Settings.LoadLastSearchParamsColumn))
+                {
+
+                    CarListings.SearchesRow newRow = carListings.Searches.NewSearchesRow();
+
+                    newRow.TimeOfSearch = DateTime.Now;
+                    newRow.YearFrom = int.Parse(txtYearFrom.Text);
+                    newRow.YearTo = int.Parse(txtYearTo.Text);
+                    newRow.PriceFrom = double.Parse(txtPriceFrom.Text);
+                    newRow.PriceTo = double.Parse(txtPriceTo.Text);
+                    newRow.MilesFrom = int.Parse(txtMileageFrom.Text);
+                    newRow.MilesTo = int.Parse(txtMileageTo.Text);
+                    newRow.Zip = int.Parse(txtZip.Text);
+                    newRow.Distance = int.Parse(txtMiles.Text);
+                    newRow.Keyword = txtKeyword.Text;
+
+                    carListings.Searches.AddSearchesRow(newRow);
+
+                    //Properties.Settings.Default.priceLow = double.Parse(txtPriceFrom.Text);
+                    //Properties.Settings.Default.priceHigh = double.Parse(txtPriceTo.Text);
+                    //Properties.Settings.Default.milesLow = int.Parse(txtMileageFrom.Text);
+                    //Properties.Settings.Default.milesHigh = int.Parse(txtMileageTo.Text);
+                    //Properties.Settings.Default.yearLow = int.Parse(txtYearFrom.Text);
+                    //Properties.Settings.Default.yearHigh = int.Parse(txtYearTo.Text);
+                    //Properties.Settings.Default.zipCode = int.Parse(txtZip.Text);
+                    //Properties.Settings.Default.distance = int.Parse(txtMiles.Text);
+                    //Properties.Settings.Default.Keyword = txtKeyword.Text;
+
+                    ////apply the changes to the settings file
+                    //Properties.Settings.Default.Save();
+                }
+
+                carListings.WriteXml("C.Scrape.settings");
             }
             catch { } //Don't do anything if there's an error.
         }
 
         private void frmMain_Load(object sender, EventArgs e)
         {
-            txtPriceFrom.Text = Properties.Settings.Default.priceLow.ToString();
-            txtPriceTo.Text = Properties.Settings.Default.priceHigh.ToString();
-            txtMileageFrom.Text = Properties.Settings.Default.milesLow.ToString();
-            txtMileageTo.Text = Properties.Settings.Default.milesHigh.ToString();
-            txtYearFrom.Text = Properties.Settings.Default.yearLow.ToString();
-            txtYearTo.Text = Properties.Settings.Default.yearHigh.ToString();
-            txtZip.Text = Properties.Settings.Default.zipCode.ToString();
-            txtMiles.Text = Properties.Settings.Default.distance.ToString();
-            txtKeyword.Text = Properties.Settings.Default.Keyword;
+            if (System.IO.File.Exists("C.Scrape.settings"))
+            {
+                carListings.ReadXml("C.Scrape.settings");
+
+                if (carListings.Settings.First<CarListings.SettingsRow>().Field<Boolean>(carListings.Settings.LoadLastSearchParamsColumn))
+                {
+                    CarListings.SearchesRow lastSearch = (CarListings.SearchesRow)(carListings.Searches.Rows[carListings.Searches.Rows.Count - 1]);
+
+                    txtPriceFrom.Text = lastSearch.PriceFrom.ToString();
+                    txtPriceTo.Text = lastSearch.PriceTo.ToString();
+                    txtMileageFrom.Text = lastSearch.MilesFrom.ToString();
+                    txtMileageTo.Text = lastSearch.MilesTo.ToString();
+                    txtYearFrom.Text = lastSearch.YearFrom.ToString();
+                    txtYearTo.Text = lastSearch.YearTo.ToString();
+                    txtZip.Text = lastSearch.Zip.ToString();
+                    txtMiles.Text = lastSearch.Distance.ToString();
+                    txtKeyword.Text = lastSearch.Keyword;
+                }
+            }
         }
 
         private void minimumWageWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -529,6 +587,26 @@ namespace C.Scrape
         private void dgvResults_Sorted(object sender, EventArgs e)
         {
             highlight();
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            frmAbout aboot = new frmAbout();
+            aboot.ShowDialog();
+        }
+
+        private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            frmSettings settings = new frmSettings();
+
+            if (settings.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                if (carListings.Settings.Rows.Count == 0) carListings.Settings.Rows.Add(carListings.Settings.NewSettingsRow());
+
+                carListings.Settings.Rows[0][carListings.Settings.SaveSearchResultsColumn.ColumnName] = settings.chkSaveLastListings.Checked;
+                carListings.Settings.Rows[0][carListings.Settings.LoadLastSearchParamsColumn.ColumnName] = settings.chkKeepSearchParameters.Checked;
+                carListings.Settings.Rows[0][carListings.Settings.SaveStatsColumn.ColumnName] = settings.chkKeepStatsData.Checked;
+            }
         }
     }
 }
