@@ -52,20 +52,6 @@
             this.label5 = new System.Windows.Forms.Label();
             this.grpResults = new System.Windows.Forms.GroupBox();
             this.dgvResults = new System.Windows.Forms.DataGridView();
-            this.listingsBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.carListingsBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.carListings = new C.Scrape.CarListings();
-            this.pageScrapeProgress = new System.Windows.Forms.ProgressBar();
-            this.minimumWageWorker = new System.ComponentModel.BackgroundWorker();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.flowYears = new System.Windows.Forms.FlowLayoutPanel();
-            this.flowMakes = new System.Windows.Forms.FlowLayoutPanel();
-            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.totalScrapeProgress = new System.Windows.Forms.ProgressBar();
-            this.mainMenu = new System.Windows.Forms.MenuStrip();
-            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.Highlighted = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.Price = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Mileage = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -78,6 +64,19 @@
             this.Listing_Link = new System.Windows.Forms.DataGridViewLinkColumn();
             this.VIN_Link = new System.Windows.Forms.DataGridViewLinkColumn();
             this.Description = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.listingsBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.carListingsBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.carListings = new C.Scrape.CarListings();
+            this.minimumWageWorker = new System.ComponentModel.BackgroundWorker();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.flowYears = new System.Windows.Forms.FlowLayoutPanel();
+            this.flowMakes = new System.Windows.Forms.FlowLayoutPanel();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.totalScrapeProgress = new System.Windows.Forms.ProgressBar();
+            this.mainMenu = new System.Windows.Forms.MenuStrip();
+            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.grpDistance.SuspendLayout();
             this.grpMileage.SuspendLayout();
             this.grpPrice.SuspendLayout();
@@ -291,7 +290,7 @@
             this.grpResults.Controls.Add(this.dgvResults);
             this.grpResults.Location = new System.Drawing.Point(12, 174);
             this.grpResults.Name = "grpResults";
-            this.grpResults.Size = new System.Drawing.Size(714, 372);
+            this.grpResults.Size = new System.Drawing.Size(714, 401);
             this.grpResults.TabIndex = 15;
             this.grpResults.TabStop = false;
             this.grpResults.Text = "Results";
@@ -324,123 +323,11 @@
             this.dgvResults.Location = new System.Drawing.Point(3, 16);
             this.dgvResults.Name = "dgvResults";
             this.dgvResults.ReadOnly = true;
-            this.dgvResults.Size = new System.Drawing.Size(708, 353);
+            this.dgvResults.Size = new System.Drawing.Size(708, 382);
             this.dgvResults.TabIndex = 0;
             this.dgvResults.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvResults_CellContentClick);
             this.dgvResults.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgvResults_CellFormatting);
             this.dgvResults.Sorted += new System.EventHandler(this.dgvResults_Sorted);
-            // 
-            // listingsBindingSource
-            // 
-            this.listingsBindingSource.DataMember = "Listings";
-            this.listingsBindingSource.DataSource = this.carListingsBindingSource;
-            // 
-            // carListingsBindingSource
-            // 
-            this.carListingsBindingSource.DataSource = this.carListings;
-            this.carListingsBindingSource.Position = 0;
-            // 
-            // carListings
-            // 
-            this.carListings.DataSetName = "CarListings";
-            this.carListings.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
-            // 
-            // pageScrapeProgress
-            // 
-            this.pageScrapeProgress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pageScrapeProgress.Location = new System.Drawing.Point(12, 552);
-            this.pageScrapeProgress.Name = "pageScrapeProgress";
-            this.pageScrapeProgress.Size = new System.Drawing.Size(721, 23);
-            this.pageScrapeProgress.TabIndex = 16;
-            // 
-            // minimumWageWorker
-            // 
-            this.minimumWageWorker.WorkerReportsProgress = true;
-            this.minimumWageWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.minimumWageWorker_DoWork);
-            this.minimumWageWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.minimumWageWorker_ProgressChanged);
-            this.minimumWageWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.minimumWageWorker_RunWorkerCompleted);
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox1.Controls.Add(this.splitContainer1);
-            this.groupBox1.Location = new System.Drawing.Point(477, 26);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(249, 142);
-            this.groupBox1.TabIndex = 17;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Statistics ( Min / Max / Avg )";
-            // 
-            // splitContainer1
-            // 
-            this.splitContainer1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(3, 16);
-            this.splitContainer1.Name = "splitContainer1";
-            // 
-            // splitContainer1.Panel1
-            // 
-            this.splitContainer1.Panel1.Controls.Add(this.flowYears);
-            // 
-            // splitContainer1.Panel2
-            // 
-            this.splitContainer1.Panel2.Controls.Add(this.flowMakes);
-            this.splitContainer1.Size = new System.Drawing.Size(243, 123);
-            this.splitContainer1.SplitterDistance = 82;
-            this.splitContainer1.TabIndex = 1;
-            // 
-            // flowYears
-            // 
-            this.flowYears.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowYears.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowYears.Location = new System.Drawing.Point(0, 0);
-            this.flowYears.Name = "flowYears";
-            this.flowYears.Size = new System.Drawing.Size(80, 121);
-            this.flowYears.TabIndex = 0;
-            // 
-            // flowMakes
-            // 
-            this.flowMakes.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowMakes.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowMakes.Location = new System.Drawing.Point(0, 0);
-            this.flowMakes.Name = "flowMakes";
-            this.flowMakes.Size = new System.Drawing.Size(155, 121);
-            this.flowMakes.TabIndex = 0;
-            // 
-            // totalScrapeProgress
-            // 
-            this.totalScrapeProgress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.totalScrapeProgress.Location = new System.Drawing.Point(12, 581);
-            this.totalScrapeProgress.Name = "totalScrapeProgress";
-            this.totalScrapeProgress.Size = new System.Drawing.Size(721, 23);
-            this.totalScrapeProgress.TabIndex = 16;
-            // 
-            // mainMenu
-            // 
-            this.mainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.settingsToolStripMenuItem,
-            this.aboutToolStripMenuItem});
-            this.mainMenu.Location = new System.Drawing.Point(0, 0);
-            this.mainMenu.Name = "mainMenu";
-            this.mainMenu.Size = new System.Drawing.Size(745, 24);
-            this.mainMenu.TabIndex = 18;
-            // 
-            // settingsToolStripMenuItem
-            // 
-            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
-            this.settingsToolStripMenuItem.Text = "&Settings";
-            this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
-            // 
-            // aboutToolStripMenuItem
-            // 
-            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
-            this.aboutToolStripMenuItem.Text = "&About";
-            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
             // Highlighted
             // 
@@ -546,6 +433,110 @@
             this.Description.ReadOnly = true;
             this.Description.Width = 500;
             // 
+            // listingsBindingSource
+            // 
+            this.listingsBindingSource.DataMember = "Listings";
+            this.listingsBindingSource.DataSource = this.carListingsBindingSource;
+            // 
+            // carListingsBindingSource
+            // 
+            this.carListingsBindingSource.DataSource = this.carListings;
+            this.carListingsBindingSource.Position = 0;
+            // 
+            // carListings
+            // 
+            this.carListings.DataSetName = "CarListings";
+            this.carListings.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
+            // 
+            // minimumWageWorker
+            // 
+            this.minimumWageWorker.WorkerReportsProgress = true;
+            this.minimumWageWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.minimumWageWorker_DoWork);
+            this.minimumWageWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.minimumWageWorker_ProgressChanged);
+            this.minimumWageWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.minimumWageWorker_RunWorkerCompleted);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.splitContainer1);
+            this.groupBox1.Location = new System.Drawing.Point(477, 26);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(249, 142);
+            this.groupBox1.TabIndex = 17;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Statistics ( Min / Max / Avg )";
+            // 
+            // splitContainer1
+            // 
+            this.splitContainer1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.Location = new System.Drawing.Point(3, 16);
+            this.splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.flowYears);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.flowMakes);
+            this.splitContainer1.Size = new System.Drawing.Size(243, 123);
+            this.splitContainer1.SplitterDistance = 82;
+            this.splitContainer1.TabIndex = 1;
+            // 
+            // flowYears
+            // 
+            this.flowYears.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flowYears.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flowYears.Location = new System.Drawing.Point(0, 0);
+            this.flowYears.Name = "flowYears";
+            this.flowYears.Size = new System.Drawing.Size(80, 121);
+            this.flowYears.TabIndex = 0;
+            // 
+            // flowMakes
+            // 
+            this.flowMakes.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flowMakes.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flowMakes.Location = new System.Drawing.Point(0, 0);
+            this.flowMakes.Name = "flowMakes";
+            this.flowMakes.Size = new System.Drawing.Size(155, 121);
+            this.flowMakes.TabIndex = 0;
+            // 
+            // totalScrapeProgress
+            // 
+            this.totalScrapeProgress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.totalScrapeProgress.Location = new System.Drawing.Point(12, 581);
+            this.totalScrapeProgress.Name = "totalScrapeProgress";
+            this.totalScrapeProgress.Size = new System.Drawing.Size(721, 23);
+            this.totalScrapeProgress.Step = 1;
+            this.totalScrapeProgress.TabIndex = 16;
+            // 
+            // mainMenu
+            // 
+            this.mainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.settingsToolStripMenuItem,
+            this.aboutToolStripMenuItem});
+            this.mainMenu.Location = new System.Drawing.Point(0, 0);
+            this.mainMenu.Name = "mainMenu";
+            this.mainMenu.Size = new System.Drawing.Size(745, 24);
+            this.mainMenu.TabIndex = 18;
+            // 
+            // settingsToolStripMenuItem
+            // 
+            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.settingsToolStripMenuItem.Text = "&Settings";
+            this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
+            // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
+            this.aboutToolStripMenuItem.Text = "&About";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            // 
             // frmMain
             // 
             this.AcceptButton = this.btnScrape;
@@ -555,7 +546,6 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.grpYear);
             this.Controls.Add(this.totalScrapeProgress);
-            this.Controls.Add(this.pageScrapeProgress);
             this.Controls.Add(this.grpResults);
             this.Controls.Add(this.txtKeyword);
             this.Controls.Add(this.label5);
@@ -613,7 +603,6 @@
         private CarListings carListings;
         private System.Windows.Forms.BindingSource listingsBindingSource;
         private System.Windows.Forms.BindingSource carListingsBindingSource;
-        private System.Windows.Forms.ProgressBar pageScrapeProgress;
         private System.ComponentModel.BackgroundWorker minimumWageWorker;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.FlowLayoutPanel flowYears;

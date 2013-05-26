@@ -328,5 +328,23 @@ namespace C.Scrape.Properties {
                 return ((string)(this["LISTING_LINK"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("//div[contains(@class,\'contactName\')]")]
+        public string CONTACT_NAME {
+            get {
+                return ((string)(this["CONTACT_NAME"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("//a[contains(@href,\'tel: \')]")]
+        public string CONTACT_PHONE {
+            get {
+                return ((string)(this["CONTACT_PHONE"]));
+            }
+        }
     }
 }

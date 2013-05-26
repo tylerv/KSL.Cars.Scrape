@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Globalization;
 
 namespace C.Scrape
 {
@@ -23,6 +24,7 @@ namespace C.Scrape
         {
             flowYears.Controls.Clear();
             flowMakes.Controls.Clear();
+            carListings.ContactInfo.Clear();
             carListings.Listings.Clear();
             carListings.StatsByYear.Clear();
             carListings.StatsByMake.Clear();
@@ -92,6 +94,9 @@ namespace C.Scrape
 
                 if (bodyNode != null)
                 {
+                    // Do something with bodyNode
+                    HtmlNodeCollection results = bodyNode.SelectNodes(Properties.Settings.Default.LISTING_SEARCH_RESULTS);
+
                     if (lastPageNum == 0)
                     {
                         HtmlNodeCollection lastPage = bodyNode.SelectNodes(Properties.Settings.Default.LAST_PAGE_NODE);
@@ -116,16 +121,13 @@ namespace C.Scrape
                     }
 
 
-                    // Do something with bodyNode
-                    HtmlNodeCollection results = bodyNode.SelectNodes(Properties.Settings.Default.LISTING_SEARCH_RESULTS);
-
                     if (results != null && results.Count > 0)
                     {
-                        //List<Listing> Cars = new List<Listing>();
 
                         foreach (HtmlNode node in results)
                         {
                             CarListings.ListingsRow newRow = carListings.Listings.NewListingsRow();
+                            CarListings.ContactInfoRow contactRow = carListings.ContactInfo.NewContactInfoRow();
 
                             newRow.Price = Double.Parse(node.SelectSingleNode(Properties.Settings.Default.LISTING_RESULT_PRICE).InnerText.Replace("$", "").Replace(",", ""));
 
@@ -134,7 +136,6 @@ namespace C.Scrape
                             newRow.Link = Properties.Settings.Default.LISTING_LINK.Replace("{LISTING_ID}", newRow.ListingID.ToString());
 
                             //We've got all the info from the listing page, new we go into the page itself for info like VIN and Mileage.
-
                             HtmlAgilityPack.HtmlDocument singleListing = new HtmlAgilityPack.HtmlDocument();
 
                             // There are various options, set as needed
@@ -159,7 +160,7 @@ namespace C.Scrape
                                     catch { newRow.Description = ""; }//No Description for listing                                
 
                                     specTable = listingBodyNode.SelectSingleNode(Properties.Settings.Default.LISTING_MILEAGE);
-                                    if (specTable != null) newRow.Mileage = specTable.NextSibling.NextSibling.InnerText;
+                                    if (specTable != null) newRow.Mileage = int.Parse(specTable.NextSibling.NextSibling.InnerText.Replace(",", ""));
 
                                     specTable = listingBodyNode.SelectSingleNode(Properties.Settings.Default.LISTING_YEAR);
                                     if (specTable != null) newRow.Year = int.Parse(specTable.NextSibling.NextSibling.InnerText);
@@ -175,37 +176,39 @@ namespace C.Scrape
 
                                     specTable = listingBodyNode.SelectSingleNode(Properties.Settings.Default.LISTING_CITY);
                                     if (specTable != null) newRow.City = specTable.InnerText.Trim().Split('|')[0];
+
+                                    /*========Get Contact Info========*/
+                                    contactRow.ListingID = newRow.ListingID;
+
+                                    //<div class="contactName large blue">
+                                    specTable = listingBodyNode.SelectSingleNode(Properties.Settings.Default.CONTACT_NAME);
+                                    if (specTable != null) contactRow.Name = specTable.InnerText;
+
+                                    //<a href="tel: 1 (888) 555-1234">
+                                    specTable = listingBodyNode.SelectSingleNode(Properties.Settings.Default.CONTACT_PHONE);
+                                    if (specTable != null) contactRow.Phone = specTable.Attributes["href"].Value.Split(':')[1].Trim();
                                 }
                             }
 
                             carListings.Listings.Rows.Add(newRow);
+                            carListings.ContactInfo.Rows.Add(contactRow);
 
-                            //pageScrapeProgress = current node out of results list.
-                            int pageProgress = (int)(((double)(results.IndexOf(node) + 1) / (double)(results.Count + 1)) * 100);
+                            int count = results.Count();
 
-                            //totalScrapeProgress = current page out of total pages.
-                            int totalProgress = (int)(((double)(currentPageNum + 1) / (double)(lastPageNum + 1)) * 100);
+                            double currentPosition = (currentPageNum) * count + results.IndexOf(node);
+                            double maxPosition = (lastPageNum + 1) * count;
 
-                            //Mux the two together.
-                            minimumWageWorker.ReportProgress((pageProgress * 100) + totalProgress);
-
-                            //minimumWageWorker.ReportProgress((int)((double)(results.IndexOf(node) * (currentPageNum + 1)) / (double)(results.Count * (lastPageNum + 1)) * 100));
-                            //minimumWageWorker.ReportProgress((int)(((double)((currentPageNum + 1) * results.Count) / (double)((lastPageNum + 1)) * results.Count) * 100));
+                            minimumWageWorker.ReportProgress((int)(currentPosition / maxPosition * 100));
                         }
 
                         if (currentPageNum < lastPageNum)
                         {
                             string newUrl = "";
 
-                            if (url.Contains("page="))
-                            {
-                                newUrl = url.Replace("page=" + currentPageNum, "page=" + (currentPageNum + 1));
-                            }
-                            else
-                            {
-                                newUrl = url + "&page=" + (currentPageNum + 1);
-                            }
+                            if (url.Contains("page=")) { newUrl = url.Replace("page=" + currentPageNum, "page=" + (currentPageNum + 1)); }
+                            else { newUrl = url + "&page=" + (currentPageNum + 1); }
 
+                            //Yay! Recursion!
                             parsePage(newUrl, currentPageNum + 1, lastPageNum);
                         }
                     }
@@ -231,6 +234,7 @@ namespace C.Scrape
 
                 if (carListings.Settings.First<CarListings.SettingsRow>().Field<Boolean>(carListings.Settings.LoadLastSearchParamsColumn))
                 {
+                    carListings.Searches.Clear();
 
                     CarListings.SearchesRow newRow = carListings.Searches.NewSearchesRow();
 
@@ -298,16 +302,11 @@ namespace C.Scrape
 
         private void minimumWageWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            int pageProgress = e.ProgressPercentage / 100;
-            int totalProgress = e.ProgressPercentage % 100;
-
-            pageScrapeProgress.Value = pageProgress;
-            totalScrapeProgress.Value = totalProgress;
+            totalScrapeProgress.Value = e.ProgressPercentage;
         }
 
         private void minimumWageWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            pageScrapeProgress.Value = 100;
             totalScrapeProgress.Value = 100;
 
             btnScrape.Enabled = true;
@@ -329,15 +328,17 @@ namespace C.Scrape
             List<string> Makes = new List<string>();
             List<string> Models = new List<string>();
 
+            TextInfo titleCase = new CultureInfo("en-US", false).TextInfo;
+            
             foreach (DataRow row in carListings.Listings.Rows)
             {
-                string tempYear = row["Year"].ToString().Trim();
+                string tempYear = titleCase.ToTitleCase(row["Year"].ToString().Trim());
                 if (!Years.Contains(tempYear)) Years.Add(tempYear);
 
-                string tempMake = row["Make"].ToString().Trim();
+                string tempMake = titleCase.ToTitleCase(row["Make"].ToString().Trim());
                 if (!Makes.Contains(tempMake)) Makes.Add(tempMake);
 
-                string tempModel = row["Model"].ToString().Trim();
+                string tempModel = titleCase.ToTitleCase(row["Model"].ToString().Trim());
                 if (!Models.Contains(tempModel)) Models.Add(tempModel);
             }
             Years.Sort();
@@ -503,11 +504,14 @@ namespace C.Scrape
                 CarListings.StatsByModelRow modelStats = carListings.StatsByModel.FindByModel(row.Cells["Model"].Value.ToString());
 
                 CarListings.ListingsRow matchingListing = carListings.Listings.FindByListingID(int.Parse(row.Cells["ListingID"].Value.ToString()));
+                CarListings.ContactInfoRow contactInfo = carListings.ContactInfo.FindByListingID(int.Parse(row.Cells["ListingID"].Value.ToString()));
 
                 if (yearStats != null && makeStats != null && matchingListing != null)
                 {
                     bool highlight = false;
+
                     string matchingColumn = "";
+
                     if ((matchingListing.Price < (yearStats.Avg - yearStats.StDev)))
                     {
                         matchingColumn = "Year";
@@ -525,11 +529,22 @@ namespace C.Scrape
                         highlight = true;
                     }
 
-                    if (highlight)
+                    if (contactInfo.IsPhoneNull())
                     {
-                        row.Cells["Highlighted"].ToolTipText = "Price is significantly lower than average for a " + row.Cells[matchingColumn].Value.ToString();
-                        row.Cells["Highlighted"].Value = true;
-                        row.DefaultCellStyle.BackColor = Color.Yellow;
+                        row.Cells["Highlighted"].ToolTipText = "This car doesn't have a phone number listed (properly). Beware a scam...";
+                        row.DefaultCellStyle.BackColor = Color.Red;
+                    }
+                    else
+                    {
+                        if (contactInfo.IsNameNull()) row.Cells["City"].ToolTipText = contactInfo.Phone;
+                        else row.Cells["City"].ToolTipText = contactInfo.Name + ": " + contactInfo.Phone;
+
+                        if (highlight)
+                        {
+                            row.Cells["Highlighted"].ToolTipText = "Price is significantly lower than average for a " + row.Cells[matchingColumn].Value.ToString();
+                            row.Cells["Highlighted"].Value = true;
+                            row.DefaultCellStyle.BackColor = Color.Yellow;
+                        }
                     }
                 }
             }
