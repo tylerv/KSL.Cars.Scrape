@@ -12,9 +12,13 @@ namespace C.Scrape
 {
     public partial class frmSettings : Form
     {
-        public frmSettings()
+        public frmSettings(CarListings.SettingsRow currentSettings)
         {
             InitializeComponent();
+
+            chkKeepSearchParameters.Checked = currentSettings.LoadLastSearchParams;
+            chkKeepStatsData.Checked = currentSettings.SaveStats;
+            chkSaveLastListings.Checked = currentSettings.SaveSearchResults;
         }
 
         private void btnOK_Click(object sender, EventArgs e)

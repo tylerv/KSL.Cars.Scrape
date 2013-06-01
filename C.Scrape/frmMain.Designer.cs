@@ -77,6 +77,7 @@
             this.mainMenu = new System.Windows.Forms.MenuStrip();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnCancel = new System.Windows.Forms.Button();
             this.grpDistance.SuspendLayout();
             this.grpMileage.SuspendLayout();
             this.grpPrice.SuspendLayout();
@@ -137,7 +138,7 @@
             // 
             this.btnScrape.Location = new System.Drawing.Point(354, 27);
             this.btnScrape.Name = "btnScrape";
-            this.btnScrape.Size = new System.Drawing.Size(117, 141);
+            this.btnScrape.Size = new System.Drawing.Size(117, 115);
             this.btnScrape.TabIndex = 5;
             this.btnScrape.Text = "Search";
             this.btnScrape.UseVisualStyleBackColor = true;
@@ -290,7 +291,7 @@
             this.grpResults.Controls.Add(this.dgvResults);
             this.grpResults.Location = new System.Drawing.Point(12, 174);
             this.grpResults.Name = "grpResults";
-            this.grpResults.Size = new System.Drawing.Size(714, 401);
+            this.grpResults.Size = new System.Drawing.Size(721, 401);
             this.grpResults.TabIndex = 15;
             this.grpResults.TabStop = false;
             this.grpResults.Text = "Results";
@@ -323,7 +324,7 @@
             this.dgvResults.Location = new System.Drawing.Point(3, 16);
             this.dgvResults.Name = "dgvResults";
             this.dgvResults.ReadOnly = true;
-            this.dgvResults.Size = new System.Drawing.Size(708, 382);
+            this.dgvResults.Size = new System.Drawing.Size(715, 382);
             this.dgvResults.TabIndex = 0;
             this.dgvResults.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvResults_CellContentClick);
             this.dgvResults.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgvResults_CellFormatting);
@@ -451,6 +452,7 @@
             // minimumWageWorker
             // 
             this.minimumWageWorker.WorkerReportsProgress = true;
+            this.minimumWageWorker.WorkerSupportsCancellation = true;
             this.minimumWageWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.minimumWageWorker_DoWork);
             this.minimumWageWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.minimumWageWorker_ProgressChanged);
             this.minimumWageWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.minimumWageWorker_RunWorkerCompleted);
@@ -462,10 +464,10 @@
             this.groupBox1.Controls.Add(this.splitContainer1);
             this.groupBox1.Location = new System.Drawing.Point(477, 26);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(249, 142);
+            this.groupBox1.Size = new System.Drawing.Size(256, 142);
             this.groupBox1.TabIndex = 17;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Statistics ( Min / Max / Avg )";
+            this.groupBox1.Text = "Statistics (Hover for Min / Max / Avg)";
             // 
             // splitContainer1
             // 
@@ -481,8 +483,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.flowMakes);
-            this.splitContainer1.Size = new System.Drawing.Size(243, 123);
-            this.splitContainer1.SplitterDistance = 82;
+            this.splitContainer1.Size = new System.Drawing.Size(250, 123);
+            this.splitContainer1.SplitterDistance = 84;
             this.splitContainer1.TabIndex = 1;
             // 
             // flowYears
@@ -491,7 +493,7 @@
             this.flowYears.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowYears.Location = new System.Drawing.Point(0, 0);
             this.flowYears.Name = "flowYears";
-            this.flowYears.Size = new System.Drawing.Size(80, 121);
+            this.flowYears.Size = new System.Drawing.Size(82, 121);
             this.flowYears.TabIndex = 0;
             // 
             // flowMakes
@@ -500,7 +502,7 @@
             this.flowMakes.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowMakes.Location = new System.Drawing.Point(0, 0);
             this.flowMakes.Name = "flowMakes";
-            this.flowMakes.Size = new System.Drawing.Size(155, 121);
+            this.flowMakes.Size = new System.Drawing.Size(160, 121);
             this.flowMakes.TabIndex = 0;
             // 
             // totalScrapeProgress
@@ -511,6 +513,7 @@
             this.totalScrapeProgress.Name = "totalScrapeProgress";
             this.totalScrapeProgress.Size = new System.Drawing.Size(721, 23);
             this.totalScrapeProgress.Step = 1;
+            this.totalScrapeProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.totalScrapeProgress.TabIndex = 16;
             // 
             // mainMenu
@@ -537,12 +540,26 @@
             this.aboutToolStripMenuItem.Text = "&About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
+            // btnCancel
+            // 
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnCancel.Enabled = false;
+            this.btnCancel.Location = new System.Drawing.Point(354, 145);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(117, 23);
+            this.btnCancel.TabIndex = 19;
+            this.btnCancel.Text = "Cancel";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            // 
             // frmMain
             // 
             this.AcceptButton = this.btnScrape;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(745, 616);
+            this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.grpYear);
             this.Controls.Add(this.totalScrapeProgress);
@@ -634,6 +651,7 @@
         private System.Windows.Forms.DataGridViewLinkColumn Listing_Link;
         private System.Windows.Forms.DataGridViewLinkColumn VIN_Link;
         private System.Windows.Forms.DataGridViewTextBoxColumn Description;
+        private System.Windows.Forms.Button btnCancel;
     }
 }
 
