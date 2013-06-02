@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
-namespace C.Scrape
+namespace KSL.Cars.App
 {
     public partial class Graph : Form
     {

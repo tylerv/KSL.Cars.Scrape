@@ -1,6 +1,4 @@
-﻿using HtmlAgilityPack;
-using System;
-using System.Net;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -10,11 +8,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Globalization;
+using KSL.Cars.Parse;
 
-namespace C.Scrape
+namespace KSL.Cars.App
 {
     public partial class frmMain : Form
     {
+        Parser myParser = new Parser();
+
         public frmMain()
         {
             InitializeComponent();
@@ -33,26 +34,26 @@ namespace C.Scrape
             {
                 flowYears.Controls.Clear();
                 flowMakes.Controls.Clear();
-                carListings.ContactInfo.Clear();
-                carListings.Listings.Clear();
-                carListings.StatsByYear.Clear();
-                carListings.StatsByMake.Clear();
-                carListings.StatsByModel.Clear();
+                myParser.dataStorage.ContactInfo.Clear();
+                myParser.dataStorage.Listings.Clear();
+                myParser.dataStorage.StatsByYear.Clear();
+                myParser.dataStorage.StatsByMake.Clear();
+                myParser.dataStorage.StatsByModel.Clear();
 
-                CarListings.SearchesRow newRow = carListings.Searches.NewSearchesRow();
+                CarListings.SearchesRow newRow = myParser.dataStorage.Searches.NewSearchesRow();
 
-                newRow[carListings.Searches.TimeOfSearchColumn.ColumnName] = DateTime.Now;
-                newRow[carListings.Searches.YearFromColumn.ColumnName] = int.Parse(txtYearFrom.Text);
-                newRow[carListings.Searches.YearToColumn.ColumnName] = int.Parse(txtYearTo.Text);
-                newRow[carListings.Searches.PriceFromColumn.ColumnName] = double.Parse(txtPriceFrom.Text);
-                newRow[carListings.Searches.PriceToColumn.ColumnName] = double.Parse(txtPriceTo.Text);
-                newRow[carListings.Searches.MilesFromColumn.ColumnName] = int.Parse(txtMileageFrom.Text);
-                newRow[carListings.Searches.MilesToColumn.ColumnName] = int.Parse(txtMileageTo.Text);
-                newRow[carListings.Searches.ZipColumn.ColumnName] = int.Parse(txtZip.Text);
-                newRow[carListings.Searches.DistanceColumn.ColumnName] = int.Parse(txtMiles.Text);
-                newRow[carListings.Searches.KeywordColumn.ColumnName] = txtKeyword.Text;
+                newRow[myParser.dataStorage.Searches.TimeOfSearchColumn.ColumnName] = DateTime.Now;
+                newRow[myParser.dataStorage.Searches.YearFromColumn.ColumnName] = int.Parse(txtYearFrom.Text);
+                newRow[myParser.dataStorage.Searches.YearToColumn.ColumnName] = int.Parse(txtYearTo.Text);
+                newRow[myParser.dataStorage.Searches.PriceFromColumn.ColumnName] = double.Parse(txtPriceFrom.Text);
+                newRow[myParser.dataStorage.Searches.PriceToColumn.ColumnName] = double.Parse(txtPriceTo.Text);
+                newRow[myParser.dataStorage.Searches.MilesFromColumn.ColumnName] = int.Parse(txtMileageFrom.Text);
+                newRow[myParser.dataStorage.Searches.MilesToColumn.ColumnName] = int.Parse(txtMileageTo.Text);
+                newRow[myParser.dataStorage.Searches.ZipColumn.ColumnName] = int.Parse(txtZip.Text);
+                newRow[myParser.dataStorage.Searches.DistanceColumn.ColumnName] = int.Parse(txtMiles.Text);
+                newRow[myParser.dataStorage.Searches.KeywordColumn.ColumnName] = txtKeyword.Text;
 
-                carListings.Searches.AddSearchesRow(newRow);
+                myParser.dataStorage.Searches.AddSearchesRow(newRow);
 
                 string url = "http://www.ksl.com/auto/search/index?"
                     + "&keyword=" + txtKeyword.Text
@@ -102,23 +103,24 @@ namespace C.Scrape
         {
             try
             {
-                if (!carListings.Settings.First<CarListings.SettingsRow>().Field<Boolean>(carListings.Settings.SaveSearchResultsColumn))
+                if (!myParser.dataStorage.Settings.First<CarListings.SettingsRow>().Field<Boolean>(myParser.dataStorage.Settings.SaveSearchResultsColumn))
                 {
-                    carListings.Listings.Clear();
+                    myParser.dataStorage.ContactInfo.Clear();
+                    myParser.dataStorage.Listings.Clear();
                 }
 
-                if (!carListings.Settings.First<CarListings.SettingsRow>().Field<Boolean>(carListings.Settings.SaveStatsColumn))
+                if (!myParser.dataStorage.Settings.First<CarListings.SettingsRow>().Field<Boolean>(myParser.dataStorage.Settings.SaveStatsColumn))
                 {
-                    carListings.StatsByYear.Clear();
-                    carListings.StatsByMake.Clear();
-                    carListings.StatsByModel.Clear();
+                    myParser.dataStorage.StatsByYear.Clear();
+                    myParser.dataStorage.StatsByMake.Clear();
+                    myParser.dataStorage.StatsByModel.Clear();
                 }
 
-                if (carListings.Settings.First<CarListings.SettingsRow>().Field<Boolean>(carListings.Settings.LoadLastSearchParamsColumn))
+                if (myParser.dataStorage.Settings.First<CarListings.SettingsRow>().Field<Boolean>(myParser.dataStorage.Settings.LoadLastSearchParamsColumn))
                 {
-                    carListings.Searches.Clear();
+                    myParser.dataStorage.Searches.Clear();
 
-                    CarListings.SearchesRow newRow = carListings.Searches.NewSearchesRow();
+                    CarListings.SearchesRow newRow = myParser.dataStorage.Searches.NewSearchesRow();
 
                     newRow.TimeOfSearch = DateTime.Now;
                     newRow.YearFrom = int.Parse(txtYearFrom.Text);
@@ -131,7 +133,7 @@ namespace C.Scrape
                     newRow.Distance = int.Parse(txtMiles.Text);
                     newRow.Keyword = txtKeyword.Text;
 
-                    carListings.Searches.AddSearchesRow(newRow);
+                    myParser.dataStorage.Searches.AddSearchesRow(newRow);
 
                     //Properties.Settings.Default.priceLow = double.Parse(txtPriceFrom.Text);
                     //Properties.Settings.Default.priceHigh = double.Parse(txtPriceTo.Text);
@@ -147,7 +149,7 @@ namespace C.Scrape
                     //Properties.Settings.Default.Save();
                 }
 
-                carListings.WriteXml("C.Scrape.settings");
+                myParser.dataStorage.WriteXml("KSL.Cars.App.settings");
             }
             catch { } //Don't do anything if there's an error.
         }
@@ -159,13 +161,13 @@ namespace C.Scrape
         /// <param name="e"></param>
         private void frmMain_Load(object sender, EventArgs e)
         {
-            if (System.IO.File.Exists("C.Scrape.settings"))
+            if (System.IO.File.Exists("KSL.Cars.App.settings"))
             {
-                carListings.ReadXml("C.Scrape.settings");
+                myParser.dataStorage.ReadXml("KSL.Cars.App.settings");
 
-                if (carListings.Settings.First<CarListings.SettingsRow>().Field<Boolean>(carListings.Settings.LoadLastSearchParamsColumn))
+                if (myParser.dataStorage.Settings.First<CarListings.SettingsRow>().Field<Boolean>(myParser.dataStorage.Settings.LoadLastSearchParamsColumn))
                 {
-                    CarListings.SearchesRow lastSearch = (CarListings.SearchesRow)(carListings.Searches.Rows[carListings.Searches.Rows.Count - 1]);
+                    CarListings.SearchesRow lastSearch = (CarListings.SearchesRow)(myParser.dataStorage.Searches.Rows[myParser.dataStorage.Searches.Rows.Count - 1]);
 
                     txtPriceFrom.Text = lastSearch.PriceFrom.ToString();
                     txtPriceTo.Text = lastSearch.PriceTo.ToString();
@@ -180,15 +182,15 @@ namespace C.Scrape
             }
             else
             {
-                if (carListings.Settings.Rows.Count == 0)
+                if (myParser.dataStorage.Settings.Rows.Count == 0)
                 {
-                    CarListings.SettingsRow settings = carListings.Settings.NewSettingsRow();
+                    CarListings.SettingsRow settings = myParser.dataStorage.Settings.NewSettingsRow();
 
                     settings.LoadLastSearchParams = true;
                     settings.SaveStats = false;
                     settings.SaveSearchResults = false;
 
-                    carListings.Settings.Rows.Add(settings);
+                    myParser.dataStorage.Settings.Rows.Add(settings);
                 }
 
             }
@@ -281,15 +283,15 @@ namespace C.Scrape
         /// <param name="e"></param>
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            frmSettings settings = new frmSettings((CarListings.SettingsRow)(carListings.Settings.Rows[0]));
+            frmSettings settings = new frmSettings((CarListings.SettingsRow)(myParser.dataStorage.Settings.Rows[0]));
 
             if (settings.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                if (carListings.Settings.Rows.Count == 0) carListings.Settings.Rows.Add(carListings.Settings.NewSettingsRow());
+                if (myParser.dataStorage.Settings.Rows.Count == 0) myParser.dataStorage.Settings.Rows.Add(myParser.dataStorage.Settings.NewSettingsRow());
 
-                carListings.Settings.Rows[0][carListings.Settings.SaveSearchResultsColumn.ColumnName] = settings.chkSaveLastListings.Checked;
-                carListings.Settings.Rows[0][carListings.Settings.LoadLastSearchParamsColumn.ColumnName] = settings.chkKeepSearchParameters.Checked;
-                carListings.Settings.Rows[0][carListings.Settings.SaveStatsColumn.ColumnName] = settings.chkKeepStatsData.Checked;
+                myParser.dataStorage.Settings.Rows[0][myParser.dataStorage.Settings.SaveSearchResultsColumn.ColumnName] = settings.chkSaveLastListings.Checked;
+                myParser.dataStorage.Settings.Rows[0][myParser.dataStorage.Settings.LoadLastSearchParamsColumn.ColumnName] = settings.chkKeepSearchParameters.Checked;
+                myParser.dataStorage.Settings.Rows[0][myParser.dataStorage.Settings.SaveStatsColumn.ColumnName] = settings.chkKeepStatsData.Checked;
             }
         }
 
@@ -302,7 +304,7 @@ namespace C.Scrape
         {
             string url = e.Argument.ToString();
             minimumWageWorker.ReportProgress(0);
-            parsePage(e, url, 0, 0);
+            myParser.parsePage(ref minimumWageWorker, ref e, url, 0, 0);
         }
 
         /// <summary>
@@ -333,7 +335,7 @@ namespace C.Scrape
                 btnScrape.Enabled = true;
                 btnCancel.Enabled = false;
 
-                dgvResults.TopLeftHeaderCell.ToolTipText = "Total Listings Found: " + carListings.Listings.Rows.Count;
+                dgvResults.TopLeftHeaderCell.ToolTipText = "Total Listings Found: " + myParser.dataStorage.Listings.Rows.Count;
 
                 dgvResults.Visible = true;
                 dgvResults.AutoResizeColumns();
@@ -352,7 +354,7 @@ namespace C.Scrape
         private void openGraph(object sender, EventArgs e)
         {
             DataTable dataForChart = new DataTable();
-            dataForChart = carListings.Listings.Clone();
+            dataForChart = myParser.dataStorage.Listings.Clone();
             dataForChart.PrimaryKey = null;
             dataForChart.Columns.Remove("ListingID");
             dataForChart.Columns.Remove("Description");
@@ -363,14 +365,14 @@ namespace C.Scrape
 
                 case "Year":
                     dataForChart.Columns[0].Caption = "Year " + ((LinkLabel)sender).Text.ToString();
-                    var yearQuery = from row in carListings.Listings.AsEnumerable()
+                    var yearQuery = from row in myParser.dataStorage.Listings.AsEnumerable()
                                     where (row.Field<Int32>("Year") == Int32.Parse(((LinkLabel)sender).Text.Split(' ')[0].ToString()))
                                     select row;
                     foreach (DataRow dr in yearQuery) dataForChart.ImportRow(dr);
                     break;
                 case "Make":
                     dataForChart.Columns[0].Caption = ((LinkLabel)sender).Text.ToString();
-                    var makeQuery = from row in carListings.Listings.AsEnumerable()
+                    var makeQuery = from row in myParser.dataStorage.Listings.AsEnumerable()
                                     where (row.Field<string>("Make") == ((LinkLabel)sender).Text.Split(' ')[0].ToString())
                                     select row;
                     foreach (DataRow dr in makeQuery) dataForChart.ImportRow(dr);
@@ -384,160 +386,6 @@ namespace C.Scrape
         #endregion
 
         /// <summary>
-        /// Workhorse that gets the HTML and parses it into the datatable.
-        /// </summary>
-        /// <param name="url"></param>
-        /// <param name="currentPageNum"></param>
-        /// <param name="lastPageNum"></param>
-        private void parsePage(DoWorkEventArgs e, string url, int currentPageNum, int lastPageNum)
-        {
-            if ((minimumWageWorker.CancellationPending == true))
-            {
-                e.Cancel = true;
-                return;
-            }
-            else
-            {
-
-                HtmlAgilityPack.HtmlDocument htmlDoc = new HtmlAgilityPack.HtmlDocument();
-
-                // There are various options, set as needed
-                htmlDoc.OptionFixNestedTags = true;
-
-                string htmlCode = (new WebClient()).DownloadString(url);
-
-                htmlDoc.LoadHtml(htmlCode);  // Used to load from a string (was htmlDoc.LoadXML(xmlString)
-
-                if (htmlDoc.DocumentNode != null)
-                {
-                    HtmlAgilityPack.HtmlNode bodyNode = htmlDoc.DocumentNode.SelectSingleNode("//body");
-
-                    if (bodyNode != null)
-                    {
-                        // Do something with bodyNode
-                        HtmlNodeCollection results = bodyNode.SelectNodes(Properties.Settings.Default.LISTING_SEARCH_RESULTS);
-
-                        if (lastPageNum == 0)
-                        {
-                            HtmlNodeCollection lastPage = bodyNode.SelectNodes(Properties.Settings.Default.LAST_PAGE_NODE);
-
-                            if (lastPage != null && lastPage.Count > 0)
-                            {
-                                //<a href="/auto/search/index?page=15" title="Go to last page">16</a>
-                                List<int> maxPages = new List<int>();
-
-                                foreach (HtmlNode node in lastPage)
-                                {
-                                    try
-                                    {
-                                        maxPages.Add(int.Parse(node.InnerText));
-                                    }
-                                    catch {/*It's not a number, we don't want it.*/}
-                                }
-
-                                lastPageNum = maxPages.Max();
-                            }
-                            else { /*lastPage is null or empty, there's only one page.*/}
-                        }
-
-
-                        if (results != null && results.Count > 0)
-                        {
-
-                            foreach (HtmlNode node in results)
-                            {
-                                CarListings.ListingsRow newRow = carListings.Listings.NewListingsRow();
-                                CarListings.ContactInfoRow contactRow = carListings.ContactInfo.NewContactInfoRow();
-
-                                newRow.Price = Double.Parse(node.SelectSingleNode(Properties.Settings.Default.LISTING_RESULT_PRICE).InnerText.Replace("$", "").Replace(",", ""));
-
-                                newRow.ListingID = int.Parse(node.SelectSingleNode(Properties.Settings.Default.LISTING_RESULT_ID).Attributes["href"].Value.Split('/').Last<string>().Split('?').First<string>());
-
-                                newRow.Link = Properties.Settings.Default.LISTING_LINK.Replace("{LISTING_ID}", newRow.ListingID.ToString());
-
-                                //We've got all the info from the listing page, new we go into the page itself for info like VIN and Mileage.
-                                HtmlAgilityPack.HtmlDocument singleListing = new HtmlAgilityPack.HtmlDocument();
-
-                                // There are various options, set as needed
-                                singleListing.OptionFixNestedTags = true;
-
-                                string singleListingCode = (new WebClient()).DownloadString(newRow.Link);
-
-                                singleListing.LoadHtml(singleListingCode);
-
-                                if (singleListing.DocumentNode != null)
-                                {
-                                    HtmlAgilityPack.HtmlNode listingBodyNode = singleListing.DocumentNode.SelectSingleNode("//body");
-
-                                    if (listingBodyNode != null)
-                                    {
-                                        // Do something with bodyNode
-                                        HtmlNode specTable = listingBodyNode.SelectSingleNode(Properties.Settings.Default.LISTING_VIN);
-                                        if (specTable != null) newRow.VIN = specTable.NextSibling.NextSibling.InnerText;
-
-                                        specTable = listingBodyNode.SelectSingleNode(Properties.Settings.Default.LISTING_DESCRIPTION);
-                                        try { newRow.Description = specTable.InnerText.Trim(); }
-                                        catch { newRow.Description = ""; }//No Description for listing                                
-
-                                        specTable = listingBodyNode.SelectSingleNode(Properties.Settings.Default.LISTING_MILEAGE);
-                                        if (specTable != null) newRow.Mileage = int.Parse(specTable.NextSibling.NextSibling.InnerText.Replace(",", ""));
-
-                                        specTable = listingBodyNode.SelectSingleNode(Properties.Settings.Default.LISTING_YEAR);
-                                        if (specTable != null) newRow.Year = int.Parse(specTable.NextSibling.NextSibling.InnerText);
-
-                                        specTable = listingBodyNode.SelectSingleNode(Properties.Settings.Default.LISTING_MAKE);
-                                        if (specTable != null) newRow.Make = specTable.NextSibling.NextSibling.InnerText;
-
-                                        specTable = listingBodyNode.SelectSingleNode(Properties.Settings.Default.LISTING_MODEL);
-                                        if (specTable != null) newRow.Model = specTable.NextSibling.NextSibling.InnerText.Replace("&amp;", "&&");
-
-                                        specTable = listingBodyNode.SelectSingleNode(Properties.Settings.Default.LISTING_MODEL);
-                                        if (specTable != null) newRow.Model = specTable.NextSibling.NextSibling.InnerText;
-
-                                        specTable = listingBodyNode.SelectSingleNode(Properties.Settings.Default.LISTING_CITY);
-                                        if (specTable != null) newRow.City = specTable.InnerText.Trim().Split('|')[0];
-
-                                        /*========Get Contact Info========*/
-                                        contactRow.ListingID = newRow.ListingID;
-
-                                        //<div class="contactName large blue">
-                                        specTable = listingBodyNode.SelectSingleNode(Properties.Settings.Default.CONTACT_NAME);
-                                        if (specTable != null) contactRow.Name = specTable.InnerText;
-
-                                        //<a href="tel: 1 (888) 555-1234">
-                                        specTable = listingBodyNode.SelectSingleNode(Properties.Settings.Default.CONTACT_PHONE);
-                                        if (specTable != null) contactRow.Phone = specTable.Attributes["href"].Value.Split(':')[1].Trim();
-                                    }
-                                }
-
-                                carListings.Listings.Rows.Add(newRow);
-                                carListings.ContactInfo.Rows.Add(contactRow);
-
-                                int count = results.Count();
-
-                                double currentPosition = (currentPageNum) * count + results.IndexOf(node);
-                                double maxPosition = (lastPageNum + 1) * count;
-
-                                minimumWageWorker.ReportProgress((int)(currentPosition / maxPosition * 100));
-                            }
-
-                            if (currentPageNum < lastPageNum)
-                            {
-                                string newUrl = "";
-
-                                if (url.Contains("page=")) { newUrl = url.Replace("page=" + currentPageNum, "page=" + (currentPageNum + 1)); }
-                                else { newUrl = url + "&page=" + (currentPageNum + 1); }
-
-                                //Yay! Recursion!
-                                parsePage(e, newUrl, currentPageNum + 1, lastPageNum);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        /// <summary>
         /// Calculates the basic stats for year, make and models found in the dataset.
         /// </summary>
         private void computeStats()
@@ -549,7 +397,7 @@ namespace C.Scrape
 
             TextInfo titleCase = new CultureInfo("en-US", false).TextInfo;
 
-            foreach (DataRow row in carListings.Listings.Rows)
+            foreach (DataRow row in myParser.dataStorage.Listings.Rows)
             {
                 string tempYear = titleCase.ToTitleCase(row["Year"].ToString().ToLower().Trim());
                 if (!Years.Contains(tempYear)) Years.Add(tempYear);
@@ -572,35 +420,35 @@ namespace C.Scrape
                 temp.AutoSize = true;
                 temp.Click += new System.EventHandler(this.openGraph);
                 temp.Tag = "Year";
-                temp.Text = Year + " (" + carListings.Listings.Compute("Count(Year)", filter) + ")";
+                temp.Text = Year + " (" + myParser.dataStorage.Listings.Compute("Count(Year)", filter) + ")";
                 toolTip.SetToolTip(temp,
-                    String.Format("{0:C}", (double)carListings.Listings.Compute("Min(Price)", filter)) + "/"
-                    + String.Format("{0:C}", (double)carListings.Listings.Compute("Max(Price)", filter)) + "/"
-                    + String.Format("{0:C}", (double)carListings.Listings.Compute("Avg(Price)", filter)));
+                    String.Format("{0:C}", (double)myParser.dataStorage.Listings.Compute("Min(Price)", filter)) + "/"
+                    + String.Format("{0:C}", (double)myParser.dataStorage.Listings.Compute("Max(Price)", filter)) + "/"
+                    + String.Format("{0:C}", (double)myParser.dataStorage.Listings.Compute("Avg(Price)", filter)));
                 flowYears.Controls.Add(temp);
 
-                CarListings.StatsByYearRow newRow = carListings.StatsByYear.NewStatsByYearRow();
+                CarListings.StatsByYearRow newRow = myParser.dataStorage.StatsByYear.NewStatsByYearRow();
 
                 newRow["Year"] = int.Parse(Year);
-                newRow["Min"] = carListings.Listings.Compute("Min(Price)", filter);
-                newRow["Max"] = carListings.Listings.Compute("Max(Price)", filter);
+                newRow["Min"] = myParser.dataStorage.Listings.Compute("Min(Price)", filter);
+                newRow["Max"] = myParser.dataStorage.Listings.Compute("Max(Price)", filter);
 
                 double avg;
-                if (double.TryParse(carListings.Listings.Compute("Avg(Price)", filter).ToString(), out avg)) newRow["Avg"] = avg;
+                if (double.TryParse(myParser.dataStorage.Listings.Compute("Avg(Price)", filter).ToString(), out avg)) newRow["Avg"] = avg;
                 else newRow["Avg"] = 0;
 
                 double stDev;
-                if (double.TryParse(carListings.Listings.Compute("StDev(Price)", filter).ToString(), out stDev)) newRow["StDev"] = stDev;
+                if (double.TryParse(myParser.dataStorage.Listings.Compute("StDev(Price)", filter).ToString(), out stDev)) newRow["StDev"] = stDev;
                 else newRow["StDev"] = 0;
 
-                newRow["Count"] = carListings.Listings.Compute("Count(Price)", filter);
-                newRow["Sum"] = carListings.Listings.Compute("Sum(Price)", filter);
+                newRow["Count"] = myParser.dataStorage.Listings.Compute("Count(Price)", filter);
+                newRow["Sum"] = myParser.dataStorage.Listings.Compute("Sum(Price)", filter);
 
                 double var;
-                if (double.TryParse(carListings.Listings.Compute("Var(Price)", filter).ToString(), out var)) newRow["Var"] = stDev;
+                if (double.TryParse(myParser.dataStorage.Listings.Compute("Var(Price)", filter).ToString(), out var)) newRow["Var"] = stDev;
                 else newRow["Var"] = 0;
 
-                carListings.StatsByYear.AddStatsByYearRow(newRow);
+                myParser.dataStorage.StatsByYear.AddStatsByYearRow(newRow);
             }
 
             foreach (string Make in Makes)
@@ -611,35 +459,35 @@ namespace C.Scrape
                 temp.AutoSize = true;
                 temp.Click += new System.EventHandler(this.openGraph);
                 temp.Tag = "Make";
-                temp.Text = Make + " (" + carListings.Listings.Compute("Count(Make)", filter) + ")";
+                temp.Text = Make + " (" + myParser.dataStorage.Listings.Compute("Count(Make)", filter) + ")";
                 toolTip.SetToolTip(temp,
-                    String.Format("{0:C}", (double)carListings.Listings.Compute("Min(Price)", filter)) + "/"
-                    + String.Format("{0:C}", (double)carListings.Listings.Compute("Max(Price)", filter)) + "/"
-                    + String.Format("{0:C}", (double)carListings.Listings.Compute("Avg(Price)", filter)));
+                    String.Format("{0:C}", (double)myParser.dataStorage.Listings.Compute("Min(Price)", filter)) + "/"
+                    + String.Format("{0:C}", (double)myParser.dataStorage.Listings.Compute("Max(Price)", filter)) + "/"
+                    + String.Format("{0:C}", (double)myParser.dataStorage.Listings.Compute("Avg(Price)", filter)));
                 flowMakes.Controls.Add(temp);
 
-                CarListings.StatsByMakeRow newRow = carListings.StatsByMake.NewStatsByMakeRow();
+                CarListings.StatsByMakeRow newRow = myParser.dataStorage.StatsByMake.NewStatsByMakeRow();
 
                 newRow["Make"] = Make;
-                newRow["Min"] = carListings.Listings.Compute("Min(Price)", filter);
-                newRow["Max"] = carListings.Listings.Compute("Max(Price)", filter);
+                newRow["Min"] = myParser.dataStorage.Listings.Compute("Min(Price)", filter);
+                newRow["Max"] = myParser.dataStorage.Listings.Compute("Max(Price)", filter);
 
                 double avg;
-                if (double.TryParse(carListings.Listings.Compute("Avg(Price)", filter).ToString(), out avg)) newRow["Avg"] = avg;
+                if (double.TryParse(myParser.dataStorage.Listings.Compute("Avg(Price)", filter).ToString(), out avg)) newRow["Avg"] = avg;
                 else newRow["Avg"] = 0;
 
                 double stDev;
-                if (double.TryParse(carListings.Listings.Compute("StDev(Price)", filter).ToString(), out stDev)) newRow["StDev"] = stDev;
+                if (double.TryParse(myParser.dataStorage.Listings.Compute("StDev(Price)", filter).ToString(), out stDev)) newRow["StDev"] = stDev;
                 else newRow["StDev"] = 0;
 
-                newRow["Count"] = carListings.Listings.Compute("Count(Price)", filter);
-                newRow["Sum"] = carListings.Listings.Compute("Sum(Price)", filter);
+                newRow["Count"] = myParser.dataStorage.Listings.Compute("Count(Price)", filter);
+                newRow["Sum"] = myParser.dataStorage.Listings.Compute("Sum(Price)", filter);
 
                 double var;
-                if (double.TryParse(carListings.Listings.Compute("Var(Price)", filter).ToString(), out var)) newRow["Var"] = stDev;
+                if (double.TryParse(myParser.dataStorage.Listings.Compute("Var(Price)", filter).ToString(), out var)) newRow["Var"] = stDev;
                 else newRow["Var"] = 0;
 
-                carListings.StatsByMake.AddStatsByMakeRow(newRow);
+                myParser.dataStorage.StatsByMake.AddStatsByMakeRow(newRow);
             }
 
             foreach (string Model in Models)
@@ -650,35 +498,35 @@ namespace C.Scrape
                 temp.AutoSize = true;
                 temp.Click += new System.EventHandler(this.openGraph);
                 temp.Tag = "Model";
-                temp.Text = Model + " (" + carListings.Listings.Compute("Count(Model)", filter) + ")";
+                temp.Text = Model + " (" + myParser.dataStorage.Listings.Compute("Count(Model)", filter) + ")";
                 toolTip.SetToolTip(temp,
-                    String.Format("{0:C}", (double)carListings.Listings.Compute("Min(Price)", filter)) + "/"
-                    + String.Format("{0:C}", (double)carListings.Listings.Compute("Max(Price)", filter)) + "/"
-                    + String.Format("{0:C}", (double)carListings.Listings.Compute("Avg(Price)", filter)));
+                    String.Format("{0:C}", (double)myParser.dataStorage.Listings.Compute("Min(Price)", filter)) + "/"
+                    + String.Format("{0:C}", (double)myParser.dataStorage.Listings.Compute("Max(Price)", filter)) + "/"
+                    + String.Format("{0:C}", (double)myParser.dataStorage.Listings.Compute("Avg(Price)", filter)));
                 flowModels.Controls.Add(temp);*/
 
-                CarListings.StatsByModelRow newRow = carListings.StatsByModel.NewStatsByModelRow();
+                CarListings.StatsByModelRow newRow = myParser.dataStorage.StatsByModel.NewStatsByModelRow();
 
                 newRow["Model"] = Model;
-                newRow["Min"] = carListings.Listings.Compute("Min(Price)", filter);
-                newRow["Max"] = carListings.Listings.Compute("Max(Price)", filter);
+                newRow["Min"] = myParser.dataStorage.Listings.Compute("Min(Price)", filter);
+                newRow["Max"] = myParser.dataStorage.Listings.Compute("Max(Price)", filter);
 
                 double avg;
-                if (double.TryParse(carListings.Listings.Compute("Avg(Price)", filter).ToString(), out avg)) newRow["Avg"] = avg;
+                if (double.TryParse(myParser.dataStorage.Listings.Compute("Avg(Price)", filter).ToString(), out avg)) newRow["Avg"] = avg;
                 else newRow["Avg"] = 0;
 
                 double stDev;
-                if (double.TryParse(carListings.Listings.Compute("StDev(Price)", filter).ToString(), out stDev)) newRow["StDev"] = stDev;
+                if (double.TryParse(myParser.dataStorage.Listings.Compute("StDev(Price)", filter).ToString(), out stDev)) newRow["StDev"] = stDev;
                 else newRow["StDev"] = 0;
 
-                newRow["Count"] = carListings.Listings.Compute("Count(Price)", filter);
-                newRow["Sum"] = carListings.Listings.Compute("Sum(Price)", filter);
+                newRow["Count"] = myParser.dataStorage.Listings.Compute("Count(Price)", filter);
+                newRow["Sum"] = myParser.dataStorage.Listings.Compute("Sum(Price)", filter);
 
                 double var;
-                if (double.TryParse(carListings.Listings.Compute("Var(Price)", filter).ToString(), out var)) newRow["Var"] = stDev;
+                if (double.TryParse(myParser.dataStorage.Listings.Compute("Var(Price)", filter).ToString(), out var)) newRow["Var"] = stDev;
                 else newRow["Var"] = 0;
 
-                carListings.StatsByModel.AddStatsByModelRow(newRow);
+                myParser.dataStorage.StatsByModel.AddStatsByModelRow(newRow);
             }
         }
 
@@ -689,12 +537,12 @@ namespace C.Scrape
         {
             foreach (DataGridViewRow row in dgvResults.Rows)
             {
-                CarListings.StatsByYearRow yearStats = carListings.StatsByYear.FindByYear(int.Parse(row.Cells["Year"].Value.ToString()));
-                CarListings.StatsByMakeRow makeStats = carListings.StatsByMake.FindByMake(row.Cells["Make"].Value.ToString());
-                CarListings.StatsByModelRow modelStats = carListings.StatsByModel.FindByModel(row.Cells["Model"].Value.ToString());
+                CarListings.StatsByYearRow yearStats = myParser.dataStorage.StatsByYear.FindByYear(int.Parse(row.Cells["Year"].Value.ToString()));
+                CarListings.StatsByMakeRow makeStats = myParser.dataStorage.StatsByMake.FindByMake(row.Cells["Make"].Value.ToString());
+                CarListings.StatsByModelRow modelStats = myParser.dataStorage.StatsByModel.FindByModel(row.Cells["Model"].Value.ToString());
 
-                CarListings.ListingsRow matchingListing = carListings.Listings.FindByListingID(int.Parse(row.Cells["ListingID"].Value.ToString()));
-                CarListings.ContactInfoRow contactInfo = carListings.ContactInfo.FindByListingID(int.Parse(row.Cells["ListingID"].Value.ToString()));
+                CarListings.ListingsRow matchingListing = myParser.dataStorage.Listings.FindByListingID(int.Parse(row.Cells["ListingID"].Value.ToString()));
+                CarListings.ContactInfoRow contactInfo = myParser.dataStorage.ContactInfo.FindByListingID(int.Parse(row.Cells["ListingID"].Value.ToString()));
 
                 if (yearStats != null && makeStats != null && matchingListing != null)
                 {

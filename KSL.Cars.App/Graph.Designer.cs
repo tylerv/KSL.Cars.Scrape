@@ -1,4 +1,4 @@
-﻿namespace C.Scrape
+﻿namespace KSL.Cars.App
 {
     partial class Graph
     {

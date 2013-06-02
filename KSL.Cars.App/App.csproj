@@ -7,8 +7,8 @@
     <ProjectGuid>{251D396A-C569-4A3A-9108-27A00A2253FC}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>C.Scrape</RootNamespace>
-    <AssemblyName>C.Scrape</AssemblyName>
+    <RootNamespace>KSL.Cars.App</RootNamespace>
+    <AssemblyName>KSL.Cars.App</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
@@ -24,8 +24,8 @@
     <MapFileExtensions>false</MapFileExtensions>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
     <DisallowUrlActivation>true</DisallowUrlActivation>
-    <ApplicationRevision>3</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>2.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <ExcludeDeploymentUrl>true</ExcludeDeploymentUrl>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -54,7 +54,7 @@
     <ApplicationIcon>grey_car.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>C.Scrape.Program</StartupObject>
+    <StartupObject>KSL.Cars.App.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>D21FD770D9EF00CB6A3F7DB44CF3060D20EA6833</ManifestCertificateThumbprint>
@@ -88,14 +88,11 @@
     <Compile Include="frmAbout.Designer.cs">
       <DependentUpon>frmAbout.cs</DependentUpon>
     </Compile>
-    <Compile Include="CarListings.cs">
-      <DependentUpon>CarListings.xsd</DependentUpon>
-      <SubType>Component</SubType>
+    <Compile Include="frmAboutB.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CarListings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>CarListings.xsd</DependentUpon>
+    <Compile Include="frmAboutB.Designer.cs">
+      <DependentUpon>frmAboutB.cs</DependentUpon>
     </Compile>
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
@@ -115,46 +112,13 @@
     <Compile Include="Graph.Designer.cs">
       <DependentUpon>Graph.cs</DependentUpon>
     </Compile>
-    <Compile Include="HtmlAgilityPack\crc32.cs" />
-    <Compile Include="HtmlAgilityPack\EncodingFoundException.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlAttribute.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlAttributeCollection.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlCmdLine.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlCommentNode.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlConsoleListener.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlDocument.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlDocument.PathMethods.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlDocument.Xpath.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlElementFlag.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlEntity.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlNameTable.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlNode.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlNode.Xpath.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlNodeCollection.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlNodeNavigator.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlNodeType.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlParseError.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlParseErrorCode.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlTextNode.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlWeb.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlWeb.Xpath.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlWebException.cs" />
-    <Compile Include="HtmlAgilityPack\IOLibrary.cs" />
-    <Compile Include="HtmlAgilityPack\MixedCodeDocument.cs" />
-    <Compile Include="HtmlAgilityPack\MixedCodeDocumentCodeFragment.cs" />
-    <Compile Include="HtmlAgilityPack\MixedCodeDocumentFragment.cs" />
-    <Compile Include="HtmlAgilityPack\MixedCodeDocumentFragmentList.cs" />
-    <Compile Include="HtmlAgilityPack\MixedCodeDocumentFragmentType.cs" />
-    <Compile Include="HtmlAgilityPack\MixedCodeDocumentTextFragment.cs" />
-    <Compile Include="HtmlAgilityPack\NameValuePair.cs" />
-    <Compile Include="HtmlAgilityPack\NameValuePairList.cs" />
-    <Compile Include="HtmlAgilityPack\Trace.cs" />
-    <Compile Include="HtmlAgilityPack\Trace.FullFramework.cs" />
-    <Compile Include="HtmlAgilityPack\Utilities.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="frmAbout.resx">
       <DependentUpon>frmAbout.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmAboutB.resx">
+      <DependentUpon>frmAboutB.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
@@ -173,19 +137,9 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="C.Scrape_TemporaryKey.pfx" />
-    <None Include="CarListings.xsc">
-      <DependentUpon>CarListings.xsd</DependentUpon>
-    </None>
-    <None Include="CarListings.xsd">
-      <SubType>Designer</SubType>
-      <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>CarListings.Designer.cs</LastGenOutput>
-    </None>
-    <None Include="CarListings.xss">
-      <DependentUpon>CarListings.xsd</DependentUpon>
-    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -234,6 +188,13 @@
       <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\KSL.Cars.Parse\Parse.csproj">
+      <Project>{1dd8fbd3-904e-4f11-bb3d-9d6751eb3d66}</Project>
+      <Name>Parse</Name>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

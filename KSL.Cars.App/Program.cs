@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Reflection;
 
-namespace C.Scrape
+namespace KSL.Cars.App
 {
     static class Program
     {

@@ -1,4 +1,6 @@
-﻿namespace C.Scrape
+﻿using KSL.Cars.Parse;
+
+namespace KSL.Cars.App
 {
     partial class frmMain
     {
@@ -29,7 +31,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.grpDistance = new System.Windows.Forms.GroupBox();
             this.txtMiles = new System.Windows.Forms.TextBox();
@@ -66,8 +68,7 @@
             this.Description = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.listingsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.carListingsBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.carListings = new C.Scrape.CarListings();
-            this.minimumWageWorker = new System.ComponentModel.BackgroundWorker();
+            //this.carListings = new CarListings();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.flowYears = new System.Windows.Forms.FlowLayoutPanel();
@@ -78,6 +79,7 @@
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.minimumWageWorker = new System.ComponentModel.BackgroundWorker();
             this.grpDistance.SuspendLayout();
             this.grpMileage.SuspendLayout();
             this.grpPrice.SuspendLayout();
@@ -86,7 +88,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvResults)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.listingsBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.carListingsBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.carListings)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(myParser.dataStorage)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -300,8 +302,8 @@
             // 
             this.dgvResults.AllowUserToAddRows = false;
             this.dgvResults.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.dgvResults.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.dgvResults.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
             this.dgvResults.AutoGenerateColumns = false;
             this.dgvResults.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.DisplayedCellsExceptHeader;
             this.dgvResults.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -441,21 +443,8 @@
             // 
             // carListingsBindingSource
             // 
-            this.carListingsBindingSource.DataSource = this.carListings;
+            this.carListingsBindingSource.DataSource = myParser.dataStorage;
             this.carListingsBindingSource.Position = 0;
-            // 
-            // carListings
-            // 
-            this.carListings.DataSetName = "CarListings";
-            this.carListings.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
-            // 
-            // minimumWageWorker
-            // 
-            this.minimumWageWorker.WorkerReportsProgress = true;
-            this.minimumWageWorker.WorkerSupportsCancellation = true;
-            this.minimumWageWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.minimumWageWorker_DoWork);
-            this.minimumWageWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.minimumWageWorker_ProgressChanged);
-            this.minimumWageWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.minimumWageWorker_RunWorkerCompleted);
             // 
             // groupBox1
             // 
@@ -552,6 +541,14 @@
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
+            // minimumWageWorker
+            // 
+            this.minimumWageWorker.WorkerReportsProgress = true;
+            this.minimumWageWorker.WorkerSupportsCancellation = true;
+            this.minimumWageWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.minimumWageWorker_DoWork);
+            this.minimumWageWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.minimumWageWorker_ProgressChanged);
+            this.minimumWageWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.minimumWageWorker_RunWorkerCompleted);
+            // 
             // frmMain
             // 
             this.AcceptButton = this.btnScrape;
@@ -589,7 +586,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvResults)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.listingsBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.carListingsBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.carListings)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(myParser.dataStorage)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
@@ -620,7 +617,6 @@
         private CarListings carListings;
         private System.Windows.Forms.BindingSource listingsBindingSource;
         private System.Windows.Forms.BindingSource carListingsBindingSource;
-        private System.ComponentModel.BackgroundWorker minimumWageWorker;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.FlowLayoutPanel flowYears;
         private System.Windows.Forms.SplitContainer splitContainer1;
@@ -652,6 +648,7 @@
         private System.Windows.Forms.DataGridViewLinkColumn VIN_Link;
         private System.Windows.Forms.DataGridViewTextBoxColumn Description;
         private System.Windows.Forms.Button btnCancel;
+        private System.ComponentModel.BackgroundWorker minimumWageWorker;
     }
 }
 

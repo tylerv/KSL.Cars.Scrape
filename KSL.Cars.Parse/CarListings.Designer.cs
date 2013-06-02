@@ -10,7 +10,7 @@
 
 #pragma warning disable 1591
 
-namespace C.Scrape {
+namespace KSL.Cars.Parse {
     
     
     /// <summary>
@@ -514,8 +514,6 @@ namespace C.Scrape {
             
             private global::System.Data.DataColumn columnModel;
             
-            private global::System.Data.DataColumn columnLink;
-            
             private global::System.Data.DataColumn columnVIN;
             
             private global::System.Data.DataColumn columnCity;
@@ -599,14 +597,6 @@ namespace C.Scrape {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn LinkColumn {
-                get {
-                    return this.columnLink;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public global::System.Data.DataColumn VINColumn {
                 get {
                     return this.columnVIN;
@@ -674,7 +664,7 @@ namespace C.Scrape {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public ListingsRow AddListingsRow(int ListingID, string Description, int Year, string Make, string Model, string Link, string VIN, string City, int Mileage, double Price) {
+            public ListingsRow AddListingsRow(int ListingID, string Description, int Year, string Make, string Model, string VIN, string City, int Mileage, double Price) {
                 ListingsRow rowListingsRow = ((ListingsRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         ListingID,
@@ -682,7 +672,6 @@ namespace C.Scrape {
                         Year,
                         Make,
                         Model,
-                        Link,
                         VIN,
                         City,
                         Mileage,
@@ -721,7 +710,6 @@ namespace C.Scrape {
                 this.columnYear = base.Columns["Year"];
                 this.columnMake = base.Columns["Make"];
                 this.columnModel = base.Columns["Model"];
-                this.columnLink = base.Columns["Link"];
                 this.columnVIN = base.Columns["VIN"];
                 this.columnCity = base.Columns["City"];
                 this.columnMileage = base.Columns["Mileage"];
@@ -741,8 +729,6 @@ namespace C.Scrape {
                 base.Columns.Add(this.columnMake);
                 this.columnModel = new global::System.Data.DataColumn("Model", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnModel);
-                this.columnLink = new global::System.Data.DataColumn("Link", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnLink);
                 this.columnVIN = new global::System.Data.DataColumn("VIN", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnVIN);
                 this.columnCity = new global::System.Data.DataColumn("City", typeof(string), null, global::System.Data.MappingType.Element);
@@ -2992,22 +2978,6 @@ namespace C.Scrape {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public string Link {
-                get {
-                    try {
-                        return ((string)(this[this.tableListings.LinkColumn]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'Link\' in table \'Listings\' is DBNull.", e);
-                    }
-                }
-                set {
-                    this[this.tableListings.LinkColumn] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public string VIN {
                 get {
                     try {
@@ -3116,18 +3086,6 @@ namespace C.Scrape {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetModelNull() {
                 this[this.tableListings.ModelColumn] = global::System.Convert.DBNull;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsLinkNull() {
-                return this.IsNull(this.tableListings.LinkColumn);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetLinkNull() {
-                this[this.tableListings.LinkColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]

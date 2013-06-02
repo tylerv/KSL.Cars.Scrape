@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace C.Scrape
+namespace KSL.Cars.App
 {
     public partial class frmAbout : Form
     {
