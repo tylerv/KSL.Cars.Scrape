@@ -20,7 +20,7 @@ namespace KSL.Cars.App
 
             chartData = dataIn;
 
-            foreach (DataRow row in chartData.Rows) row["VIN"] = Properties.Settings.Default.VIN_LINK.Replace("{VIN}", row["VIN"].ToString());
+            //foreach (DataRow row in chartData.Rows) row["VIN"] = Properties.Settings.Default.VIN_LINK.Replace("{VIN}", row["VIN"].ToString());
 
             var enumerableTable = (chartData as System.ComponentModel.IListSource).GetList();
             myChart.Titles.Add("Prices for " + chartData.Columns[0].Caption + " Cars");
@@ -29,9 +29,9 @@ namespace KSL.Cars.App
 
             myChart.ChartAreas[0].AxisX.Interval = 1;
 
-            if (chartData.Columns[0].Caption.Contains("Year")) myChart.Series[0].Points.DataBind(enumerableTable, "Make", "Price", "LabelToolTip=Link,CustomProperties=VIN,Tooltip=Model");
-            else myChart.Series[0].Points.DataBind(enumerableTable, "Model", "Price", "LabelToolTip=Link,CustomProperties=VIN,Tooltip=Year");
-            
+            if (chartData.Columns[0].Caption.Contains("Year")) myChart.Series[0].Points.DataBind(enumerableTable, "Make", "Price", "LabelToolTip=ListingID,Tooltip=Model");
+            else myChart.Series[0].Points.DataBind(enumerableTable, "Model", "Price", "LabelToolTip=ListingID,Tooltip=Year");
+
             myChart.Series[0].Sort(System.Windows.Forms.DataVisualization.Charting.PointSortOrder.Ascending);
         }
 
@@ -41,15 +41,20 @@ namespace KSL.Cars.App
 
             if (result.ChartElementType == ChartElementType.DataPoint && ((DataPoint)result.Object).LabelToolTip != null)
             {
-                switch (e.Button)
+                DataRow foundRow = chartData.Rows.Find(((DataPoint)result.Object).LabelToolTip.ToString());
+                if (foundRow != null)
                 {
-                    case MouseButtons.Left:
-                        System.Diagnostics.Process.Start("iexplore.exe", ((DataPoint)result.Object).LabelToolTip.ToString());
-                        break;
-                    case MouseButtons.Right:
-                        string url = ((DataPoint)result.Object).CustomProperties.Split('=')[1].ToString();
-                        System.Diagnostics.Process.Start("iexplore.exe", url);
-                        break;
+                    string url;
+                    switch (e.Button)
+                    {
+                        case MouseButtons.Right:
+                            url = Properties.Settings.Default.VIN_LINK.Replace("{VIN}", foundRow.Field<String>("VIN"));
+                            break;
+                        default:
+                            url = Properties.Settings.Default.LISTING_LINK.Replace("{LISTING_ID}", foundRow.Field<Int32>("ListingID").ToString());
+                            break;
+                    }
+                    System.Diagnostics.Process.Start("iexplore.exe", url);
                 }
             }
         }

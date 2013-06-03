@@ -13,21 +13,15 @@ namespace KSL.Cars.Parse
     {
         public CarListings dataStorage = new CarListings();
 
-
         public Parser()
         {
-            // 
-            // carListings
-            // 
             dataStorage.DataSetName = "CarListings";
             dataStorage.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
         }
+
         /// <summary>
         /// Workhorse that gets the HTML and parses it into the datatable.
         /// </summary>
-        /// <param name="url"></param>
-        /// <param name="currentPageNum"></param>
-        /// <param name="lastPageNum"></param>
         public void parsePage(ref BackgroundWorker worker1, ref DoWorkEventArgs e, string url, int currentPageNum, int lastPageNum)
         {
             //Check for and cancel if needed.
@@ -40,8 +34,16 @@ namespace KSL.Cars.Parse
 
             // There are various options, set as needed
             htmlDoc.OptionFixNestedTags = true;
-
-            string htmlCode = (new WebClient()).DownloadString(url);
+            
+            string htmlCode;
+            try
+            {
+                htmlCode = (new WebClient()).DownloadString(url);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
 
             // Used to load from a string (was htmlDoc.LoadXML(xmlString)
             htmlDoc.LoadHtml(htmlCode);
@@ -172,13 +174,19 @@ namespace KSL.Cars.Parse
                             if (url.Contains("page=")) { newUrl = url.Replace("page=" + currentPageNum, "page=" + (currentPageNum + 1)); }
                             else { newUrl = url + "&page=" + (currentPageNum + 1); }
 
-                            //Yay! Recursion!
-                            parsePage(ref worker1, ref e, newUrl, currentPageNum + 1, lastPageNum);
+                            try
+                            {
+                                //Yay! Recursion!
+                                parsePage(ref worker1, ref e, newUrl, currentPageNum + 1, lastPageNum);
+                            }
+                            catch (Exception ex)
+                            {
+                                throw ex;
+                            }
                         }
                     }
                 }
             }
         }
-
     }
 }

@@ -304,7 +304,15 @@ namespace KSL.Cars.App
         {
             string url = e.Argument.ToString();
             minimumWageWorker.ReportProgress(0);
-            myParser.parsePage(ref minimumWageWorker, ref e, url, 0, 0);
+            try
+            {
+                myParser.parsePage(ref minimumWageWorker, ref e, url, 0, 0);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error! " + ex.Message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                minimumWageWorker.CancelAsync();
+            }
         }
 
         /// <summary>
@@ -355,10 +363,7 @@ namespace KSL.Cars.App
         {
             DataTable dataForChart = new DataTable();
             dataForChart = myParser.dataStorage.Listings.Clone();
-            dataForChart.PrimaryKey = null;
-            dataForChart.Columns.Remove("ListingID");
             dataForChart.Columns.Remove("Description");
-
 
             switch (((Control)sender).Tag.ToString())
             {
