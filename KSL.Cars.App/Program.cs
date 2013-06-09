@@ -13,29 +13,37 @@ namespace KSL.Cars.App
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
-            AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
+        //    AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
+        //    {
+
+        //        String resourceName = "AssemblyLoadingAndReflection." +
+
+        //           new AssemblyName(args.Name).Name + ".dll";
+
+        //        using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
+        //        {
+
+        //            Byte[] assemblyData = new Byte[stream.Length];
+
+        //            stream.Read(assemblyData, 0, assemblyData.Length);
+
+        //            return Assembly.Load(assemblyData);
+        //        }
+        //    };
+
+            if (args.Contains("lastsearch"))
             {
 
-                String resourceName = "AssemblyLoadingAndReflection." +
+            }
+            else
+            {
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new frmMain());
+            }
 
-                   new AssemblyName(args.Name).Name + ".dll";
-
-                using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
-                {
-
-                    Byte[] assemblyData = new Byte[stream.Length];
-
-                    stream.Read(assemblyData, 0, assemblyData.Length);
-
-                    return Assembly.Load(assemblyData);
-                }
-            };
-
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmMain());
         }
     }
 }

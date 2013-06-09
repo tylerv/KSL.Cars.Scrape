@@ -1,9 +1,8 @@
-﻿using KSL.Cars.Parse;
-
-namespace KSL.Cars.App
+﻿namespace KSL.Cars.App
 {
     partial class frmMain
     {
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -31,7 +30,6 @@ namespace KSL.Cars.App
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.grpDistance = new System.Windows.Forms.GroupBox();
             this.txtMiles = new System.Windows.Forms.TextBox();
@@ -54,21 +52,8 @@ namespace KSL.Cars.App
             this.label5 = new System.Windows.Forms.Label();
             this.grpResults = new System.Windows.Forms.GroupBox();
             this.dgvResults = new System.Windows.Forms.DataGridView();
-            this.Highlighted = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.Price = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Mileage = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ListingID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.VIN = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Year = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Make = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Model = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.City = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Listing_Link = new System.Windows.Forms.DataGridViewLinkColumn();
-            this.VIN_Link = new System.Windows.Forms.DataGridViewLinkColumn();
-            this.Description = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.listingsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.carListingsBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            //this.carListings = new CarListings();
+            this.carListings = new KSL.Cars.App.CarListings();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.flowYears = new System.Windows.Forms.FlowLayoutPanel();
@@ -80,15 +65,25 @@ namespace KSL.Cars.App
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.btnCancel = new System.Windows.Forms.Button();
             this.minimumWageWorker = new System.ComponentModel.BackgroundWorker();
+            this.Delete = new System.Windows.Forms.DataGridViewLinkColumn();
+            this.Highlighted = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.Price = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Year = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Mileage = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Listing_Link = new System.Windows.Forms.DataGridViewLinkColumn();
+            this.VIN = new System.Windows.Forms.DataGridViewLinkColumn();
+            this.Make = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Model = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.City = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Description = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.grpDistance.SuspendLayout();
             this.grpMileage.SuspendLayout();
             this.grpPrice.SuspendLayout();
             this.grpYear.SuspendLayout();
             this.grpResults.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvResults)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.listingsBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.carListingsBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(myParser.dataStorage)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.carListings)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -301,150 +296,41 @@ namespace KSL.Cars.App
             // dgvResults
             // 
             this.dgvResults.AllowUserToAddRows = false;
-            this.dgvResults.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.dgvResults.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
+            this.dgvResults.AllowUserToOrderColumns = true;
             this.dgvResults.AutoGenerateColumns = false;
-            this.dgvResults.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.DisplayedCellsExceptHeader;
             this.dgvResults.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvResults.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Delete,
             this.Highlighted,
             this.Price,
-            this.Mileage,
-            this.ListingID,
-            this.VIN,
             this.Year,
+            this.Mileage,
+            this.Listing_Link,
+            this.VIN,
             this.Make,
             this.Model,
             this.City,
-            this.Listing_Link,
-            this.VIN_Link,
             this.Description});
-            this.dgvResults.DataSource = this.listingsBindingSource;
+            this.dgvResults.DataSource = this.carListingsBindingSource;
             this.dgvResults.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvResults.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.dgvResults.Location = new System.Drawing.Point(3, 16);
             this.dgvResults.Name = "dgvResults";
-            this.dgvResults.ReadOnly = true;
             this.dgvResults.Size = new System.Drawing.Size(715, 382);
             this.dgvResults.TabIndex = 0;
+            this.dgvResults.Visible = false;
             this.dgvResults.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvResults_CellContentClick);
             this.dgvResults.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgvResults_CellFormatting);
             this.dgvResults.Sorted += new System.EventHandler(this.dgvResults_Sorted);
             // 
-            // Highlighted
-            // 
-            this.Highlighted.HeaderText = "(X)";
-            this.Highlighted.Name = "Highlighted";
-            this.Highlighted.ReadOnly = true;
-            this.Highlighted.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.Highlighted.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.Highlighted.Width = 5;
-            // 
-            // Price
-            // 
-            this.Price.DataPropertyName = "Price";
-            this.Price.HeaderText = "Price";
-            this.Price.Name = "Price";
-            this.Price.ReadOnly = true;
-            this.Price.Width = 5;
-            // 
-            // Mileage
-            // 
-            this.Mileage.DataPropertyName = "Mileage";
-            this.Mileage.HeaderText = "Mileage";
-            this.Mileage.Name = "Mileage";
-            this.Mileage.ReadOnly = true;
-            this.Mileage.Width = 5;
-            // 
-            // ListingID
-            // 
-            this.ListingID.DataPropertyName = "ListingID";
-            this.ListingID.HeaderText = "ID";
-            this.ListingID.Name = "ListingID";
-            this.ListingID.ReadOnly = true;
-            this.ListingID.Visible = false;
-            this.ListingID.Width = 5;
-            // 
-            // VIN
-            // 
-            this.VIN.DataPropertyName = "VIN";
-            this.VIN.HeaderText = "VIN";
-            this.VIN.Name = "VIN";
-            this.VIN.ReadOnly = true;
-            this.VIN.Visible = false;
-            this.VIN.Width = 5;
-            // 
-            // Year
-            // 
-            this.Year.DataPropertyName = "Year";
-            this.Year.HeaderText = "Year";
-            this.Year.Name = "Year";
-            this.Year.ReadOnly = true;
-            this.Year.Width = 5;
-            // 
-            // Make
-            // 
-            this.Make.DataPropertyName = "Make";
-            this.Make.HeaderText = "Make";
-            this.Make.Name = "Make";
-            this.Make.ReadOnly = true;
-            this.Make.Width = 5;
-            // 
-            // Model
-            // 
-            this.Model.DataPropertyName = "Model";
-            this.Model.HeaderText = "Model";
-            this.Model.Name = "Model";
-            this.Model.ReadOnly = true;
-            this.Model.Width = 5;
-            // 
-            // City
-            // 
-            this.City.DataPropertyName = "City";
-            this.City.HeaderText = "City";
-            this.City.Name = "City";
-            this.City.ReadOnly = true;
-            this.City.Width = 5;
-            // 
-            // Listing_Link
-            // 
-            this.Listing_Link.HeaderText = "Link";
-            this.Listing_Link.Name = "Listing_Link";
-            this.Listing_Link.ReadOnly = true;
-            this.Listing_Link.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.Listing_Link.Text = "Link";
-            this.Listing_Link.UseColumnTextForLinkValue = true;
-            this.Listing_Link.Width = 5;
-            // 
-            // VIN_Link
-            // 
-            this.VIN_Link.HeaderText = "VIN";
-            this.VIN_Link.Name = "VIN_Link";
-            this.VIN_Link.ReadOnly = true;
-            this.VIN_Link.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.VIN_Link.Text = "VIN Report";
-            this.VIN_Link.UseColumnTextForLinkValue = true;
-            this.VIN_Link.Width = 5;
-            // 
-            // Description
-            // 
-            this.Description.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.Description.DataPropertyName = "Description";
-            this.Description.HeaderText = "Description";
-            this.Description.Name = "Description";
-            this.Description.ReadOnly = true;
-            this.Description.Width = 500;
-            // 
-            // listingsBindingSource
-            // 
-            this.listingsBindingSource.DataMember = "Listings";
-            this.listingsBindingSource.DataSource = this.carListingsBindingSource;
-            // 
             // carListingsBindingSource
             // 
-            this.carListingsBindingSource.DataSource = myParser.dataStorage;
-            this.carListingsBindingSource.Position = 0;
+            this.carListingsBindingSource.DataMember = "Listings";
+            this.carListingsBindingSource.DataSource = this.carListings;
+            // 
+            // carListings
+            // 
+            this.carListings.DataSetName = "CarListings";
+            this.carListings.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
             // 
             // groupBox1
             // 
@@ -549,6 +435,77 @@ namespace KSL.Cars.App
             this.minimumWageWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.minimumWageWorker_ProgressChanged);
             this.minimumWageWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.minimumWageWorker_RunWorkerCompleted);
             // 
+            // Delete
+            // 
+            this.Delete.HeaderText = "Delete";
+            this.Delete.Name = "Delete";
+            this.Delete.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.Delete.Text = "Delete";
+            this.Delete.TrackVisitedState = false;
+            this.Delete.UseColumnTextForLinkValue = true;
+            // 
+            // Highlighted
+            // 
+            this.Highlighted.HeaderText = "(X)";
+            this.Highlighted.Name = "Highlighted";
+            this.Highlighted.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.Highlighted.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            // 
+            // Price
+            // 
+            this.Price.DataPropertyName = "Price";
+            this.Price.HeaderText = "Price";
+            this.Price.Name = "Price";
+            // 
+            // Year
+            // 
+            this.Year.DataPropertyName = "Year";
+            this.Year.HeaderText = "Year";
+            this.Year.Name = "Year";
+            // 
+            // Mileage
+            // 
+            this.Mileage.DataPropertyName = "Mileage";
+            this.Mileage.HeaderText = "Mileage";
+            this.Mileage.Name = "Mileage";
+            // 
+            // Listing_Link
+            // 
+            this.Listing_Link.DataPropertyName = "ListingID";
+            this.Listing_Link.HeaderText = "Link";
+            this.Listing_Link.Name = "Listing_Link";
+            this.Listing_Link.Text = "Link";
+            // 
+            // VIN
+            // 
+            this.VIN.DataPropertyName = "VIN";
+            this.VIN.HeaderText = "VIN";
+            this.VIN.Name = "VIN";
+            // 
+            // Make
+            // 
+            this.Make.DataPropertyName = "Make";
+            this.Make.HeaderText = "Make";
+            this.Make.Name = "Make";
+            // 
+            // Model
+            // 
+            this.Model.DataPropertyName = "Model";
+            this.Model.HeaderText = "Model";
+            this.Model.Name = "Model";
+            // 
+            // City
+            // 
+            this.City.DataPropertyName = "City";
+            this.City.HeaderText = "City";
+            this.City.Name = "City";
+            // 
+            // Description
+            // 
+            this.Description.DataPropertyName = "Description";
+            this.Description.HeaderText = "Description";
+            this.Description.Name = "Description";
+            // 
             // frmMain
             // 
             this.AcceptButton = this.btnScrape;
@@ -584,9 +541,8 @@ namespace KSL.Cars.App
             this.grpYear.PerformLayout();
             this.grpResults.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvResults)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.listingsBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.carListingsBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(myParser.dataStorage)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.carListings)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
@@ -613,10 +569,6 @@ namespace KSL.Cars.App
         private System.Windows.Forms.TextBox txtKeyword;
         internal System.Windows.Forms.Label label5;
         private System.Windows.Forms.GroupBox grpResults;
-        private System.Windows.Forms.DataGridView dgvResults;
-        private CarListings carListings;
-        private System.Windows.Forms.BindingSource listingsBindingSource;
-        private System.Windows.Forms.BindingSource carListingsBindingSource;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.FlowLayoutPanel flowYears;
         private System.Windows.Forms.SplitContainer splitContainer1;
@@ -631,24 +583,25 @@ namespace KSL.Cars.App
         private System.Windows.Forms.TextBox txtMiles;
         private System.Windows.Forms.TextBox txtZip;
         private System.Windows.Forms.TextBox txtYearFrom;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
         private System.Windows.Forms.MenuStrip mainMenu;
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.Button btnCancel;
+        private System.ComponentModel.BackgroundWorker minimumWageWorker;
+        private System.Windows.Forms.DataGridView dgvResults;
+        private System.Windows.Forms.BindingSource carListingsBindingSource;
+        private CarListings carListings;
+        private System.Windows.Forms.DataGridViewLinkColumn Delete;
         private System.Windows.Forms.DataGridViewCheckBoxColumn Highlighted;
         private System.Windows.Forms.DataGridViewTextBoxColumn Price;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Mileage;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ListingID;
-        private System.Windows.Forms.DataGridViewTextBoxColumn VIN;
         private System.Windows.Forms.DataGridViewTextBoxColumn Year;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Mileage;
+        private System.Windows.Forms.DataGridViewLinkColumn Listing_Link;
+        private System.Windows.Forms.DataGridViewLinkColumn VIN;
         private System.Windows.Forms.DataGridViewTextBoxColumn Make;
         private System.Windows.Forms.DataGridViewTextBoxColumn Model;
         private System.Windows.Forms.DataGridViewTextBoxColumn City;
-        private System.Windows.Forms.DataGridViewLinkColumn Listing_Link;
-        private System.Windows.Forms.DataGridViewLinkColumn VIN_Link;
         private System.Windows.Forms.DataGridViewTextBoxColumn Description;
-        private System.Windows.Forms.Button btnCancel;
-        private System.ComponentModel.BackgroundWorker minimumWageWorker;
     }
 }
 

@@ -10,7 +10,7 @@
 
 #pragma warning disable 1591
 
-namespace KSL.Cars.Parse {
+namespace KSL.Cars.App {
     
     
     /// <summary>

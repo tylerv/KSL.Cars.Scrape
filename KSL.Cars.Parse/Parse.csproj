@@ -40,52 +40,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CarListings.cs">
-      <DependentUpon>CarListings.xsd</DependentUpon>
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CarListings.Designer.cs">
-      <DependentUpon>CarListings.xsd</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="HtmlAgilityPack\crc32.cs" />
-    <Compile Include="HtmlAgilityPack\EncodingFoundException.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlAttribute.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlAttributeCollection.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlCmdLine.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlCommentNode.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlConsoleListener.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlDocument.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlDocument.PathMethods.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlDocument.Xpath.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlElementFlag.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlEntity.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlNameTable.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlNode.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlNode.Xpath.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlNodeCollection.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlNodeNavigator.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlNodeType.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlParseError.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlParseErrorCode.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlTextNode.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlWeb.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlWeb.Xpath.cs" />
-    <Compile Include="HtmlAgilityPack\HtmlWebException.cs" />
-    <Compile Include="HtmlAgilityPack\IOLibrary.cs" />
-    <Compile Include="HtmlAgilityPack\MixedCodeDocument.cs" />
-    <Compile Include="HtmlAgilityPack\MixedCodeDocumentCodeFragment.cs" />
-    <Compile Include="HtmlAgilityPack\MixedCodeDocumentFragment.cs" />
-    <Compile Include="HtmlAgilityPack\MixedCodeDocumentFragmentList.cs" />
-    <Compile Include="HtmlAgilityPack\MixedCodeDocumentFragmentType.cs" />
-    <Compile Include="HtmlAgilityPack\MixedCodeDocumentTextFragment.cs" />
-    <Compile Include="HtmlAgilityPack\NameValuePair.cs" />
-    <Compile Include="HtmlAgilityPack\NameValuePairList.cs" />
-    <Compile Include="HtmlAgilityPack\Trace.cs" />
-    <Compile Include="HtmlAgilityPack\Trace.FullFramework.cs" />
-    <Compile Include="HtmlAgilityPack\Utilities.cs" />
-    <Compile Include="Parser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <DependentUpon>Settings.settings</DependentUpon>
@@ -95,17 +49,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="CarListings.xsc">
-      <DependentUpon>CarListings.xsd</DependentUpon>
-    </None>
-    <None Include="CarListings.xsd">
-      <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>CarListings.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="CarListings.xss">
-      <DependentUpon>CarListings.xsd</DependentUpon>
-    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
