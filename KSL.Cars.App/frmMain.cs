@@ -15,14 +15,11 @@ namespace KSL.Cars.App
 {
     public partial class frmMain : Form
     {
-        //Parser myParser = new Parser();
 
         public frmMain()
         {
             InitializeComponent();
         }
-
-        #region EventHandlers
 
         /// <summary>
         /// This starts the whole process off. Clears any existing data, builds a URL from the search parameters, then passes it to the recursive parse function in a worker process.
@@ -33,49 +30,44 @@ namespace KSL.Cars.App
         {
             if (!minimumWageWorker.IsBusy)
             {
-                flowYears.Controls.Clear();
-                flowMakes.Controls.Clear();
-                carListings.ContactInfo.Clear();
-                carListings.Listings.Clear();
-                carListings.StatsByYear.Clear();
-                carListings.StatsByMake.Clear();
-                carListings.StatsByModel.Clear();
-
-                CarListings.SearchesRow newRow = carListings.Searches.NewSearchesRow();
-
-                newRow[carListings.Searches.TimeOfSearchColumn.ColumnName] = DateTime.Now;
-                newRow[carListings.Searches.YearFromColumn.ColumnName] = int.Parse(txtYearFrom.Text);
-                newRow[carListings.Searches.YearToColumn.ColumnName] = int.Parse(txtYearTo.Text);
-                newRow[carListings.Searches.PriceFromColumn.ColumnName] = double.Parse(txtPriceFrom.Text);
-                newRow[carListings.Searches.PriceToColumn.ColumnName] = double.Parse(txtPriceTo.Text);
-                newRow[carListings.Searches.MilesFromColumn.ColumnName] = int.Parse(txtMileageFrom.Text);
-                newRow[carListings.Searches.MilesToColumn.ColumnName] = int.Parse(txtMileageTo.Text);
-                newRow[carListings.Searches.ZipColumn.ColumnName] = int.Parse(txtZip.Text);
-                newRow[carListings.Searches.DistanceColumn.ColumnName] = int.Parse(txtMiles.Text);
-                newRow[carListings.Searches.KeywordColumn.ColumnName] = txtKeyword.Text;
-
-                carListings.Searches.AddSearchesRow(newRow);
-
-                string url = "http://www.ksl.com/auto/search/index?"
-                    + "&keyword=" + txtKeyword.Text
-                    + "&yearFrom=" + txtYearFrom.Text
-                    + "&yearTo=" + txtYearTo.Text
-                    + "&priceFrom=" + int.Parse(txtPriceFrom.Text)
-                    + "&priceTo=" + txtPriceTo.Text.Replace(",", "").Replace("$", "").Replace(".", "")
-                    + "&mileageFrom=" + txtMileageFrom.Text.Replace(",", "")
-                    + "&mileageTo=" + String.Format("{0:D}", txtMileageTo.Text)
-                    + "&zip=" + txtZip.Text;
-
-                if (txtMiles.Text.Length > 0)
+                try
                 {
-                    url += "&miles=" + txtMiles.Text;
+                    flowYears.Controls.Clear();
+                    flowMakes.Controls.Clear();
+                    carListings.ContactInfo.Clear();
+                    carListings.Listings.Clear();
+                    carListings.StatsByYear.Clear();
+                    carListings.StatsByMake.Clear();
+                    carListings.StatsByModel.Clear();
+
+                    CarListings.SearchesRow newRow = carListings.Searches.NewSearchesRow();
+
+                    newRow[carListings.Searches.TimeOfSearchColumn.ColumnName] = DateTime.Now;
+                    newRow[carListings.Searches.YearFromColumn.ColumnName] = int.Parse(txtYearFrom.Text);
+                    newRow[carListings.Searches.YearToColumn.ColumnName] = int.Parse(txtYearTo.Text);
+                    newRow[carListings.Searches.PriceFromColumn.ColumnName] = double.Parse(txtPriceFrom.Text);
+                    newRow[carListings.Searches.PriceToColumn.ColumnName] = double.Parse(txtPriceTo.Text);
+                    newRow[carListings.Searches.MilesFromColumn.ColumnName] = int.Parse(txtMileageFrom.Text);
+                    newRow[carListings.Searches.MilesToColumn.ColumnName] = int.Parse(txtMileageTo.Text);
+                    newRow[carListings.Searches.ZipColumn.ColumnName] = int.Parse(txtZip.Text);
+                    newRow[carListings.Searches.DistanceColumn.ColumnName] = int.Parse(txtMiles.Text);
+                    newRow[carListings.Searches.KeywordColumn.ColumnName] = txtKeyword.Text;
+
+                    carListings.Searches.AddSearchesRow(newRow);
+
+                    btnScrape.Enabled = false;
+                    btnCancel.Enabled = true;
+                    dgvResults.Visible = false;
+
+                    string url = buildURL(false);
+
+                    minimumWageWorker.RunWorkerAsync(url);
                 }
-
-                btnScrape.Enabled = false;
-                btnCancel.Enabled = true;
-                dgvResults.Visible = false;
-
-                minimumWageWorker.RunWorkerAsync(url);
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    EventLogger.LogEvent(ex);
+                }
             }
         }
 
@@ -106,105 +98,26 @@ namespace KSL.Cars.App
         }
 
         /// <summary>
-        /// Saves the different bits of data if set in the options
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            try
-            {
-                if (!carListings.Settings.First<CarListings.SettingsRow>().Field<Boolean>(carListings.Settings.SaveSearchResultsColumn))
-                {
-                    carListings.ContactInfo.Clear();
-                    carListings.Listings.Clear();
-                }
-
-                if (!carListings.Settings.First<CarListings.SettingsRow>().Field<Boolean>(carListings.Settings.SaveStatsColumn))
-                {
-                    carListings.StatsByYear.Clear();
-                    carListings.StatsByMake.Clear();
-                    carListings.StatsByModel.Clear();
-                }
-
-                if (carListings.Settings.First<CarListings.SettingsRow>().Field<Boolean>(carListings.Settings.LoadLastSearchParamsColumn))
-                {
-                    carListings.Searches.Clear();
-
-                    CarListings.SearchesRow newRow = carListings.Searches.NewSearchesRow();
-
-                    newRow.TimeOfSearch = DateTime.Now;
-                    newRow.YearFrom = int.Parse(txtYearFrom.Text);
-                    newRow.YearTo = int.Parse(txtYearTo.Text);
-                    newRow.PriceFrom = double.Parse(txtPriceFrom.Text);
-                    newRow.PriceTo = double.Parse(txtPriceTo.Text);
-                    newRow.MilesFrom = int.Parse(txtMileageFrom.Text);
-                    newRow.MilesTo = int.Parse(txtMileageTo.Text);
-                    newRow.Zip = int.Parse(txtZip.Text);
-                    newRow.Distance = int.Parse(txtMiles.Text);
-                    newRow.Keyword = txtKeyword.Text;
-
-                    carListings.Searches.AddSearchesRow(newRow);
-
-                    //Properties.Settings.Default.priceLow = double.Parse(txtPriceFrom.Text);
-                    //Properties.Settings.Default.priceHigh = double.Parse(txtPriceTo.Text);
-                    //Properties.Settings.Default.milesLow = int.Parse(txtMileageFrom.Text);
-                    //Properties.Settings.Default.milesHigh = int.Parse(txtMileageTo.Text);
-                    //Properties.Settings.Default.yearLow = int.Parse(txtYearFrom.Text);
-                    //Properties.Settings.Default.yearHigh = int.Parse(txtYearTo.Text);
-                    //Properties.Settings.Default.zipCode = int.Parse(txtZip.Text);
-                    //Properties.Settings.Default.distance = int.Parse(txtMiles.Text);
-                    //Properties.Settings.Default.Keyword = txtKeyword.Text;
-
-                    ////apply the changes to the settings file
-                    //Properties.Settings.Default.Save();
-                }
-
-                carListings.WriteXml("KSL.Cars.App.settings");
-            }
-            catch { } //Don't do anything if there's an error.
-        }
-
-        /// <summary>
         /// Loads the data saved from the last session
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void frmMain_Load(object sender, EventArgs e)
         {
-            if (System.IO.File.Exists("KSL.Cars.App.settings"))
+            if (LoadData(false))
             {
-                carListings.ReadXml("KSL.Cars.App.settings");
-
-                if (carListings.Settings.First<CarListings.SettingsRow>().Field<Boolean>(carListings.Settings.LoadLastSearchParamsColumn))
-                {
-                    CarListings.SearchesRow lastSearch = (CarListings.SearchesRow)(carListings.Searches.Rows[carListings.Searches.Rows.Count - 1]);
-
-                    txtPriceFrom.Text = lastSearch.PriceFrom.ToString();
-                    txtPriceTo.Text = lastSearch.PriceTo.ToString();
-                    txtMileageFrom.Text = lastSearch.MilesFrom.ToString();
-                    txtMileageTo.Text = lastSearch.MilesTo.ToString();
-                    txtYearFrom.Text = lastSearch.YearFrom.ToString();
-                    txtYearTo.Text = lastSearch.YearTo.ToString();
-                    txtZip.Text = lastSearch.Zip.ToString();
-                    txtMiles.Text = lastSearch.Distance.ToString();
-                    txtKeyword.Text = lastSearch.Keyword;
-                }
+                dgvResults.Visible = true;
             }
-            else
-            {
-                if (carListings.Settings.Rows.Count == 0)
-                {
-                    CarListings.SettingsRow settings = carListings.Settings.NewSettingsRow();
+        }
 
-                    settings.LoadLastSearchParams = true;
-                    settings.SaveStats = false;
-                    settings.SaveSearchResults = false;
-
-                    carListings.Settings.Rows.Add(settings);
-                }
-
-            }
+        /// <summary>
+        /// Saves the different bits of data if set in the options
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            SaveData(false);
         }
 
         /// <summary>
@@ -317,11 +230,14 @@ namespace KSL.Cars.App
             minimumWageWorker.ReportProgress(0);
             try
             {
-                parsePage(e, url, 0, 0);
+                parsePage(url, e, 0, 0);
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error! " + ex.Message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                EventLogger.LogEvent(ex);
+
                 minimumWageWorker.CancelAsync();
             }
         }
@@ -364,7 +280,7 @@ namespace KSL.Cars.App
                 dgvResults.Sort(dgvResults.Columns["Price"], ListSortDirection.Ascending);
             }
         }
-        
+
         /// <summary>
         /// Opens a graph window based on the stats linked clicked.
         /// </summary>
@@ -399,7 +315,6 @@ namespace KSL.Cars.App
             myChartForm.Show();
         }
 
-        #endregion
 
         /// <summary>
         /// Calculates the basic stats for year, make and models found in the dataset.
@@ -620,10 +535,10 @@ namespace KSL.Cars.App
         /// <summary>
         /// Workhorse that gets the HTML and parses it into the datatable.
         /// </summary>
-        public void parsePage(DoWorkEventArgs e, string url, int currentPageNum, int lastPageNum)
+        public void parsePage(string url, DoWorkEventArgs e = null, int currentPageNum = 0, int lastPageNum = 0)
         {
             //Check for and cancel if needed.
-            if ((minimumWageWorker.CancellationPending == true))
+            if (e != null && minimumWageWorker.CancellationPending == true)
             {
                 e.Cancel = true;
                 return;
@@ -640,6 +555,7 @@ namespace KSL.Cars.App
             }
             catch (Exception ex)
             {
+                //Throw exception for recursion to handle.
                 throw ex;
             }
 
@@ -775,10 +691,11 @@ namespace KSL.Cars.App
                             try
                             {
                                 //Yay! Recursion!
-                                parsePage(e, newUrl, currentPageNum + 1, lastPageNum);
+                                parsePage(newUrl, e, currentPageNum + 1, lastPageNum);
                             }
                             catch (Exception ex)
                             {
+                                //Throw the exception for recursion to handle.
                                 throw ex;
                             }
                         }
@@ -786,6 +703,180 @@ namespace KSL.Cars.App
                 }
             }
         }
-        
+
+        /// <summary>
+        /// Builds a URL from the contents of the text boxes
+        /// </summary>
+        /// <returns></returns>
+        public string buildURL(bool CmdLine)
+        {
+            if (CmdLine)
+            {
+                CarListings.SearchesRow lastSearch = carListings.Searches.First<CarListings.SearchesRow>();
+
+                return "http://www.ksl.com/auto/search/index?"
+                           + "&keyword=" + lastSearch.Keyword
+                           + "&yearFrom=" + lastSearch.YearFrom
+                           + "&yearTo=" + lastSearch.YearTo
+                           + "&priceFrom=" + lastSearch.PriceFrom
+                           + "&priceTo=" + lastSearch.PriceTo
+                           + "&mileageFrom=" + lastSearch.MilesFrom
+                           + "&mileageTo=" + lastSearch.MilesTo
+                           + "&miles=" + lastSearch.Distance
+                           + "&zip=" + lastSearch.Zip;
+            }
+            else
+            {
+                if (txtMiles.Text.Length < 0) txtMiles.Text = "0";
+
+                return "http://www.ksl.com/auto/search/index?"
+                        + "&keyword=" + txtKeyword.Text
+                        + "&yearFrom=" + txtYearFrom.Text
+                        + "&yearTo=" + txtYearTo.Text
+                        + "&priceFrom=" + int.Parse(txtPriceFrom.Text)
+                        + "&priceTo=" + txtPriceTo.Text.Replace(",", "").Replace("$", "").Replace(".", "")
+                        + "&mileageFrom=" + txtMileageFrom.Text.Replace(",", "")
+                        + "&mileageTo=" + String.Format("{0:D}", txtMileageTo.Text)
+                        + "&miles=" + txtMiles.Text
+                        + "&zip=" + txtZip.Text;
+            }
+        }
+
+        /// <summary>
+        /// Loads data from the settings file, if it exists.
+        /// </summary>
+        public bool LoadData(bool CmdLine)
+        {
+            if (System.IO.File.Exists("KSL.Cars.App.settings"))
+            {
+                carListings.ReadXml("KSL.Cars.App.settings");
+
+                //You need to run the program from the GUI at least once before running from the commandline
+                if (CmdLine)
+                {
+                    carListings.Listings.Clear();
+                }
+                else
+                {
+                    if (carListings.Searches.Count > 0 && carListings.Settings.First<CarListings.SettingsRow>().Field<Boolean>(carListings.Settings.LoadLastSearchParamsColumn))
+                    {
+                        CarListings.SearchesRow lastSearch = carListings.Searches.Last<CarListings.SearchesRow>();
+
+                        txtPriceFrom.Text = lastSearch.PriceFrom.ToString();
+                        txtPriceTo.Text = lastSearch.PriceTo.ToString();
+                        txtMileageFrom.Text = lastSearch.MilesFrom.ToString();
+                        txtMileageTo.Text = lastSearch.MilesTo.ToString();
+                        txtYearFrom.Text = lastSearch.YearFrom.ToString();
+                        txtYearTo.Text = lastSearch.YearTo.ToString();
+                        txtZip.Text = lastSearch.Zip.ToString();
+                        txtMiles.Text = lastSearch.Distance.ToString();
+                        txtKeyword.Text = lastSearch.Keyword;
+                    }
+
+                    if (carListings.Settings.Rows.Count == 0)
+                    {
+                        CarListings.SettingsRow settings = carListings.Settings.NewSettingsRow();
+
+                        settings.LoadLastSearchParams = true;
+                        settings.SaveStats = false;
+                        settings.SaveSearchResults = false;
+
+                        carListings.Settings.Rows.Add(settings);
+                    }
+                }
+
+                //Return whether or not we need to display any loaded search results from the last session;
+                return carListings.Settings.First<CarListings.SettingsRow>().Field<Boolean>(carListings.Settings.SaveSearchResultsColumn);
+
+            }
+            else
+            {
+                //Preload default settings
+                CarListings.SettingsRow settings = carListings.Settings.NewSettingsRow();
+
+                settings.LoadLastSearchParams = true;
+                settings.SaveStats = false;
+                settings.SaveSearchResults = false;
+
+                carListings.Settings.Rows.Add(settings);
+
+                //Didn't load any result data;
+                return false;
+            }
+
+        }
+
+        /// <summary>
+        /// Save all the data!
+        /// </summary>
+        public void SaveData(bool CmdLine)
+        {
+            try
+            {
+                if (CmdLine)
+                {
+                    carListings.ContactInfo.Clear();
+                    carListings.StatsByYear.Clear();
+                    carListings.StatsByMake.Clear();
+                    carListings.StatsByModel.Clear();
+                }
+                else
+                {
+
+                    if (!carListings.Settings.First<CarListings.SettingsRow>().Field<Boolean>(carListings.Settings.SaveSearchResultsColumn))
+                    {
+                        carListings.ContactInfo.Clear();
+                        carListings.Listings.Clear();
+                    }
+
+                    if (!carListings.Settings.First<CarListings.SettingsRow>().Field<Boolean>(carListings.Settings.SaveStatsColumn))
+                    {
+                        carListings.StatsByYear.Clear();
+                        carListings.StatsByMake.Clear();
+                        carListings.StatsByModel.Clear();
+                    }
+
+                    if (carListings.Settings.First<CarListings.SettingsRow>().Field<Boolean>(carListings.Settings.LoadLastSearchParamsColumn))
+                    {
+                        carListings.Searches.Clear();
+
+                        CarListings.SearchesRow newRow = carListings.Searches.NewSearchesRow();
+
+                        int yearFrom;
+                        int yearTo;
+                        double priceFrom;
+                        double priceTo;
+                        int mileageFrom;
+                        int mileageTo;
+                        int zip;
+                        int distance;
+
+                        newRow.TimeOfSearch = DateTime.Now;
+
+                        if (!int.TryParse(txtYearFrom.Text, out yearFrom)) yearFrom = 0;
+                        if (!int.TryParse(txtYearTo.Text, out yearTo)) yearTo = 0;
+                        if (!double.TryParse(txtPriceFrom.Text, out priceFrom)) priceFrom = 0;
+                        if (!double.TryParse(txtPriceTo.Text, out priceTo)) priceTo = 0;
+                        if (!int.TryParse(txtMileageFrom.Text, out mileageFrom)) mileageFrom = 0;
+                        if (!int.TryParse(txtMileageTo.Text, out mileageTo)) mileageTo = 0;
+                        if (!int.TryParse(txtZip.Text, out zip)) zip = 0;
+                        if (!int.TryParse(txtMiles.Text, out distance)) distance = 0;
+
+                        newRow.Keyword = txtKeyword.Text;
+
+                        carListings.Searches.AddSearchesRow(newRow);
+                    }
+                }
+            }
+            catch (Exception ex)
+            { //Log the message if there's an error.
+                EventLogger.LogEvent(ex);
+            }
+            finally
+            {
+                //And then write the file.
+                carListings.WriteXml("KSL.Cars.App.settings");
+            }
+        }
     }
 }

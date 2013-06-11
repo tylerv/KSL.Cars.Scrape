@@ -15,27 +15,18 @@ namespace KSL.Cars.App
         [STAThread]
         static void Main(string[] args)
         {
-        //    AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
-        //    {
-
-        //        String resourceName = "AssemblyLoadingAndReflection." +
-
-        //           new AssemblyName(args.Name).Name + ".dll";
-
-        //        using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
-        //        {
-
-        //            Byte[] assemblyData = new Byte[stream.Length];
-
-        //            stream.Read(assemblyData, 0, assemblyData.Length);
-
-        //            return Assembly.Load(assemblyData);
-        //        }
-        //    };
-
-            if (args.Contains("lastsearch"))
+            
+            if (args.Contains("/lastsearch"))
             {
-
+                if (System.IO.File.Exists("KSL.Cars.App.settings"))
+                {
+                    frmMain myProgram = new frmMain();
+                    myProgram.LoadData(true);
+                    string url = myProgram.buildURL(true);
+                    myProgram.parsePage(url);
+                    myProgram.SaveData(true);
+                }
+                else EventLogger.LogEvent();
             }
             else
             {
@@ -43,7 +34,6 @@ namespace KSL.Cars.App
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(new frmMain());
             }
-
         }
     }
 }

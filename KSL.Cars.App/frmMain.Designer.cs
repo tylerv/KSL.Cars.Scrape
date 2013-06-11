@@ -52,6 +52,17 @@
             this.label5 = new System.Windows.Forms.Label();
             this.grpResults = new System.Windows.Forms.GroupBox();
             this.dgvResults = new System.Windows.Forms.DataGridView();
+            this.Delete = new System.Windows.Forms.DataGridViewLinkColumn();
+            this.Highlighted = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.Price = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Year = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Mileage = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Listing_Link = new System.Windows.Forms.DataGridViewLinkColumn();
+            this.VIN = new System.Windows.Forms.DataGridViewLinkColumn();
+            this.Make = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Model = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.City = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Description = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.carListingsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.carListings = new KSL.Cars.App.CarListings();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -65,17 +76,6 @@
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.btnCancel = new System.Windows.Forms.Button();
             this.minimumWageWorker = new System.ComponentModel.BackgroundWorker();
-            this.Delete = new System.Windows.Forms.DataGridViewLinkColumn();
-            this.Highlighted = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.Price = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Year = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Mileage = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Listing_Link = new System.Windows.Forms.DataGridViewLinkColumn();
-            this.VIN = new System.Windows.Forms.DataGridViewLinkColumn();
-            this.Make = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Model = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.City = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Description = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.grpDistance.SuspendLayout();
             this.grpMileage.SuspendLayout();
             this.grpPrice.SuspendLayout();
@@ -315,12 +315,95 @@
             this.dgvResults.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvResults.Location = new System.Drawing.Point(3, 16);
             this.dgvResults.Name = "dgvResults";
+            this.dgvResults.ReadOnly = true;
             this.dgvResults.Size = new System.Drawing.Size(715, 382);
             this.dgvResults.TabIndex = 0;
             this.dgvResults.Visible = false;
             this.dgvResults.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvResults_CellContentClick);
             this.dgvResults.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgvResults_CellFormatting);
             this.dgvResults.Sorted += new System.EventHandler(this.dgvResults_Sorted);
+            // 
+            // Delete
+            // 
+            this.Delete.HeaderText = "Delete";
+            this.Delete.Name = "Delete";
+            this.Delete.ReadOnly = true;
+            this.Delete.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.Delete.Text = "Delete";
+            this.Delete.TrackVisitedState = false;
+            this.Delete.UseColumnTextForLinkValue = true;
+            // 
+            // Highlighted
+            // 
+            this.Highlighted.HeaderText = "(X)";
+            this.Highlighted.Name = "Highlighted";
+            this.Highlighted.ReadOnly = true;
+            this.Highlighted.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.Highlighted.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            // 
+            // Price
+            // 
+            this.Price.DataPropertyName = "Price";
+            this.Price.HeaderText = "Price";
+            this.Price.Name = "Price";
+            this.Price.ReadOnly = true;
+            // 
+            // Year
+            // 
+            this.Year.DataPropertyName = "Year";
+            this.Year.HeaderText = "Year";
+            this.Year.Name = "Year";
+            this.Year.ReadOnly = true;
+            // 
+            // Mileage
+            // 
+            this.Mileage.DataPropertyName = "Mileage";
+            this.Mileage.HeaderText = "Mileage";
+            this.Mileage.Name = "Mileage";
+            this.Mileage.ReadOnly = true;
+            // 
+            // Listing_Link
+            // 
+            this.Listing_Link.DataPropertyName = "ListingID";
+            this.Listing_Link.HeaderText = "Link";
+            this.Listing_Link.Name = "Listing_Link";
+            this.Listing_Link.ReadOnly = true;
+            this.Listing_Link.Text = "Link";
+            // 
+            // VIN
+            // 
+            this.VIN.DataPropertyName = "VIN";
+            this.VIN.HeaderText = "VIN";
+            this.VIN.Name = "VIN";
+            this.VIN.ReadOnly = true;
+            // 
+            // Make
+            // 
+            this.Make.DataPropertyName = "Make";
+            this.Make.HeaderText = "Make";
+            this.Make.Name = "Make";
+            this.Make.ReadOnly = true;
+            // 
+            // Model
+            // 
+            this.Model.DataPropertyName = "Model";
+            this.Model.HeaderText = "Model";
+            this.Model.Name = "Model";
+            this.Model.ReadOnly = true;
+            // 
+            // City
+            // 
+            this.City.DataPropertyName = "City";
+            this.City.HeaderText = "City";
+            this.City.Name = "City";
+            this.City.ReadOnly = true;
+            // 
+            // Description
+            // 
+            this.Description.DataPropertyName = "Description";
+            this.Description.HeaderText = "Description";
+            this.Description.Name = "Description";
+            this.Description.ReadOnly = true;
             // 
             // carListingsBindingSource
             // 
@@ -435,77 +518,6 @@
             this.minimumWageWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.minimumWageWorker_ProgressChanged);
             this.minimumWageWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.minimumWageWorker_RunWorkerCompleted);
             // 
-            // Delete
-            // 
-            this.Delete.HeaderText = "Delete";
-            this.Delete.Name = "Delete";
-            this.Delete.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.Delete.Text = "Delete";
-            this.Delete.TrackVisitedState = false;
-            this.Delete.UseColumnTextForLinkValue = true;
-            // 
-            // Highlighted
-            // 
-            this.Highlighted.HeaderText = "(X)";
-            this.Highlighted.Name = "Highlighted";
-            this.Highlighted.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.Highlighted.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            // 
-            // Price
-            // 
-            this.Price.DataPropertyName = "Price";
-            this.Price.HeaderText = "Price";
-            this.Price.Name = "Price";
-            // 
-            // Year
-            // 
-            this.Year.DataPropertyName = "Year";
-            this.Year.HeaderText = "Year";
-            this.Year.Name = "Year";
-            // 
-            // Mileage
-            // 
-            this.Mileage.DataPropertyName = "Mileage";
-            this.Mileage.HeaderText = "Mileage";
-            this.Mileage.Name = "Mileage";
-            // 
-            // Listing_Link
-            // 
-            this.Listing_Link.DataPropertyName = "ListingID";
-            this.Listing_Link.HeaderText = "Link";
-            this.Listing_Link.Name = "Listing_Link";
-            this.Listing_Link.Text = "Link";
-            // 
-            // VIN
-            // 
-            this.VIN.DataPropertyName = "VIN";
-            this.VIN.HeaderText = "VIN";
-            this.VIN.Name = "VIN";
-            // 
-            // Make
-            // 
-            this.Make.DataPropertyName = "Make";
-            this.Make.HeaderText = "Make";
-            this.Make.Name = "Make";
-            // 
-            // Model
-            // 
-            this.Model.DataPropertyName = "Model";
-            this.Model.HeaderText = "Model";
-            this.Model.Name = "Model";
-            // 
-            // City
-            // 
-            this.City.DataPropertyName = "City";
-            this.City.HeaderText = "City";
-            this.City.Name = "City";
-            // 
-            // Description
-            // 
-            this.Description.DataPropertyName = "Description";
-            this.Description.HeaderText = "Description";
-            this.Description.Name = "Description";
-            // 
             // frmMain
             // 
             this.AcceptButton = this.btnScrape;
@@ -587,7 +599,6 @@
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.Button btnCancel;
-        private System.ComponentModel.BackgroundWorker minimumWageWorker;
         private System.Windows.Forms.DataGridView dgvResults;
         private System.Windows.Forms.BindingSource carListingsBindingSource;
         private CarListings carListings;
@@ -602,6 +613,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Model;
         private System.Windows.Forms.DataGridViewTextBoxColumn City;
         private System.Windows.Forms.DataGridViewTextBoxColumn Description;
+        protected internal System.ComponentModel.BackgroundWorker minimumWageWorker;
     }
 }
 
