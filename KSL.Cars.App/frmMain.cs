@@ -712,18 +712,27 @@ namespace KSL.Cars.App
         {
             if (CmdLine)
             {
-                CarListings.SearchesRow lastSearch = carListings.Searches.First<CarListings.SearchesRow>();
+                
 
-                return "http://www.ksl.com/auto/search/index?"
-                           + "&keyword=" + lastSearch.Keyword
-                           + "&yearFrom=" + lastSearch.YearFrom
-                           + "&yearTo=" + lastSearch.YearTo
-                           + "&priceFrom=" + lastSearch.PriceFrom
-                           + "&priceTo=" + lastSearch.PriceTo
-                           + "&mileageFrom=" + lastSearch.MilesFrom
-                           + "&mileageTo=" + lastSearch.MilesTo
-                           + "&miles=" + lastSearch.Distance
-                           + "&zip=" + lastSearch.Zip;
+                if (carListings.Searches.Count > 0)
+                {
+                    CarListings.SearchesRow lastSearch = carListings.Searches.First<CarListings.SearchesRow>();
+
+                    return "http://www.ksl.com/auto/search/index?"
+                               + "&keyword=" + lastSearch.Keyword
+                               + "&yearFrom=" + lastSearch.YearFrom
+                               + "&yearTo=" + lastSearch.YearTo
+                               + "&priceFrom=" + lastSearch.PriceFrom
+                               + "&priceTo=" + lastSearch.PriceTo
+                               + "&mileageFrom=" + lastSearch.MilesFrom
+                               + "&mileageTo=" + lastSearch.MilesTo
+                               + "&miles=" + lastSearch.Distance
+                               + "&zip=" + lastSearch.Zip;
+                }
+                else
+                {
+                    return "";
+                }
             }
             else
             {

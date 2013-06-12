@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Reflection;
 
 namespace KSL.Cars.App
 {
@@ -15,24 +14,34 @@ namespace KSL.Cars.App
         [STAThread]
         static void Main(string[] args)
         {
-            
-            if (args.Contains("/lastsearch"))
+            foreach (string arg in args)
             {
-                if (System.IO.File.Exists("KSL.Cars.App.settings"))
+                switch (arg.Replace("/","").Replace("-","").ToLower())
                 {
-                    frmMain myProgram = new frmMain();
-                    myProgram.LoadData(true);
-                    string url = myProgram.buildURL(true);
-                    myProgram.parsePage(url);
-                    myProgram.SaveData(true);
+                    case "lastsearch":
+                        if (System.IO.File.Exists("KSL.Cars.App.settings"))
+                        {
+                            frmMain myProgram = new frmMain();
+                            myProgram.LoadData(true);
+                            string url = myProgram.buildURL(true);
+                            if (url.Length > 0)
+                            {
+                                myProgram.parsePage(url);
+                                myProgram.SaveData(true);
+                            }
+                            else EventLogger.LogEvent("Invalid URL! Do you have proper search parameters in the settings file?", System.Diagnostics.EventLogEntryType.Error);
+                        }
+                        else EventLogger.LogEvent();
+                        break;
+                    case "update":
+                        Updater.CheckForUpdates();
+                        break;
+                    default:
+                        Application.EnableVisualStyles();
+                        Application.SetCompatibleTextRenderingDefault(false);
+                        Application.Run(new frmMain());
+                        break;
                 }
-                else EventLogger.LogEvent();
-            }
-            else
-            {
-                Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new frmMain());
             }
         }
     }

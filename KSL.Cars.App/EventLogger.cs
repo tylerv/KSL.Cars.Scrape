@@ -16,6 +16,18 @@ namespace KSL.Cars.App
         /// Used to log an exception message to the event log.
         /// </summary>
         /// <param name="ex"></param>
+        public static void LogEvent(Exception ex, EventLogEntryType level) { writeLogEntry(ex.Message, level); }
+
+        /// <summary>
+        /// Used to log a string to the application event log.
+        /// </summary>
+        /// <param name="message"></param>
+        public static void LogEvent(string message, EventLogEntryType level) { writeLogEntry(message, level); }
+
+        /// <summary>
+        /// Used to log an exception message to the event log.
+        /// </summary>
+        /// <param name="ex"></param>
         public static void LogEvent(Exception ex) { writeLogEntry(ex.Message); }
 
         /// <summary>
@@ -33,13 +45,13 @@ namespace KSL.Cars.App
         /// Actually does the logging.
         /// </summary>
         /// <param name="logMessage"></param>
-        private static void writeLogEntry(string logMessage = "Please run this program with the GUI to create settings file first")
+        private static void writeLogEntry(string logMessage = "Please run this program with the GUI to create settings file first", EventLogEntryType level = EventLogEntryType.Warning)
         {
             appLog.Log = "Application";
             appLog.Source = "KSL.Cars.App";
             try
             {
-                appLog.WriteEntry(logMessage, EventLogEntryType.Warning);
+                appLog.WriteEntry(logMessage, level);
             }
             catch (System.Security.SecurityException ex)
             {
