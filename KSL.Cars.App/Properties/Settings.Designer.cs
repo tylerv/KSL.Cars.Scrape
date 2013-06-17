@@ -349,5 +349,14 @@ namespace KSL.Cars.App.Properties {
                 this["LISTING_LINK"] = value;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://www.voorheis.info/files/update.xml")]
+        public string UpdateFileURL {
+            get {
+                return ((string)(this["UpdateFileURL"]));
+            }
+        }
     }
 }

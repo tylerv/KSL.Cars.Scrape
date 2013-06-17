@@ -1,5 +1,6 @@
 ﻿using HtmlAgilityPack;
 using System;
+using System.Xml;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -84,8 +85,8 @@ namespace KSL.Cars.App
                 {
                     //Use IE to open the link stored in the tooltip.
                     //TODO: Open link in default browser.
-                    case "Listing_Link":
-                    case "VIN_Link":
+                    case "Link":
+                    case "VIN":
                         System.Diagnostics.Process.Start("iexplore.exe", this.dgvResults.Rows[e.RowIndex].Cells[e.ColumnIndex].ToolTipText);
                         break;
 
@@ -171,7 +172,7 @@ namespace KSL.Cars.App
                 cell.ToolTipText = Properties.Settings.Default.VIN_LINK.Replace("{VIN}", cell.Value.ToString());
                 //e.FormattingApplied = true;
             }
-            else if (dgvResults.Columns[e.ColumnIndex].Name.Equals("Listing_Link"))
+            else if (dgvResults.Columns[e.ColumnIndex].Name.Equals("Link"))
             {
                 cell.ToolTipText = Properties.Settings.Default.LISTING_LINK.Replace("{LISTING_ID}", cell.Value.ToString());
                 //e.FormattingApplied = true;
@@ -207,15 +208,30 @@ namespace KSL.Cars.App
         /// <param name="e"></param>
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            frmSettings settings = new frmSettings((CarListings.SettingsRow)(carListings.Settings.Rows[0]));
+            frmSettings settingsFrm = new frmSettings((CarListings.SettingsRow)(carListings.Settings.Rows[0]));
 
-            if (settings.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (settingsFrm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 if (carListings.Settings.Rows.Count == 0) carListings.Settings.Rows.Add(carListings.Settings.NewSettingsRow());
 
-                carListings.Settings.Rows[0][carListings.Settings.SaveSearchResultsColumn.ColumnName] = settings.chkSaveLastListings.Checked;
-                carListings.Settings.Rows[0][carListings.Settings.LoadLastSearchParamsColumn.ColumnName] = settings.chkKeepSearchParameters.Checked;
-                carListings.Settings.Rows[0][carListings.Settings.SaveStatsColumn.ColumnName] = settings.chkKeepStatsData.Checked;
+                CarListings.SettingsRow settings = carListings.Settings.First();
+
+                settings.SaveSearchResults = settingsFrm.chkSaveLastListings.Checked;
+                settings.LoadLastSearchParams = settingsFrm.chkKeepSearchParameters.Checked;
+
+
+                settings.SMTPHost = settingsFrm.txtSMTPHost.Text;
+                settings.PortNumber = int.Parse(settingsFrm.txtPort.Text);
+                settings.Username = settingsFrm.txtUsername.Text;
+
+                string tempPass = "";
+                if (settingsFrm.txtPassword.TextLength > 0) tempPass = Encryption.Encrypt(settingsFrm.txtPassword.Text);
+                settings.Password = tempPass;
+
+                settings.FromAddress = settingsFrm.txtFrom.Text;
+                settings.ToAddress = settingsFrm.txtTo.Text;
+                settings.UseSSL = settingsFrm.chkUseSSL.Checked;
+
             }
         }
 
@@ -313,6 +329,83 @@ namespace KSL.Cars.App
 
             Graph myChartForm = new Graph(dataForChart);
             myChartForm.Show();
+        }
+
+        /// <summary>
+        /// Downloads the update control files and populates the update window.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void updateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            XmlDocument updateFile = Updater.getUpdateFile();
+
+            if (updateFile != null)
+            {
+                Dictionary<Label, Control> items = new Dictionary<Label, Control>();
+
+                foreach (XmlNode node in updateFile.SelectSingleNode("/KSL.Cars.App").ChildNodes)
+                {
+                    if (node.Attributes != null && node.Attributes.Count == 2)
+                    {
+                        Label label = new Label();
+                        label.Text = node.Attributes["desc"].InnerText;
+
+                        Control details;
+
+                        switch (node.Attributes["type"].InnerText)
+                        {
+                            case "text":
+                                details = new Label();
+                                details.Text = node.InnerText;
+                                items.Add(label, details);
+                                break;
+                            case "link":
+                                details = new LinkLabel();
+                                details.Text = "Link";
+
+                                LinkLabel.Link link = new LinkLabel.Link();
+                                link.LinkData = node.InnerText;
+
+                                ((LinkLabel)details).Links.Add(link);
+                                items.Add(label, details);
+                                break;
+                        }
+                    }
+                }
+
+                frmUpdate form = new frmUpdate(items);
+                form.ShowDialog();
+            }
+        }
+
+        /// <summary>
+        /// Cancels the search process. This button should only be active while a search is running.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            if (minimumWageWorker.WorkerSupportsCancellation == true)
+            {
+                minimumWageWorker.CancelAsync();
+            }
+        }
+
+        /// <summary>
+        /// Sample email results.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void emailResultsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (carListings.Settings.Rows.Count > 0)
+            {
+
+                emailResults();
+
+            }
+            else MessageBox.Show("Check your settings first!");
         }
 
 
@@ -472,8 +565,8 @@ namespace KSL.Cars.App
                 CarListings.StatsByMakeRow makeStats = carListings.StatsByMake.FindByMake(row.Cells["Make"].Value.ToString());
                 CarListings.StatsByModelRow modelStats = carListings.StatsByModel.FindByModel(row.Cells["Model"].Value.ToString());
 
-                CarListings.ListingsRow matchingListing = carListings.Listings.FindByListingID(int.Parse(row.Cells["Listing_Link"].Value.ToString()));
-                CarListings.ContactInfoRow contactInfo = carListings.ContactInfo.FindByListingID(int.Parse(row.Cells["Listing_Link"].Value.ToString()));
+                CarListings.ListingsRow matchingListing = carListings.Listings.FindByListingID(int.Parse(row.Cells["Link"].Value.ToString()));
+                CarListings.ContactInfoRow contactInfo = carListings.ContactInfo.FindByListingID(int.Parse(row.Cells["Link"].Value.ToString()));
 
                 if (yearStats != null && makeStats != null && matchingListing != null)
                 {
@@ -516,19 +609,6 @@ namespace KSL.Cars.App
                         }
                     }
                 }
-            }
-        }
-
-        /// <summary>
-        /// Cancels the search process. This button should only be active while a search is running.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            if (minimumWageWorker.WorkerSupportsCancellation == true)
-            {
-                minimumWageWorker.CancelAsync();
             }
         }
 
@@ -612,8 +692,6 @@ namespace KSL.Cars.App
                             newRow.Price = Double.Parse(node.SelectSingleNode(Properties.Settings.Default.LISTING_RESULT_PRICE).InnerText.Replace("$", "").Replace(",", ""));
 
                             newRow.ListingID = int.Parse(node.SelectSingleNode(Properties.Settings.Default.LISTING_RESULT_ID).Attributes["href"].Value.Split('/').Last<string>().Split('?').First<string>());
-
-                            //newRow.Link = Properties.Settings.Default.LISTING_LINK.Replace("{LISTING_ID}", newRow.ListingID.ToString());
 
                             //We've got all the info from the listing page, new we go into the page itself for info like VIN and Mileage.
                             HtmlAgilityPack.HtmlDocument singleListing = new HtmlAgilityPack.HtmlDocument();
@@ -712,7 +790,7 @@ namespace KSL.Cars.App
         {
             if (CmdLine)
             {
-                
+
 
                 if (carListings.Searches.Count > 0)
                 {
@@ -782,13 +860,14 @@ namespace KSL.Cars.App
                         txtKeyword.Text = lastSearch.Keyword;
                     }
 
+                    if (carListings.Listings.Count > 0 && carListings.Settings.First<CarListings.SettingsRow>().Field<Boolean>(carListings.Settings.SaveSearchResultsColumn))
+                    {
+                        dgvResults.Sort(Price, ListSortDirection.Ascending);
+                    }
+
                     if (carListings.Settings.Rows.Count == 0)
                     {
                         CarListings.SettingsRow settings = carListings.Settings.NewSettingsRow();
-
-                        settings.LoadLastSearchParams = true;
-                        settings.SaveStats = false;
-                        settings.SaveSearchResults = false;
 
                         carListings.Settings.Rows.Add(settings);
                     }
@@ -802,10 +881,6 @@ namespace KSL.Cars.App
             {
                 //Preload default settings
                 CarListings.SettingsRow settings = carListings.Settings.NewSettingsRow();
-
-                settings.LoadLastSearchParams = true;
-                settings.SaveStats = false;
-                settings.SaveSearchResults = false;
 
                 carListings.Settings.Rows.Add(settings);
 
@@ -836,10 +911,6 @@ namespace KSL.Cars.App
                     {
                         carListings.ContactInfo.Clear();
                         carListings.Listings.Clear();
-                    }
-
-                    if (!carListings.Settings.First<CarListings.SettingsRow>().Field<Boolean>(carListings.Settings.SaveStatsColumn))
-                    {
                         carListings.StatsByYear.Clear();
                         carListings.StatsByMake.Clear();
                         carListings.StatsByModel.Clear();
@@ -871,7 +942,15 @@ namespace KSL.Cars.App
                         if (!int.TryParse(txtZip.Text, out zip)) zip = 0;
                         if (!int.TryParse(txtMiles.Text, out distance)) distance = 0;
 
+                        newRow.YearFrom = yearFrom;
+                        newRow.YearTo = yearTo;
+                        newRow.PriceFrom = priceFrom;
+                        newRow.PriceTo = priceTo;
+                        newRow.MilesFrom = mileageFrom;
+                        newRow.MilesTo = mileageTo;
                         newRow.Keyword = txtKeyword.Text;
+                        newRow.Zip = zip;
+                        newRow.Distance = distance;
 
                         carListings.Searches.AddSearchesRow(newRow);
                     }
@@ -886,6 +965,112 @@ namespace KSL.Cars.App
                 //And then write the file.
                 carListings.WriteXml("KSL.Cars.App.settings");
             }
+        }
+
+        /// <summary>
+        /// Loads the current email settings and emails the results.
+        /// </summary>
+        public void emailResults()
+        {
+            if (carListings.Listings.Count > 0)
+            {
+                CarListings.SettingsRow currentSettings = carListings.Settings.First();
+
+                Mailer postman = new Mailer(currentSettings.Username,
+                                            Encryption.Decrypt(currentSettings.Password),
+                                            currentSettings.FromAddress,
+                                            currentSettings.SMTPHost,
+                                            currentSettings.PortNumber,
+                                            currentSettings.UseSSL);
+
+                string htmlBody = buildTable(dgvResults.Rows);
+                string subjectLine = "KSL Cars Search Results";
+
+                this.Cursor = Cursors.WaitCursor;
+                postman.SendMail(currentSettings.ToAddress, subjectLine, htmlBody);
+                this.Cursor = Cursors.Default;
+            }
+        }
+
+        /// <summary>
+        /// Builds an HTML table for the body of the email.
+        /// </summary>
+        /// <param name="sourceRows">Takes the DataGridViewRowCollection from the DataGridView</param>
+        /// <returns>html table in a string</returns>
+        public string buildTable(DataGridViewRowCollection sourceRows)
+        {
+            
+
+            string rowStart = "\t<tr>\n";
+            string rowClose = "</tr>\n";
+
+            string cellStart = "\t\t<td>\n";
+            string cellEnd = "</td>\n";
+
+            string styleText = "<style media=\"screen\" type=\"text/css\">\n" +
+                                    "\ttr.border_bottom th {\n" +
+                                      "\t\tborder-bottom:1pt solid black;\n" +
+                                    "\t}\n" +
+                                "</style>\n\n";
+
+            string table = "";
+
+            if (sourceRows.Count > 0)
+            {
+
+                table += styleText + "<table>\n";
+
+                table += "\t<tr class=\"border_bottom\">\n";
+                foreach (DataGridViewColumn column in sourceRows[0].DataGridView.Columns)
+                {
+                    switch (column.Name)
+                    {
+                        case "Delete":
+                            //We don't want this column, do nothing.
+                            break;
+                        case "Highlighted":
+                            table += "\t\t<th>(X)</th>\n";
+                            break;
+                        default:
+                            table += "\t\t<th>" + column.Name + "</th>\n";
+                            break;
+                    }
+                }
+
+                table += rowClose;
+
+                foreach (DataGridViewRow row in sourceRows)
+                {
+                    table += rowStart;
+                    foreach (DataGridViewCell cell in row.Cells)
+                    {
+                        switch (cell.OwningColumn.Name)
+                        {
+                            case "Delete":
+                                //We don't want this column, do nothing.
+                                break;
+                            case "Highlighted":
+                                table += "\t\t<td title='" + cell.ToolTipText + "'><input type=\"checkbox\" disabled=\"disabled\" " + (bool.Parse(cell.FormattedValue.ToString()) ? "checked=\"checked\"" : "") + " />" + cellEnd;
+                                break;
+                            case "Link":
+                            case "VIN":
+                                table += cellStart + "<a href=\"" + cell.ToolTipText + "\">" + cell.Value + "</a>" + cellEnd;
+                                break;
+                            case "Price":
+                                table += cellStart + String.Format("{0:C}", cell.Value) + cellEnd;
+                                break;
+                            default:
+                                //Default text (no formatting)
+                                table += cellStart + cell.Value + cellEnd;
+                                break;
+                        }
+                    }
+                    table += rowClose;
+                }
+
+                table += "</table>";
+            }
+            return table;
         }
     }
 }

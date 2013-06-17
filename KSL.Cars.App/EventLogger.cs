@@ -16,25 +16,21 @@ namespace KSL.Cars.App
         /// Used to log an exception message to the event log.
         /// </summary>
         /// <param name="ex"></param>
-        public static void LogEvent(Exception ex, EventLogEntryType level) { writeLogEntry(ex.Message, level); }
+        public static void LogEvent(Exception ex, EventLogEntryType level = EventLogEntryType.Warning, bool ShowPopup = false)
+        {
+            writeLogEntry(ex.Message, level);
+            if (ShowPopup) MessageBox.Show(ex.Message);
+        }
 
         /// <summary>
         /// Used to log a string to the application event log.
         /// </summary>
         /// <param name="message"></param>
-        public static void LogEvent(string message, EventLogEntryType level) { writeLogEntry(message, level); }
-
-        /// <summary>
-        /// Used to log an exception message to the event log.
-        /// </summary>
-        /// <param name="ex"></param>
-        public static void LogEvent(Exception ex) { writeLogEntry(ex.Message); }
-
-        /// <summary>
-        /// Used to log a string to the application event log.
-        /// </summary>
-        /// <param name="message"></param>
-        public static void LogEvent(string message) { writeLogEntry(message); }
+        public static void LogEvent(string message, EventLogEntryType level = EventLogEntryType.Warning, bool ShowPopup = false)
+        {
+            writeLogEntry(message, level);
+            if (ShowPopup) MessageBox.Show(message);
+        }
 
         /// <summary>
         /// Logs the default message about not having a settings file available for command line use.
@@ -55,7 +51,7 @@ namespace KSL.Cars.App
             }
             catch (System.Security.SecurityException ex)
             {
-                    TimedMessageBox.Show("Please run this application as administrator once to allow logging to the event log:\n\n" + ex.Message, "Run as Admin", MessageBoxButtons.OK, MessageBoxIcon.Warning, 5000);
+                TimedMessageBox.Show("Please run this application as administrator once to allow logging to the event log:\n\n" + ex.Message, "Run as Admin", MessageBoxButtons.OK, MessageBoxIcon.Warning, 5000);
             }
         }
     }

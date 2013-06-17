@@ -14,34 +14,48 @@ namespace KSL.Cars.App
         [STAThread]
         static void Main(string[] args)
         {
-            foreach (string arg in args)
+            if (args.Length > 0)
             {
-                switch (arg.Replace("/","").Replace("-","").ToLower())
+                frmMain myProgram = null;
+
+                foreach (string arg in args)
                 {
-                    case "lastsearch":
-                        if (System.IO.File.Exists("KSL.Cars.App.settings"))
-                        {
-                            frmMain myProgram = new frmMain();
-                            myProgram.LoadData(true);
-                            string url = myProgram.buildURL(true);
-                            if (url.Length > 0)
+                    switch (arg.Replace("/", "").Replace("-", "").ToLower())
+                    {
+                        case "lastsearch":
+                            if (System.IO.File.Exists("KSL.Cars.App.settings"))
                             {
-                                myProgram.parsePage(url);
-                                myProgram.SaveData(true);
+                                myProgram = new frmMain();
+                                myProgram.LoadData(true);
+                                string url = myProgram.buildURL(true);
+                                if (url.Length > 0)
+                                {
+                                    myProgram.parsePage(url);
+                                    myProgram.SaveData(true);
+                                }
+                                else EventLogger.LogEvent("Invalid URL! Do you have proper search parameters in the settings file?", System.Diagnostics.EventLogEntryType.Error);
                             }
-                            else EventLogger.LogEvent("Invalid URL! Do you have proper search parameters in the settings file?", System.Diagnostics.EventLogEntryType.Error);
-                        }
-                        else EventLogger.LogEvent();
-                        break;
-                    case "update":
-                        Updater.CheckForUpdates();
-                        break;
-                    default:
-                        Application.EnableVisualStyles();
-                        Application.SetCompatibleTextRenderingDefault(false);
-                        Application.Run(new frmMain());
-                        break;
+                            else EventLogger.LogEvent();
+                            break;
+                        case "update":
+                            if (args.Contains("yes") || args.Contains("y")) Updater.GetUpdate(true);
+                            else Updater.GetUpdate();
+                            break;
+                        case "email":
+                            if (myProgram != null)
+                            {
+                                myProgram.emailResults();
+                            }
+                            else EventLogger.LogEvent("Please make sure the 'lastsearch' parameter preceeds the 'email' parameter.");
+                            break;
+                    }
                 }
+            }
+            else
+            {
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new frmMain());
             }
         }
     }

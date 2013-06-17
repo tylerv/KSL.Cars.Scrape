@@ -101,5 +101,8 @@
     <Setting Name="LISTING_LINK" Type="System.String" Scope="User">
       <Value Profile="(Default)">http://www.ksl.com/auto/listing/{LISTING_ID}</Value>
     </Setting>
+    <Setting Name="UpdateFileURL" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">http://www.voorheis.info/files/update.xml</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

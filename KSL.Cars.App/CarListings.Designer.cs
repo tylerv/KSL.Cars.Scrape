@@ -1944,11 +1944,23 @@ namespace KSL.Cars.App {
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
         public partial class SettingsDataTable : global::System.Data.TypedTableBase<SettingsRow> {
             
-            private global::System.Data.DataColumn columnSaveStats;
-            
             private global::System.Data.DataColumn columnLoadLastSearchParams;
             
             private global::System.Data.DataColumn columnSaveSearchResults;
+            
+            private global::System.Data.DataColumn columnUsername;
+            
+            private global::System.Data.DataColumn columnPassword;
+            
+            private global::System.Data.DataColumn columnSMTPHost;
+            
+            private global::System.Data.DataColumn columnPortNumber;
+            
+            private global::System.Data.DataColumn columnUseSSL;
+            
+            private global::System.Data.DataColumn columnFromAddress;
+            
+            private global::System.Data.DataColumn columnToAddress;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
@@ -1985,14 +1997,6 @@ namespace KSL.Cars.App {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn SaveStatsColumn {
-                get {
-                    return this.columnSaveStats;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public global::System.Data.DataColumn LoadLastSearchParamsColumn {
                 get {
                     return this.columnLoadLastSearchParams;
@@ -2004,6 +2008,62 @@ namespace KSL.Cars.App {
             public global::System.Data.DataColumn SaveSearchResultsColumn {
                 get {
                     return this.columnSaveSearchResults;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn UsernameColumn {
+                get {
+                    return this.columnUsername;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn PasswordColumn {
+                get {
+                    return this.columnPassword;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn SMTPHostColumn {
+                get {
+                    return this.columnSMTPHost;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn PortNumberColumn {
+                get {
+                    return this.columnPortNumber;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn UseSSLColumn {
+                get {
+                    return this.columnUseSSL;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn FromAddressColumn {
+                get {
+                    return this.columnFromAddress;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn ToAddressColumn {
+                get {
+                    return this.columnToAddress;
                 }
             }
             
@@ -2044,12 +2104,18 @@ namespace KSL.Cars.App {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public SettingsRow AddSettingsRow(bool SaveStats, bool LoadLastSearchParams, bool SaveSearchResults) {
+            public SettingsRow AddSettingsRow(bool LoadLastSearchParams, bool SaveSearchResults, string Username, string Password, string SMTPHost, int PortNumber, bool UseSSL, string FromAddress, string ToAddress) {
                 SettingsRow rowSettingsRow = ((SettingsRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
-                        SaveStats,
                         LoadLastSearchParams,
-                        SaveSearchResults};
+                        SaveSearchResults,
+                        Username,
+                        Password,
+                        SMTPHost,
+                        PortNumber,
+                        UseSSL,
+                        FromAddress,
+                        ToAddress};
                 rowSettingsRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowSettingsRow);
                 return rowSettingsRow;
@@ -2072,20 +2138,47 @@ namespace KSL.Cars.App {
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             internal void InitVars() {
-                this.columnSaveStats = base.Columns["SaveStats"];
                 this.columnLoadLastSearchParams = base.Columns["LoadLastSearchParams"];
                 this.columnSaveSearchResults = base.Columns["SaveSearchResults"];
+                this.columnUsername = base.Columns["Username"];
+                this.columnPassword = base.Columns["Password"];
+                this.columnSMTPHost = base.Columns["SMTPHost"];
+                this.columnPortNumber = base.Columns["PortNumber"];
+                this.columnUseSSL = base.Columns["UseSSL"];
+                this.columnFromAddress = base.Columns["FromAddress"];
+                this.columnToAddress = base.Columns["ToAddress"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             private void InitClass() {
-                this.columnSaveStats = new global::System.Data.DataColumn("SaveStats", typeof(bool), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnSaveStats);
                 this.columnLoadLastSearchParams = new global::System.Data.DataColumn("LoadLastSearchParams", typeof(bool), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnLoadLastSearchParams);
                 this.columnSaveSearchResults = new global::System.Data.DataColumn("SaveSearchResults", typeof(bool), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnSaveSearchResults);
+                this.columnUsername = new global::System.Data.DataColumn("Username", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnUsername);
+                this.columnPassword = new global::System.Data.DataColumn("Password", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnPassword);
+                this.columnSMTPHost = new global::System.Data.DataColumn("SMTPHost", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnSMTPHost);
+                this.columnPortNumber = new global::System.Data.DataColumn("PortNumber", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnPortNumber);
+                this.columnUseSSL = new global::System.Data.DataColumn("UseSSL", typeof(bool), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnUseSSL);
+                this.columnFromAddress = new global::System.Data.DataColumn("FromAddress", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnFromAddress);
+                this.columnToAddress = new global::System.Data.DataColumn("ToAddress", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnToAddress);
+                this.columnLoadLastSearchParams.DefaultValue = ((bool)(true));
+                this.columnSaveSearchResults.DefaultValue = ((bool)(false));
+                this.columnUsername.DefaultValue = ((string)(""));
+                this.columnPassword.DefaultValue = ((string)(""));
+                this.columnSMTPHost.DefaultValue = ((string)("smtp.gmail.com"));
+                this.columnPortNumber.DefaultValue = ((int)(587));
+                this.columnUseSSL.DefaultValue = ((bool)(true));
+                this.columnFromAddress.DefaultValue = ((string)(""));
+                this.columnToAddress.DefaultValue = ((string)(""));
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -3830,22 +3923,6 @@ namespace KSL.Cars.App {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool SaveStats {
-                get {
-                    try {
-                        return ((bool)(this[this.tableSettings.SaveStatsColumn]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'SaveStats\' in table \'Settings\' is DBNull.", e);
-                    }
-                }
-                set {
-                    this[this.tableSettings.SaveStatsColumn] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool LoadLastSearchParams {
                 get {
                     try {
@@ -3878,14 +3955,114 @@ namespace KSL.Cars.App {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsSaveStatsNull() {
-                return this.IsNull(this.tableSettings.SaveStatsColumn);
+            public string Username {
+                get {
+                    try {
+                        return ((string)(this[this.tableSettings.UsernameColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Username\' in table \'Settings\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableSettings.UsernameColumn] = value;
+                }
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetSaveStatsNull() {
-                this[this.tableSettings.SaveStatsColumn] = global::System.Convert.DBNull;
+            public string Password {
+                get {
+                    try {
+                        return ((string)(this[this.tableSettings.PasswordColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Password\' in table \'Settings\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableSettings.PasswordColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string SMTPHost {
+                get {
+                    try {
+                        return ((string)(this[this.tableSettings.SMTPHostColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'SMTPHost\' in table \'Settings\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableSettings.SMTPHostColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public int PortNumber {
+                get {
+                    try {
+                        return ((int)(this[this.tableSettings.PortNumberColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'PortNumber\' in table \'Settings\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableSettings.PortNumberColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool UseSSL {
+                get {
+                    try {
+                        return ((bool)(this[this.tableSettings.UseSSLColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'UseSSL\' in table \'Settings\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableSettings.UseSSLColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string FromAddress {
+                get {
+                    try {
+                        return ((string)(this[this.tableSettings.FromAddressColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'FromAddress\' in table \'Settings\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableSettings.FromAddressColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string ToAddress {
+                get {
+                    try {
+                        return ((string)(this[this.tableSettings.ToAddressColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'ToAddress\' in table \'Settings\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableSettings.ToAddressColumn] = value;
+                }
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -3910,6 +4087,90 @@ namespace KSL.Cars.App {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetSaveSearchResultsNull() {
                 this[this.tableSettings.SaveSearchResultsColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsUsernameNull() {
+                return this.IsNull(this.tableSettings.UsernameColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetUsernameNull() {
+                this[this.tableSettings.UsernameColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsPasswordNull() {
+                return this.IsNull(this.tableSettings.PasswordColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetPasswordNull() {
+                this[this.tableSettings.PasswordColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsSMTPHostNull() {
+                return this.IsNull(this.tableSettings.SMTPHostColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetSMTPHostNull() {
+                this[this.tableSettings.SMTPHostColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsPortNumberNull() {
+                return this.IsNull(this.tableSettings.PortNumberColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetPortNumberNull() {
+                this[this.tableSettings.PortNumberColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsUseSSLNull() {
+                return this.IsNull(this.tableSettings.UseSSLColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetUseSSLNull() {
+                this[this.tableSettings.UseSSLColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsFromAddressNull() {
+                return this.IsNull(this.tableSettings.FromAddressColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetFromAddressNull() {
+                this[this.tableSettings.FromAddressColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsToAddressNull() {
+                return this.IsNull(this.tableSettings.ToAddressColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetToAddressNull() {
+                this[this.tableSettings.ToAddressColumn] = global::System.Convert.DBNull;
             }
         }
         
