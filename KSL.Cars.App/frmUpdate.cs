@@ -27,7 +27,8 @@ namespace KSL.Cars.App
                 Control myItem = items[key];
 
                 //We've only got Labels and LinkLabels, which both have an autosize property.
-                myItem.AutoSize = true;
+                myItem.AutoSize = false;
+                myItem.Dock = DockStyle.Fill;
 
                 tableDetails.Controls.Add(key, 0, row);
                 tableDetails.Controls.Add(myItem, 1, row++);

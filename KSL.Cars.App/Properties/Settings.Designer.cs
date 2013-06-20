@@ -358,5 +358,23 @@ namespace KSL.Cars.App.Properties {
                 return ((string)(this["UpdateFileURL"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("KSL.Cars.App.Settings")]
+        public string SettingsFileName {
+            get {
+                return ((string)(this["SettingsFileName"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("75")]
+        public int Truncate_Desc_Column {
+            get {
+                return ((int)(this["Truncate_Desc_Column"]));
+            }
+        }
     }
 }

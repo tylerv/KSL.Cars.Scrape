@@ -37,13 +37,14 @@
             // 
             this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(425, 339);
+            this.label1.Size = new System.Drawing.Size(425, 369);
             this.label1.TabIndex = 0;
             this.label1.Text = resources.GetString("label1.Text");
             // 
             // btnClose
             // 
-            this.btnClose.Location = new System.Drawing.Point(187, 353);
+            this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnClose.Location = new System.Drawing.Point(362, 386);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(75, 23);
             this.btnClose.TabIndex = 1;
@@ -56,13 +57,13 @@
             this.AcceptButton = this.btnClose;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(449, 388);
+            this.ClientSize = new System.Drawing.Size(449, 421);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.label1);
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(465, 427);
+            this.MaximumSize = new System.Drawing.Size(465, 460);
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(465, 427);
+            this.MinimumSize = new System.Drawing.Size(465, 460);
             this.Name = "frmAbout";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;

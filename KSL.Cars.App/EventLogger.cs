@@ -12,24 +12,28 @@ namespace KSL.Cars.App
     {
         static EventLog appLog = new EventLog();
 
-        /// <summary>
-        /// Used to log an exception message to the event log.
-        /// </summary>
-        /// <param name="ex"></param>
-        public static void LogEvent(Exception ex, EventLogEntryType level = EventLogEntryType.Warning, bool ShowPopup = false)
+        public enum DestinationType
         {
-            writeLogEntry(ex.Message, level);
-            if (ShowPopup) MessageBox.Show(ex.Message);
+            MessageBox,
+            EventLog
         }
 
         /// <summary>
-        /// Used to log a string to the application event log.
+        /// Used to log an exception message to the event log or popup box.
+        /// </summary>
+        /// <param name="ex"></param>
+        public static void LogEvent(Exception ex, EventLogEntryType level = EventLogEntryType.Warning, DestinationType destination = DestinationType.EventLog)
+        {
+            writeLogEntry(ex.Message, level, destination);
+        }
+
+        /// <summary>
+        /// Used to log a string to the application event log or popup box.
         /// </summary>
         /// <param name="message"></param>
-        public static void LogEvent(string message, EventLogEntryType level = EventLogEntryType.Warning, bool ShowPopup = false)
+        public static void LogEvent(string message, EventLogEntryType level = EventLogEntryType.Warning, DestinationType destination = DestinationType.EventLog)
         {
-            writeLogEntry(message, level);
-            if (ShowPopup) MessageBox.Show(message);
+            writeLogEntry(message, level, destination);
         }
 
         /// <summary>
@@ -41,13 +45,42 @@ namespace KSL.Cars.App
         /// Actually does the logging.
         /// </summary>
         /// <param name="logMessage"></param>
-        private static void writeLogEntry(string logMessage = "Please run this program with the GUI to create settings file first", EventLogEntryType level = EventLogEntryType.Warning)
+        private static void writeLogEntry(string logMessage = "Please run this program with the GUI to create settings file first", EventLogEntryType level = EventLogEntryType.Warning, DestinationType destination = DestinationType.EventLog)
         {
             appLog.Log = "Application";
             appLog.Source = "KSL.Cars.App";
             try
             {
-                appLog.WriteEntry(logMessage, level);
+                switch (destination)
+                {
+                    case DestinationType.EventLog:
+                        appLog.WriteEntry(logMessage, level);
+                        break;
+                    case DestinationType.MessageBox:
+
+                        MessageBoxIcon temp;
+
+                        switch (level)
+                        {
+                            case EventLogEntryType.Error:
+                                temp = MessageBoxIcon.Error;
+                                break;
+                            case EventLogEntryType.Information:
+                                temp = MessageBoxIcon.Information;
+                                break;
+                            //We don't really expect to have Failure and Success Audit event types,
+                            //but they are listed here for completeness.
+                            case EventLogEntryType.FailureAudit:
+                            case EventLogEntryType.SuccessAudit:
+                            case EventLogEntryType.Warning:
+                            default:
+                                temp = MessageBoxIcon.Warning;
+                                break;
+                        }
+
+                        MessageBox.Show(logMessage, "", MessageBoxButtons.OK, temp);
+                        break;
+                }
             }
             catch (System.Security.SecurityException ex)
             {

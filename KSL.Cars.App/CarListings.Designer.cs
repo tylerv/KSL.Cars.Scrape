@@ -2332,6 +2332,8 @@ namespace KSL.Cars.App {
             
             private global::System.Data.DataColumn columnKeyword;
             
+            private global::System.Data.DataColumn columnBodyStyles;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public SearchesDataTable() {
@@ -2447,6 +2449,14 @@ namespace KSL.Cars.App {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn BodyStylesColumn {
+                get {
+                    return this.columnBodyStyles;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -2482,7 +2492,7 @@ namespace KSL.Cars.App {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public SearchesRow AddSearchesRow(System.DateTime TimeOfSearch, int YearFrom, int YearTo, double PriceFrom, double PriceTo, int MilesFrom, int MilesTo, int Zip, int Distance, string Keyword) {
+            public SearchesRow AddSearchesRow(System.DateTime TimeOfSearch, int YearFrom, int YearTo, double PriceFrom, double PriceTo, int MilesFrom, int MilesTo, int Zip, int Distance, string Keyword, string BodyStyles) {
                 SearchesRow rowSearchesRow = ((SearchesRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         TimeOfSearch,
@@ -2494,7 +2504,8 @@ namespace KSL.Cars.App {
                         MilesTo,
                         Zip,
                         Distance,
-                        Keyword};
+                        Keyword,
+                        BodyStyles};
                 rowSearchesRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowSearchesRow);
                 return rowSearchesRow;
@@ -2534,6 +2545,7 @@ namespace KSL.Cars.App {
                 this.columnZip = base.Columns["Zip"];
                 this.columnDistance = base.Columns["Distance"];
                 this.columnKeyword = base.Columns["Keyword"];
+                this.columnBodyStyles = base.Columns["BodyStyles"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -2559,6 +2571,8 @@ namespace KSL.Cars.App {
                 base.Columns.Add(this.columnDistance);
                 this.columnKeyword = new global::System.Data.DataColumn("Keyword", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnKeyword);
+                this.columnBodyStyles = new global::System.Data.DataColumn("BodyStyles", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnBodyStyles);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
                                 this.columnTimeOfSearch}, true));
                 this.columnTimeOfSearch.AllowDBNull = false;
@@ -2854,6 +2868,8 @@ namespace KSL.Cars.App {
                                 this.columnListingID}, true));
                 this.columnListingID.AllowDBNull = false;
                 this.columnListingID.Unique = true;
+                this.columnName.DefaultValue = ((string)(" "));
+                this.columnPhone.DefaultValue = ((string)(" "));
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -4345,6 +4361,22 @@ namespace KSL.Cars.App {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string BodyStyles {
+                get {
+                    try {
+                        return ((string)(this[this.tableSearches.BodyStylesColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'BodyStyles\' in table \'Searches\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableSearches.BodyStylesColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsYearFromNull() {
                 return this.IsNull(this.tableSearches.YearFromColumn);
             }
@@ -4449,6 +4481,18 @@ namespace KSL.Cars.App {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetKeywordNull() {
                 this[this.tableSearches.KeywordColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsBodyStylesNull() {
+                return this.IsNull(this.tableSearches.BodyStylesColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetBodyStylesNull() {
+                this[this.tableSearches.BodyStylesColumn] = global::System.Convert.DBNull;
             }
         }
         

@@ -35,32 +35,20 @@ namespace KSL.Cars.App
                 {
                     flowYears.Controls.Clear();
                     flowMakes.Controls.Clear();
+                    flowModels.Controls.Clear();
+
                     carListings.ContactInfo.Clear();
                     carListings.Listings.Clear();
+
                     carListings.StatsByYear.Clear();
                     carListings.StatsByMake.Clear();
                     carListings.StatsByModel.Clear();
 
-                    CarListings.SearchesRow newRow = carListings.Searches.NewSearchesRow();
+                    SaveSearch();
 
-                    newRow[carListings.Searches.TimeOfSearchColumn.ColumnName] = DateTime.Now;
-                    newRow[carListings.Searches.YearFromColumn.ColumnName] = int.Parse(txtYearFrom.Text);
-                    newRow[carListings.Searches.YearToColumn.ColumnName] = int.Parse(txtYearTo.Text);
-                    newRow[carListings.Searches.PriceFromColumn.ColumnName] = double.Parse(txtPriceFrom.Text);
-                    newRow[carListings.Searches.PriceToColumn.ColumnName] = double.Parse(txtPriceTo.Text);
-                    newRow[carListings.Searches.MilesFromColumn.ColumnName] = int.Parse(txtMileageFrom.Text);
-                    newRow[carListings.Searches.MilesToColumn.ColumnName] = int.Parse(txtMileageTo.Text);
-                    newRow[carListings.Searches.ZipColumn.ColumnName] = int.Parse(txtZip.Text);
-                    newRow[carListings.Searches.DistanceColumn.ColumnName] = int.Parse(txtMiles.Text);
-                    newRow[carListings.Searches.KeywordColumn.ColumnName] = txtKeyword.Text;
+                    DisableWhileSearching();
 
-                    carListings.Searches.AddSearchesRow(newRow);
-
-                    btnScrape.Enabled = false;
-                    btnCancel.Enabled = true;
-                    dgvResults.Visible = false;
-
-                    string url = buildURL(false);
+                    string url = buildURL();
 
                     minimumWageWorker.RunWorkerAsync(url);
                 }
@@ -167,17 +155,24 @@ namespace KSL.Cars.App
         {
             DataGridViewCell cell = dgvResults[e.ColumnIndex, e.RowIndex];
 
-            if (dgvResults.Columns[e.ColumnIndex].Name.Equals("VIN"))
+            switch (dgvResults.Columns[e.ColumnIndex].Name)
             {
-                cell.ToolTipText = Properties.Settings.Default.VIN_LINK.Replace("{VIN}", cell.Value.ToString());
-                //e.FormattingApplied = true;
-            }
-            else if (dgvResults.Columns[e.ColumnIndex].Name.Equals("Link"))
-            {
-                cell.ToolTipText = Properties.Settings.Default.LISTING_LINK.Replace("{LISTING_ID}", cell.Value.ToString());
-                //e.FormattingApplied = true;
-            }
+                case "VIN":
+                    //Add url tooltip
+                    cell.ToolTipText = Properties.Settings.Default.VIN_LINK.Replace("{VIN}", cell.Value.ToString());
+                    break;
+                case "Link":
+                    //Add url tooltip
+                    cell.ToolTipText = Properties.Settings.Default.LISTING_LINK.Replace("{LISTING_ID}", cell.Value.ToString());
+                    break;
+                case "City":
+                    //Add tooltip for contact information
+                    CarListings.ContactInfoRow row = carListings.ContactInfo.FindByListingID(int.Parse(cell.OwningRow.Cells[Link.Name].Value.ToString()));
 
+                    //Default value is a single space, check for a longer value.
+                    cell.ToolTipText = (row.Name.Length > 1 ? row.Name + ": " : "") + (row.Phone.Length > 1 ? row.Phone : "");
+                    break;
+            }
         }
 
         /// <summary>
@@ -283,17 +278,16 @@ namespace KSL.Cars.App
             {
                 totalScrapeProgress.Value = 100;
 
-                btnScrape.Enabled = true;
-                btnCancel.Enabled = false;
-
                 dgvResults.TopLeftHeaderCell.ToolTipText = "Total Listings Found: " + carListings.Listings.Rows.Count;
 
-                dgvResults.Visible = true;
-                dgvResults.AutoResizeColumns();
-                dgvResults.Update();
+                EnableAfterSearching();
+
+
                 computeStats();
 
-                dgvResults.Sort(dgvResults.Columns["Price"], ListSortDirection.Ascending);
+                AddGraphLinks();
+
+                dgvResults.Sort(Price, ListSortDirection.Ascending);
             }
         }
 
@@ -327,7 +321,7 @@ namespace KSL.Cars.App
                     break;
             }
 
-            Graph myChartForm = new Graph(dataForChart);
+            frmGraph myChartForm = new frmGraph(dataForChart);
             myChartForm.Show();
         }
 
@@ -399,13 +393,18 @@ namespace KSL.Cars.App
         /// <param name="e"></param>
         private void emailResultsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (carListings.Settings.Rows.Count > 0)
+            if (HaveWeGotCompleteEmailSettings())
             {
-
-                emailResults();
-
+                try
+                {
+                    emailResults();
+                }
+                catch (Exception ex)
+                {
+                    EventLogger.LogEvent(ex.Message);
+                }
             }
-            else MessageBox.Show("Check your settings first!");
+            else MessageBox.Show("Email settings seem to be incomplete, please check them.");
         }
 
 
@@ -440,17 +439,6 @@ namespace KSL.Cars.App
             {
                 string filter = "Year=" + Year;
 
-                LinkLabel temp = new LinkLabel();
-                temp.AutoSize = true;
-                temp.Click += new System.EventHandler(this.openGraph);
-                temp.Tag = "Year";
-                temp.Text = Year + " (" + carListings.Listings.Compute("Count(Year)", filter) + ")";
-                toolTip.SetToolTip(temp,
-                    String.Format("{0:C}", (double)carListings.Listings.Compute("Min(Price)", filter)) + "/"
-                    + String.Format("{0:C}", (double)carListings.Listings.Compute("Max(Price)", filter)) + "/"
-                    + String.Format("{0:C}", (double)carListings.Listings.Compute("Avg(Price)", filter)));
-                flowYears.Controls.Add(temp);
-
                 CarListings.StatsByYearRow newRow = carListings.StatsByYear.NewStatsByYearRow();
 
                 newRow["Year"] = int.Parse(Year);
@@ -479,17 +467,6 @@ namespace KSL.Cars.App
             {
                 string filter = "Make='" + Make + "'";
 
-                LinkLabel temp = new LinkLabel();
-                temp.AutoSize = true;
-                temp.Click += new System.EventHandler(this.openGraph);
-                temp.Tag = "Make";
-                temp.Text = Make + " (" + carListings.Listings.Compute("Count(Make)", filter) + ")";
-                toolTip.SetToolTip(temp,
-                    String.Format("{0:C}", (double)carListings.Listings.Compute("Min(Price)", filter)) + "/"
-                    + String.Format("{0:C}", (double)carListings.Listings.Compute("Max(Price)", filter)) + "/"
-                    + String.Format("{0:C}", (double)carListings.Listings.Compute("Avg(Price)", filter)));
-                flowMakes.Controls.Add(temp);
-
                 CarListings.StatsByMakeRow newRow = carListings.StatsByMake.NewStatsByMakeRow();
 
                 newRow["Make"] = Make;
@@ -516,18 +493,7 @@ namespace KSL.Cars.App
 
             foreach (string Model in Models)
             {
-                string filter = "Make='" + Model + "'";
-
-                /*LinkLabel temp = new LinkLabel();
-                temp.AutoSize = true;
-                temp.Click += new System.EventHandler(this.openGraph);
-                temp.Tag = "Model";
-                temp.Text = Model + " (" + carListings.Listings.Compute("Count(Model)", filter) + ")";
-                toolTip.SetToolTip(temp,
-                    String.Format("{0:C}", (double)carListings.Listings.Compute("Min(Price)", filter)) + "/"
-                    + String.Format("{0:C}", (double)carListings.Listings.Compute("Max(Price)", filter)) + "/"
-                    + String.Format("{0:C}", (double)carListings.Listings.Compute("Avg(Price)", filter)));
-                flowModels.Controls.Add(temp);*/
+                string filter = "Model='" + Model + "'";
 
                 CarListings.StatsByModelRow newRow = carListings.StatsByModel.NewStatsByModelRow();
 
@@ -551,6 +517,56 @@ namespace KSL.Cars.App
                 else newRow["Var"] = 0;
 
                 carListings.StatsByModel.AddStatsByModelRow(newRow);
+            }
+        }
+
+        /// <summary>
+        /// Adds links to the stats area to open graphs
+        /// </summary>
+        private void AddGraphLinks()
+        {
+            LinkLabel temp;
+
+            foreach (CarListings.StatsByYearRow row in carListings.StatsByYear.Rows)
+            {
+                temp = new LinkLabel();
+                temp.AutoSize = true;
+                temp.Click += new System.EventHandler(this.openGraph);
+                temp.Tag = "Year";
+                temp.Text = row.Year + " (" + row.Count + ")";
+                toolTip.SetToolTip(temp,
+                    String.Format("{0:C}", row.Min) + "/"
+                    + String.Format("{0:C}", row.Max) + "/"
+                    + String.Format("{0:C}", row.Avg));
+                flowYears.Controls.Add(temp);
+            }
+
+            foreach (CarListings.StatsByMakeRow row in carListings.StatsByMake.Rows)
+            {
+                temp = new LinkLabel();
+                temp.AutoSize = true;
+                temp.Click += new System.EventHandler(this.openGraph);
+                temp.Tag = "Make";
+                temp.Text = row.Make + " (" + row.Count + ")";
+                toolTip.SetToolTip(temp,
+                    String.Format("{0:C}", row.Min) + "/"
+                    + String.Format("{0:C}", row.Max) + "/"
+                    + String.Format("{0:C}", row.Avg));
+                flowMakes.Controls.Add(temp);
+            }
+
+            foreach (CarListings.StatsByModelRow row in carListings.StatsByModel.Rows)
+            {
+                temp = new LinkLabel();
+                temp.AutoSize = true;
+                temp.Click += new System.EventHandler(this.openGraph);
+                temp.Tag = "Model";
+                temp.Text = row.Model + " (" + row.Count + ")";
+                toolTip.SetToolTip(temp,
+                    String.Format("{0:C}", row.Min) + "/"
+                    + String.Format("{0:C}", row.Max) + "/"
+                    + String.Format("{0:C}", row.Avg));
+                flowModels.Controls.Add(temp);
             }
         }
 
@@ -591,16 +607,15 @@ namespace KSL.Cars.App
                         highlight = true;
                     }
 
-                    if (contactInfo.IsPhoneNull())
+                    //default value for phone number is a single space, 
+                    //check for that or smaller for phone number.
+                    if (contactInfo.Phone.Length <= 1)
                     {
-                        row.Cells["Highlighted"].ToolTipText = "This car doesn't have a phone number listed (properly). Beware a scam...";
+                        row.Cells["Highlighted"].ToolTipText = "This car does not have a phone number listed (properly). Beware a scam...";
                         row.DefaultCellStyle.BackColor = Color.Red;
                     }
                     else
                     {
-                        if (contactInfo.IsNameNull()) row.Cells["City"].ToolTipText = contactInfo.Phone;
-                        else row.Cells["City"].ToolTipText = contactInfo.Name + ": " + contactInfo.Phone;
-
                         if (highlight)
                         {
                             row.Cells["Highlighted"].ToolTipText = "Price is significantly lower than average for a " + row.Cells[matchingColumn].Value.ToString();
@@ -786,47 +801,27 @@ namespace KSL.Cars.App
         /// Builds a URL from the contents of the text boxes
         /// </summary>
         /// <returns></returns>
-        public string buildURL(bool CmdLine)
+        public string buildURL()
         {
-            if (CmdLine)
+            if (carListings.Searches.Count > 0)
             {
+                //if (txtMiles.Text.Length < 0) txtMiles.Text = "0";
 
-
-                if (carListings.Searches.Count > 0)
-                {
-                    CarListings.SearchesRow lastSearch = carListings.Searches.First<CarListings.SearchesRow>();
-
-                    return "http://www.ksl.com/auto/search/index?"
-                               + "&keyword=" + lastSearch.Keyword
-                               + "&yearFrom=" + lastSearch.YearFrom
-                               + "&yearTo=" + lastSearch.YearTo
-                               + "&priceFrom=" + lastSearch.PriceFrom
-                               + "&priceTo=" + lastSearch.PriceTo
-                               + "&mileageFrom=" + lastSearch.MilesFrom
-                               + "&mileageTo=" + lastSearch.MilesTo
-                               + "&miles=" + lastSearch.Distance
-                               + "&zip=" + lastSearch.Zip;
-                }
-                else
-                {
-                    return "";
-                }
-            }
-            else
-            {
-                if (txtMiles.Text.Length < 0) txtMiles.Text = "0";
+                CarListings.SearchesRow lastSearch = carListings.Searches.Last<CarListings.SearchesRow>();
 
                 return "http://www.ksl.com/auto/search/index?"
-                        + "&keyword=" + txtKeyword.Text
-                        + "&yearFrom=" + txtYearFrom.Text
-                        + "&yearTo=" + txtYearTo.Text
-                        + "&priceFrom=" + int.Parse(txtPriceFrom.Text)
-                        + "&priceTo=" + txtPriceTo.Text.Replace(",", "").Replace("$", "").Replace(".", "")
-                        + "&mileageFrom=" + txtMileageFrom.Text.Replace(",", "")
-                        + "&mileageTo=" + String.Format("{0:D}", txtMileageTo.Text)
-                        + "&miles=" + txtMiles.Text
-                        + "&zip=" + txtZip.Text;
+                        + "&keyword=" + lastSearch.Keyword
+                        + "&yearFrom=" + lastSearch.YearFrom
+                        + "&yearTo=" + lastSearch.YearTo
+                        + "&priceFrom=" + lastSearch.PriceFrom
+                        + "&priceTo=" + lastSearch.PriceTo
+                        + "&mileageFrom=" + lastSearch.MilesFrom
+                        + "&mileageTo=" + lastSearch.MilesTo
+                        + "&miles=" + lastSearch.Distance
+                        + "&zip=" + lastSearch.Zip
+                        + lastSearch.BodyStyles.Replace("|", "&body[]=").Replace(" ", "+");
             }
+            else return "";
         }
 
         /// <summary>
@@ -834,9 +829,9 @@ namespace KSL.Cars.App
         /// </summary>
         public bool LoadData(bool CmdLine)
         {
-            if (System.IO.File.Exists("KSL.Cars.App.settings"))
+            if (System.IO.File.Exists(Properties.Settings.Default.SettingsFileName))
             {
-                carListings.ReadXml("KSL.Cars.App.settings");
+                carListings.ReadXml(Properties.Settings.Default.SettingsFileName);
 
                 //You need to run the program from the GUI at least once before running from the commandline
                 if (CmdLine)
@@ -849,20 +844,31 @@ namespace KSL.Cars.App
                     {
                         CarListings.SearchesRow lastSearch = carListings.Searches.Last<CarListings.SearchesRow>();
 
-                        txtPriceFrom.Text = lastSearch.PriceFrom.ToString();
-                        txtPriceTo.Text = lastSearch.PriceTo.ToString();
-                        txtMileageFrom.Text = lastSearch.MilesFrom.ToString();
-                        txtMileageTo.Text = lastSearch.MilesTo.ToString();
-                        txtYearFrom.Text = lastSearch.YearFrom.ToString();
-                        txtYearTo.Text = lastSearch.YearTo.ToString();
+                        numPriceLow.Value = (decimal)lastSearch.PriceFrom;
+                        numPriceHigh.Value = (decimal)lastSearch.PriceTo;
+                        numMileageLow.Value = lastSearch.MilesFrom;
+                        numMileageHigh.Value = lastSearch.MilesTo;
+                        numYearLow.Value = lastSearch.YearFrom;
+                        numYearHigh.Value = lastSearch.YearTo;
                         txtZip.Text = lastSearch.Zip.ToString();
-                        txtMiles.Text = lastSearch.Distance.ToString();
+                        numDistance.Value = lastSearch.Distance;
                         txtKeyword.Text = lastSearch.Keyword;
+
+                        string[] bodyStyles = lastSearch.BodyStyles.Split('|');
+
+                        for (int i = 0; i < clbBodyTypes.Items.Count; i++)
+                        {
+                            if (bodyStyles.Contains(clbBodyTypes.Items[i].ToString()))
+                            {
+                                clbBodyTypes.SetItemChecked(i, true);
+                            }
+                        }
                     }
 
                     if (carListings.Listings.Count > 0 && carListings.Settings.First<CarListings.SettingsRow>().Field<Boolean>(carListings.Settings.SaveSearchResultsColumn))
                     {
                         dgvResults.Sort(Price, ListSortDirection.Ascending);
+                        AddGraphLinks();
                     }
 
                     if (carListings.Settings.Rows.Count == 0)
@@ -920,39 +926,7 @@ namespace KSL.Cars.App
                     {
                         carListings.Searches.Clear();
 
-                        CarListings.SearchesRow newRow = carListings.Searches.NewSearchesRow();
-
-                        int yearFrom;
-                        int yearTo;
-                        double priceFrom;
-                        double priceTo;
-                        int mileageFrom;
-                        int mileageTo;
-                        int zip;
-                        int distance;
-
-                        newRow.TimeOfSearch = DateTime.Now;
-
-                        if (!int.TryParse(txtYearFrom.Text, out yearFrom)) yearFrom = 0;
-                        if (!int.TryParse(txtYearTo.Text, out yearTo)) yearTo = 0;
-                        if (!double.TryParse(txtPriceFrom.Text, out priceFrom)) priceFrom = 0;
-                        if (!double.TryParse(txtPriceTo.Text, out priceTo)) priceTo = 0;
-                        if (!int.TryParse(txtMileageFrom.Text, out mileageFrom)) mileageFrom = 0;
-                        if (!int.TryParse(txtMileageTo.Text, out mileageTo)) mileageTo = 0;
-                        if (!int.TryParse(txtZip.Text, out zip)) zip = 0;
-                        if (!int.TryParse(txtMiles.Text, out distance)) distance = 0;
-
-                        newRow.YearFrom = yearFrom;
-                        newRow.YearTo = yearTo;
-                        newRow.PriceFrom = priceFrom;
-                        newRow.PriceTo = priceTo;
-                        newRow.MilesFrom = mileageFrom;
-                        newRow.MilesTo = mileageTo;
-                        newRow.Keyword = txtKeyword.Text;
-                        newRow.Zip = zip;
-                        newRow.Distance = distance;
-
-                        carListings.Searches.AddSearchesRow(newRow);
+                        SaveSearch();
                     }
                 }
             }
@@ -963,7 +937,7 @@ namespace KSL.Cars.App
             finally
             {
                 //And then write the file.
-                carListings.WriteXml("KSL.Cars.App.settings");
+                carListings.WriteXml(Properties.Settings.Default.SettingsFileName);
             }
         }
 
@@ -989,6 +963,12 @@ namespace KSL.Cars.App
                 this.Cursor = Cursors.WaitCursor;
                 postman.SendMail(currentSettings.ToAddress, subjectLine, htmlBody);
                 this.Cursor = Cursors.Default;
+                MessageBox.Show("Email sent!", "Sent!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            }
+            else
+            {
+                MessageBox.Show("There aren't any listings to email!", "No listings...", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -999,28 +979,34 @@ namespace KSL.Cars.App
         /// <returns>html table in a string</returns>
         public string buildTable(DataGridViewRowCollection sourceRows)
         {
-            
+            string tab = "\t";
+            string nl = "\n";
 
-            string rowStart = "\t<tr>\n";
-            string rowClose = "</tr>\n";
+            //standardize the start and end tags where possible
+            //to make it easier to control tab indents and newlines.
+            string rowStart = tab + "<tr>" + nl;
+            string rowClose = tab + "</tr>" + nl;
 
-            string cellStart = "\t\t<td>\n";
-            string cellEnd = "</td>\n";
+            string cellStart = tab + tab + "<td>" + nl;
+            string cellEnd = "</td>" + nl;
 
-            string styleText = "<style media=\"screen\" type=\"text/css\">\n" +
-                                    "\ttr.border_bottom th {\n" +
-                                      "\t\tborder-bottom:1pt solid black;\n" +
-                                    "\t}\n" +
-                                "</style>\n\n";
+            //A little bit of CSS to put a border between the headers and data rows.
+            string styleText = "<style media=\"screen\" type=\"text/css\">" + nl +
+                                    tab + "tr.border_bottom th {" + nl +
+                                      tab + tab + "border-bottom:1pt solid black;" + nl +
+                                    tab + "}" + nl +
+                                "</style>" + nl + nl;
 
             string table = "";
 
+            //Gotta have some search results to display!
             if (sourceRows.Count > 0)
             {
 
-                table += styleText + "<table>\n";
+                table += styleText + "<table>" + nl;
 
-                table += "\t<tr class=\"border_bottom\">\n";
+                //a little bit of CSS links in here to separate the headers.
+                table += tab + "<tr class=\"border_bottom\">" + nl;
                 foreach (DataGridViewColumn column in sourceRows[0].DataGridView.Columns)
                 {
                     switch (column.Name)
@@ -1029,10 +1015,10 @@ namespace KSL.Cars.App
                             //We don't want this column, do nothing.
                             break;
                         case "Highlighted":
-                            table += "\t\t<th>(X)</th>\n";
+                            table += tab + tab + "<th>(X)</th>" + nl;
                             break;
                         default:
-                            table += "\t\t<th>" + column.Name + "</th>\n";
+                            table += tab + tab + "<th>" + column.Name + "</th>" + nl;
                             break;
                     }
                 }
@@ -1041,7 +1027,9 @@ namespace KSL.Cars.App
 
                 foreach (DataGridViewRow row in sourceRows)
                 {
-                    table += rowStart;
+
+                    // style="background-color:red">
+                    table += rowStart.Replace(">", " style=\"background-color:" + row.DefaultCellStyle.BackColor.Name.ToLower() + "\">");
                     foreach (DataGridViewCell cell in row.Cells)
                     {
                         switch (cell.OwningColumn.Name)
@@ -1050,7 +1038,7 @@ namespace KSL.Cars.App
                                 //We don't want this column, do nothing.
                                 break;
                             case "Highlighted":
-                                table += "\t\t<td title='" + cell.ToolTipText + "'><input type=\"checkbox\" disabled=\"disabled\" " + (bool.Parse(cell.FormattedValue.ToString()) ? "checked=\"checked\"" : "") + " />" + cellEnd;
+                                table += tab + tab + "<td title='" + cell.ToolTipText + "'><input type=\"checkbox\" disabled=\"disabled\" " + (bool.Parse(cell.FormattedValue.ToString()) ? "checked=\"checked\"" : "") + " />" + cellEnd;
                                 break;
                             case "Link":
                             case "VIN":
@@ -1058,6 +1046,13 @@ namespace KSL.Cars.App
                                 break;
                             case "Price":
                                 table += cellStart + String.Format("{0:C}", cell.Value) + cellEnd;
+                                break;
+                            case "City":
+                                table += cellStart + "<div title=\"" + cell.ToolTipText + "\">" + cell.Value + "</div>" + cellEnd;
+                                break;
+                            case "Description":
+                                //We only want the first little bit of the Description column...
+                                table += cellStart + cell.Value.ToString().Remove(Properties.Settings.Default.Truncate_Desc_Column) + "..." + cellEnd;
                                 break;
                             default:
                                 //Default text (no formatting)
@@ -1071,6 +1066,98 @@ namespace KSL.Cars.App
                 table += "</table>";
             }
             return table;
+        }
+
+        /// <summary>
+        /// Checks to see if all the email settings are filled out
+        /// </summary>
+        /// <returns>Returns True is the email settings are complete.</returns>
+        private bool HaveWeGotCompleteEmailSettings()
+        {
+            bool returnVal = true;
+
+            CarListings.SettingsRow settings = carListings.Settings.First();
+
+            returnVal = returnVal && (settings.SMTPHost.Length > 0);
+            returnVal = returnVal && (settings.ToAddress.Length > 0);
+            returnVal = returnVal && (settings.FromAddress.Length > 0);
+            returnVal = returnVal && (settings.Username.Length > 0);
+            returnVal = returnVal && (settings.Password.Length > 0);
+            //settings.UseSSL is always either checked or unchecked, so the 
+            //value is valid. we can't know whether or not it is *correct*
+
+            return returnVal;
+        }
+
+        /// <summary>
+        /// Saves the current search parameters to a row in the Searches table.
+        /// </summary>
+        private void SaveSearch()
+        {
+            int zip;
+            if (!int.TryParse(txtZip.Text, out zip)) zip = 0;
+
+            string bodyStyles = "";
+            foreach (object item in clbBodyTypes.CheckedItems)
+            {
+                bodyStyles += "|" + item.ToString();
+            }
+
+            CarListings.SearchesRow newRow = carListings.Searches.NewSearchesRow();
+            newRow.TimeOfSearch = DateTime.Now;
+            newRow.YearFrom = Convert.ToInt32(numYearLow.Value);
+            newRow.YearTo = Convert.ToInt32(numYearHigh.Value);
+            newRow.PriceFrom = Convert.ToInt32(numPriceLow.Value);
+            newRow.PriceTo = Convert.ToInt32(numPriceHigh.Value);
+            newRow.MilesFrom = Convert.ToInt32(numMileageLow.Value);
+            newRow.MilesTo = Convert.ToInt32(numMileageHigh.Value);
+            newRow.Distance = Convert.ToInt32(numDistance.Value);
+            newRow.Zip = zip;
+            newRow.Keyword = txtKeyword.Text;
+            newRow.BodyStyles = bodyStyles;
+
+            carListings.Searches.AddSearchesRow(newRow);
+        }
+
+        /// <summary>
+        /// Disables a set of controls while a search is running.
+        /// </summary>
+        private void DisableWhileSearching()
+        {
+            foreach (Control control in grpSearchParams.Controls)
+            {
+                if (!(control is Label))
+                {
+                    control.Enabled = false;
+                }
+            }
+
+            btnScrape.Enabled = false;
+            tabStats.Enabled = false;
+            dgvResults.Visible = false;
+
+            btnCancel.Enabled = true;
+
+        }
+
+        /// <summary>
+        /// Re-enabled a set of controls after a search has been completed or cancelled.
+        /// </summary>
+        private void EnableAfterSearching()
+        {
+            foreach (Control control in grpSearchParams.Controls)
+            {
+                if (!(control is Label))
+                {
+                    control.Enabled = true;
+                }
+            }
+
+            btnScrape.Enabled = true;
+            tabStats.Enabled = true;
+            dgvResults.Visible = true;
+
+            btnCancel.Enabled = false;
         }
     }
 }

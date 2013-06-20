@@ -125,11 +125,11 @@
     <Compile Include="frmUpdate.Designer.cs">
       <DependentUpon>frmUpdate.cs</DependentUpon>
     </Compile>
-    <Compile Include="Graph.cs">
+    <Compile Include="frmGraph.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Graph.Designer.cs">
-      <DependentUpon>Graph.cs</DependentUpon>
+    <Compile Include="frmGraph.Designer.cs">
+      <DependentUpon>frmGraph.cs</DependentUpon>
     </Compile>
     <Compile Include="HtmlAgilityPack\crc32.cs" />
     <Compile Include="HtmlAgilityPack\EncodingFoundException.cs" />
@@ -184,8 +184,8 @@
     <EmbeddedResource Include="frmUpdate.resx">
       <DependentUpon>frmUpdate.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Graph.resx">
-      <DependentUpon>Graph.cs</DependentUpon>
+    <EmbeddedResource Include="frmGraph.resx">
+      <DependentUpon>frmGraph.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -262,7 +262,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildVersioningStyle="None.MonthStamp.DayStamp.Increment" BuildVersion_StartDate="2013/6/12" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" />
+      <UserProperties BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_StartDate="2013/6/12" BuildVersion_BuildVersioningStyle="None.MonthStamp.DayStamp.Increment" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

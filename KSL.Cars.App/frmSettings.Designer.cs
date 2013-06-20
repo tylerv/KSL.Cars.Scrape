@@ -46,6 +46,7 @@
             this.txtUsername = new System.Windows.Forms.TextBox();
             this.txtPort = new System.Windows.Forms.TextBox();
             this.txtSMTPHost = new System.Windows.Forms.TextBox();
+            this.btnClear = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -53,7 +54,7 @@
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(197, 276);
+            this.btnCancel.Location = new System.Drawing.Point(197, 301);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 5;
@@ -64,7 +65,7 @@
             // btnOK
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOK.Location = new System.Drawing.Point(116, 276);
+            this.btnOK.Location = new System.Drawing.Point(116, 301);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 4;
@@ -109,7 +110,7 @@
             this.groupBox1.Controls.Add(this.txtUsername);
             this.groupBox1.Controls.Add(this.txtPort);
             this.groupBox1.Controls.Add(this.txtSMTPHost);
-            this.groupBox1.Location = new System.Drawing.Point(12, 60);
+            this.groupBox1.Location = new System.Drawing.Point(12, 93);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(260, 202);
             this.groupBox1.TabIndex = 3;
@@ -237,22 +238,33 @@
             this.txtSMTPHost.Size = new System.Drawing.Size(171, 20);
             this.txtSMTPHost.TabIndex = 0;
             // 
+            // btnClear
+            // 
+            this.btnClear.Location = new System.Drawing.Point(204, 12);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(68, 75);
+            this.btnClear.TabIndex = 6;
+            this.btnClear.Text = "Delete Settings File";
+            this.btnClear.UseVisualStyleBackColor = true;
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+            // 
             // frmSettings
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(284, 311);
+            this.ClientSize = new System.Drawing.Size(284, 336);
+            this.Controls.Add(this.btnClear);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.chkSaveLastListings);
             this.Controls.Add(this.chkKeepSearchParameters);
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(300, 350);
+            this.MaximumSize = new System.Drawing.Size(300, 375);
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(300, 350);
+            this.MinimumSize = new System.Drawing.Size(300, 375);
             this.Name = "frmSettings";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
@@ -285,5 +297,6 @@
         public System.Windows.Forms.TextBox txtFrom;
         private System.Windows.Forms.Label label6;
         public System.Windows.Forms.TextBox txtTo;
+        private System.Windows.Forms.Button btnClear;
     }
 }

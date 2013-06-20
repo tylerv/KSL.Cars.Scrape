@@ -1,6 +1,6 @@
 ﻿namespace KSL.Cars.App
 {
-    partial class Graph
+    partial class frmGraph
     {
         /// <summary>
         /// Required designer variable.

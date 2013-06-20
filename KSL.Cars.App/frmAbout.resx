@@ -127,13 +127,15 @@ Enter in the search criteria, any keywords, then hit Search.
 
 Hover over the top-left box in the grid (where the row and column headings meet) to see how many toal results there are.
 
-Hover over each checkbox to see why that row was highlighted.
+Hover over checked checkboxes to see why that row was highlighted.
+
+Hover over cells in the "City" column to see a contact name and phone number (if available).
 
 Click on column headers to sort by that column.
 
 Click on entries in the "Link" column to visit the KSL listing itself.
 
-Click on the VIN Report link to visit a Car-fax type report for that car's.  *NOTE* the first visit to this webpage requires copying and pasting the VIN from the address bar into the search box.  Subsequent visits should work automatically.
+Click on the VIN to visit a Car-fax type report for that car's.  *NOTE* the first visit to this webpage requires copying and pasting the VIN from the address bar into the search box.  Subsequent visits should work automatically.
 
 Click any of the links under the Statistics section in the top right to open a graph for that item. Left click on a bar to open the KSL.com listing, right click for the VIN Report for that listing.
 

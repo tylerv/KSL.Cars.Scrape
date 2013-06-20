@@ -23,11 +23,11 @@ namespace KSL.Cars.App
                     switch (arg.Replace("/", "").Replace("-", "").ToLower())
                     {
                         case "lastsearch":
-                            if (System.IO.File.Exists("KSL.Cars.App.settings"))
+                            if (System.IO.File.Exists(Properties.Settings.Default.SettingsFileName))
                             {
                                 myProgram = new frmMain();
                                 myProgram.LoadData(true);
-                                string url = myProgram.buildURL(true);
+                                string url = myProgram.buildURL();
                                 if (url.Length > 0)
                                 {
                                     myProgram.parsePage(url);
@@ -38,7 +38,10 @@ namespace KSL.Cars.App
                             else EventLogger.LogEvent();
                             break;
                         case "update":
+                            //Check for a /y or /yes to suppress the yes/no prompt on downloading the update.
                             if (args.Contains("yes") || args.Contains("y")) Updater.GetUpdate(true);
+                            
+                            //otherwise, just check for updates and ask to download.
                             else Updater.GetUpdate();
                             break;
                         case "email":

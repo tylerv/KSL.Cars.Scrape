@@ -11,10 +11,10 @@ using System.Windows.Forms.DataVisualization.Charting;
 
 namespace KSL.Cars.App
 {
-    public partial class Graph : Form
+    public partial class frmGraph : Form
     {
         DataTable chartData;
-        public Graph(DataTable dataIn)
+        public frmGraph(DataTable dataIn)
         {
             InitializeComponent();
 

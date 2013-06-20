@@ -83,5 +83,15 @@ namespace KSL.Cars.App
             if (!acceptable.Contains<Keys>(e.KeyCode)) e.SuppressKeyPress = true;
         }
 
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            if (System.IO.File.Exists(Properties.Settings.Default.SettingsFileName))
+            {
+                var results = MessageBox.Show("Really delete settings file?", "Delete?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (results == System.Windows.Forms.DialogResult.Yes) System.IO.File.Delete(Properties.Settings.Default.SettingsFileName);
+            }
+            else MessageBox.Show("No existing settings file found...");
+        }
+
     }
 }

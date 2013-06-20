@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Code adapted from Microsoft Example at:
+// http://msdn.microsoft.com/en-us/library/system.security.cryptography.rijndael.aspx
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,18 +13,14 @@ namespace KSL.Cars.App
 {
     class Encryption
     {
-        public static string Encrypt(string plainText, string KeyIn = "bf5a8d42bc03f9fbe9bb0e7da17cbfe4", string initVector = "d158a5494cf76bf2")
-        {
-            byte[] IV = Encoding.ASCII.GetBytes(initVector);
-            byte[] Key = Encoding.ASCII.GetBytes(KeyIn);
+        private static byte[] IV = Encoding.ASCII.GetBytes("d158a5494cf76bf2");
+        private static byte[] Key = Encoding.ASCII.GetBytes("bf5a8d42bc03f9fbe9bb0e7da17cbfe4");
 
+        public static string Encrypt(string plainText)
+        {
             // Check arguments. 
             if (plainText == null || plainText.Length <= 0)
-                throw new ArgumentNullException("plainText");
-            if (Key == null || Key.Length <= 0)
-                throw new ArgumentNullException("Key");
-            if (IV == null || IV.Length <= 0)
-                throw new ArgumentNullException("Key");
+                throw new ArgumentNullException("password");
             byte[] encrypted;
             // Create an Rijndael object 
             // with the specified key and IV. 
@@ -53,18 +52,12 @@ namespace KSL.Cars.App
             return Convert.ToBase64String(encrypted);
         }
 
-        public static string Decrypt(string cipherText, string KeyIn = "bf5a8d42bc03f9fbe9bb0e7da17cbfe4", string initVector = "d158a5494cf76bf2")
+        public static string Decrypt(string cipherText)
         {
-            byte[] IV = Encoding.ASCII.GetBytes(initVector);
-            byte[] Key = Encoding.ASCII.GetBytes(KeyIn);
 
             // Check arguments. 
             if (cipherText == null || cipherText.Length <= 0)
-                throw new ArgumentNullException("cipherText");
-            if (Key == null || Key.Length <= 0)
-                throw new ArgumentNullException("Key");
-            if (IV == null || IV.Length <= 0)
-                throw new ArgumentNullException("Key");
+                throw new ArgumentNullException("password");
 
             // Declare the string used to hold 
             // the decrypted text. 
