@@ -38,6 +38,7 @@ namespace KSL.Cars.App
                     flowModels.Controls.Clear();
 
                     carListings.ContactInfo.Clear();
+                    carListings.Highlights.Clear();
                     carListings.Listings.Clear();
 
                     carListings.StatsByYear.Clear();
@@ -155,6 +156,8 @@ namespace KSL.Cars.App
         {
             DataGridViewCell cell = dgvResults[e.ColumnIndex, e.RowIndex];
 
+            int ListingID = int.Parse(cell.OwningRow.Cells[Link.Name].Value.ToString());
+
             switch (dgvResults.Columns[e.ColumnIndex].Name)
             {
                 case "VIN":
@@ -167,7 +170,7 @@ namespace KSL.Cars.App
                     break;
                 case "City":
                     //Add tooltip for contact information
-                    CarListings.ContactInfoRow row = carListings.ContactInfo.FindByListingID(int.Parse(cell.OwningRow.Cells[Link.Name].Value.ToString()));
+                    CarListings.ContactInfoRow row = carListings.ContactInfo.FindByListingID(ListingID);
 
                     //Default value is a single space, check for a longer value.
                     cell.ToolTipText = (row.Name.Length > 1 ? row.Name + ": " : "") + (row.Phone.Length > 1 ? row.Phone : "");
@@ -182,7 +185,17 @@ namespace KSL.Cars.App
         /// <param name="e"></param>
         private void dgvResults_Sorted(object sender, EventArgs e)
         {
-            highlight();
+            foreach (DataGridViewRow row in dgvResults.Rows)
+            {
+
+                CarListings.HighlightsRow highlight = carListings.Highlights.FindByListingID(int.Parse(row.Cells[Link.Name].Value.ToString()));
+
+                if (highlight != null)
+                {
+                    row.DefaultCellStyle.BackColor = highlight.Color;
+                    row.Cells["Price"].ToolTipText = highlight.ToolTipText;
+                }
+            }
         }
 
         /// <summary>
@@ -282,8 +295,9 @@ namespace KSL.Cars.App
 
                 EnableAfterSearching();
 
-
                 computeStats();
+
+                CalcHighlights();
 
                 AddGraphLinks();
 
@@ -397,7 +411,7 @@ namespace KSL.Cars.App
             {
                 try
                 {
-                    emailResults();
+                    emailResults(true);
                 }
                 catch (Exception ex)
                 {
@@ -573,54 +587,67 @@ namespace KSL.Cars.App
         /// <summary>
         /// Highlights certain rows based on price and the presence of contact information. Also adds tooltips to rows.
         /// </summary>
-        private void highlight()
+        private void CalcHighlights()
         {
-            foreach (DataGridViewRow row in dgvResults.Rows)
+            CarListings.HighlightsRow highlightRow;
+
+            
+            foreach (CarListings.ListingsRow row in carListings.Listings.Rows)
             {
-                CarListings.StatsByYearRow yearStats = carListings.StatsByYear.FindByYear(int.Parse(row.Cells["Year"].Value.ToString()));
-                CarListings.StatsByMakeRow makeStats = carListings.StatsByMake.FindByMake(row.Cells["Make"].Value.ToString());
-                CarListings.StatsByModelRow modelStats = carListings.StatsByModel.FindByModel(row.Cells["Model"].Value.ToString());
+                CarListings.ContactInfoRow contactInfo = carListings.ContactInfo.FindByListingID(row.ListingID);
 
-                CarListings.ListingsRow matchingListing = carListings.Listings.FindByListingID(int.Parse(row.Cells["Link"].Value.ToString()));
-                CarListings.ContactInfoRow contactInfo = carListings.ContactInfo.FindByListingID(int.Parse(row.Cells["Link"].Value.ToString()));
-
-                if (yearStats != null && makeStats != null && matchingListing != null)
+                //default value for phone number is a single space, 
+                //check for that or smaller for phone number.
+                if (contactInfo.Phone.Length <= 1)
                 {
-                    bool highlight = false;
+                    highlightRow = carListings.Highlights.NewHighlightsRow();
 
-                    string matchingColumn = "";
+                    highlightRow.ListingID = row.ListingID;
+                    highlightRow.ToolTipText = "This car does not have a phone number listed (properly). Beware a scam...";
+                    highlightRow.Color = Color.Red;
 
-                    if ((matchingListing.Price < (yearStats.Avg - yearStats.StDev)))
-                    {
-                        matchingColumn = "Year";
-                        highlight = true;
+                    carListings.Highlights.AddHighlightsRow(highlightRow);
+                }
+                else
+                {
+                    CarListings.StatsByYearRow yearStats = carListings.StatsByYear.FindByYear(row.Year);
+                    CarListings.StatsByMakeRow makeStats = carListings.StatsByMake.FindByMake(row.Make);
+                    CarListings.StatsByModelRow modelStats = carListings.StatsByModel.FindByModel(row.Model);
 
-                    }
-                    else if ((matchingListing.Price < (modelStats.Avg - modelStats.StDev)))
-                    {
-                        matchingColumn = "Model";
-                        highlight = true;
-                    }
-                    else if ((matchingListing.Price < (makeStats.Avg - makeStats.StDev)))
-                    {
-                        matchingColumn = "Make";
-                        highlight = true;
-                    }
+                    CarListings.ListingsRow matchingListing = carListings.Listings.FindByListingID(row.ListingID);
 
-                    //default value for phone number is a single space, 
-                    //check for that or smaller for phone number.
-                    if (contactInfo.Phone.Length <= 1)
+                    if (yearStats != null && makeStats != null && matchingListing != null)
                     {
-                        row.Cells["Highlighted"].ToolTipText = "This car does not have a phone number listed (properly). Beware a scam...";
-                        row.DefaultCellStyle.BackColor = Color.Red;
-                    }
-                    else
-                    {
+                        bool highlight = false;
+
+                        string matchingColumn = "";
+
+                        if ((matchingListing.Price < (yearStats.Avg - yearStats.StDev)))
+                        {
+                            matchingColumn = "Year";
+                            highlight = true;
+
+                        }
+                        else if ((matchingListing.Price < (modelStats.Avg - modelStats.StDev)))
+                        {
+                            matchingColumn = "Model";
+                            highlight = true;
+                        }
+                        else if ((matchingListing.Price < (makeStats.Avg - makeStats.StDev)))
+                        {
+                            matchingColumn = "Make";
+                            highlight = true;
+                        }
+
                         if (highlight)
                         {
-                            row.Cells["Highlighted"].ToolTipText = "Price is significantly lower than average for a " + row.Cells[matchingColumn].Value.ToString();
-                            row.Cells["Highlighted"].Value = true;
-                            row.DefaultCellStyle.BackColor = Color.Yellow;
+                            highlightRow = carListings.Highlights.NewHighlightsRow();
+
+                            highlightRow.ListingID = row.ListingID;
+                            highlightRow.ToolTipText = "Price is significantly lower than average for a " + row[matchingColumn];
+                            highlightRow.Color = Color.Yellow;
+
+                            carListings.Highlights.AddHighlightsRow(highlightRow);
                         }
                     }
                 }
@@ -836,6 +863,8 @@ namespace KSL.Cars.App
                 //You need to run the program from the GUI at least once before running from the commandline
                 if (CmdLine)
                 {
+                    carListings.Highlights.Clear();
+                    carListings.ContactInfo.Clear();
                     carListings.Listings.Clear();
                 }
                 else
@@ -944,7 +973,7 @@ namespace KSL.Cars.App
         /// <summary>
         /// Loads the current email settings and emails the results.
         /// </summary>
-        public void emailResults()
+        public void emailResults(bool showMessages)
         {
             if (carListings.Listings.Count > 0)
             {
@@ -957,18 +986,18 @@ namespace KSL.Cars.App
                                             currentSettings.PortNumber,
                                             currentSettings.UseSSL);
 
-                string htmlBody = buildTable(dgvResults.Rows);
+                string htmlBody = buildTable();
                 string subjectLine = "KSL Cars Search Results";
 
                 this.Cursor = Cursors.WaitCursor;
                 postman.SendMail(currentSettings.ToAddress, subjectLine, htmlBody);
                 this.Cursor = Cursors.Default;
-                MessageBox.Show("Email sent!", "Sent!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                EventLogger.LogEvent("Email Sent!", System.Diagnostics.EventLogEntryType.Information, (showMessages ? EventLogger.DestinationType.MessageBox : EventLogger.DestinationType.EventLog));
 
             }
             else
             {
-                MessageBox.Show("There aren't any listings to email!", "No listings...", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                EventLogger.LogEvent("There aren't any listings to email!", System.Diagnostics.EventLogEntryType.Warning, (showMessages ? EventLogger.DestinationType.MessageBox : EventLogger.DestinationType.EventLog));
             }
         }
 
@@ -977,7 +1006,7 @@ namespace KSL.Cars.App
         /// </summary>
         /// <param name="sourceRows">Takes the DataGridViewRowCollection from the DataGridView</param>
         /// <returns>html table in a string</returns>
-        public string buildTable(DataGridViewRowCollection sourceRows)
+        public string buildTable()
         {
             string tab = "\t";
             string nl = "\n";
@@ -990,6 +1019,10 @@ namespace KSL.Cars.App
             string cellStart = tab + tab + "<td>" + nl;
             string cellEnd = "</td>" + nl;
 
+            string headerStart = tab + tab + "<th>" + nl;
+            string headerEnd = "</th>" + nl;
+
+
             //A little bit of CSS to put a border between the headers and data rows.
             string styleText = "<style media=\"screen\" type=\"text/css\">" + nl +
                                     tab + "tr.border_bottom th {" + nl +
@@ -1000,66 +1033,62 @@ namespace KSL.Cars.App
             string table = "";
 
             //Gotta have some search results to display!
-            if (sourceRows.Count > 0)
+            if (carListings.Listings.Count > 0)
             {
-
                 table += styleText + "<table>" + nl;
 
                 //a little bit of CSS links in here to separate the headers.
                 table += tab + "<tr class=\"border_bottom\">" + nl;
-                foreach (DataGridViewColumn column in sourceRows[0].DataGridView.Columns)
-                {
-                    switch (column.Name)
-                    {
-                        case "Delete":
-                            //We don't want this column, do nothing.
-                            break;
-                        case "Highlighted":
-                            table += tab + tab + "<th>(X)</th>" + nl;
-                            break;
-                        default:
-                            table += tab + tab + "<th>" + column.Name + "</th>" + nl;
-                            break;
-                    }
-                }
+                
+                //We don't want "ListingID", we want "Link"
+                table += headerStart + "Link" + headerEnd;
+                //table += headerStart + carListings.Listings.ListingIDColumn.ColumnName + headerEnd;
+                table += headerStart + carListings.Listings.PriceColumn.ColumnName + headerEnd;
+                table += headerStart + carListings.Listings.YearColumn.ColumnName + headerEnd;
+                table += headerStart + carListings.Listings.MileageColumn.ColumnName + headerEnd;
+                table += headerStart + carListings.Listings.VINColumn.ColumnName + headerEnd;
+                table += headerStart + carListings.Listings.MakeColumn.ColumnName + headerEnd;
+                table += headerStart + carListings.Listings.ModelColumn.ColumnName + headerEnd;
+                table += headerStart + carListings.Listings.CityColumn.ColumnName + headerEnd;
+                table += headerStart + carListings.Listings.DescriptionColumn.ColumnName + headerEnd;
 
                 table += rowClose;
 
-                foreach (DataGridViewRow row in sourceRows)
+                foreach (CarListings.ListingsRow row in carListings.Listings.Rows)
                 {
+                    CarListings.HighlightsRow highlights = carListings.Highlights.FindByListingID(row.ListingID);
 
-                    // style="background-color:red">
-                    table += rowStart.Replace(">", " style=\"background-color:" + row.DefaultCellStyle.BackColor.Name.ToLower() + "\">");
-                    foreach (DataGridViewCell cell in row.Cells)
+                    if (highlights != null)
                     {
-                        switch (cell.OwningColumn.Name)
-                        {
-                            case "Delete":
-                                //We don't want this column, do nothing.
-                                break;
-                            case "Highlighted":
-                                table += tab + tab + "<td title='" + cell.ToolTipText + "'><input type=\"checkbox\" disabled=\"disabled\" " + (bool.Parse(cell.FormattedValue.ToString()) ? "checked=\"checked\"" : "") + " />" + cellEnd;
-                                break;
-                            case "Link":
-                            case "VIN":
-                                table += cellStart + "<a href=\"" + cell.ToolTipText + "\">" + cell.Value + "</a>" + cellEnd;
-                                break;
-                            case "Price":
-                                table += cellStart + String.Format("{0:C}", cell.Value) + cellEnd;
-                                break;
-                            case "City":
-                                table += cellStart + "<div title=\"" + cell.ToolTipText + "\">" + cell.Value + "</div>" + cellEnd;
-                                break;
-                            case "Description":
-                                //We only want the first little bit of the Description column...
-                                table += cellStart + cell.Value.ToString().Remove(Properties.Settings.Default.Truncate_Desc_Column) + "..." + cellEnd;
-                                break;
-                            default:
-                                //Default text (no formatting)
-                                table += cellStart + cell.Value + cellEnd;
-                                break;
-                        }
+                        // style="background-color:red">
+                        table += rowStart.Replace(">", " style=\"background-color:" + highlights.Color.Name.ToLower() + "\">");
                     }
+                    else table += rowStart; 
+
+                    table += cellStart + "<a href=\"" + Properties.Settings.Default.LISTING_LINK.Replace("{LISTING_ID}", row.ListingID.ToString()) + "\">" + row.ListingID + "</a>" + cellEnd;
+
+                    if (highlights != null)
+                    {
+                        table += cellStart + "<div title=\"" + highlights.ToolTipText + "\">" + String.Format("{0:C}", row.Price) + "</div>" + cellEnd;
+                    }
+                    else table += cellStart + String.Format("{0:C}", row.Price) + cellEnd;
+
+                    table += cellStart + row.Year + cellEnd;
+                    table += cellStart + String.Format("{0:n0}", row.Mileage) + cellEnd;
+                    table += cellStart + "<a href=\"" + Properties.Settings.Default.VIN_LINK.Replace("{VIN}", row.VIN.ToString()) + "\">" + row.VIN + "</a>" + cellEnd;
+                    table += cellStart + row.Make + cellEnd;
+                    table += cellStart + row.Model + cellEnd;
+
+                    CarListings.ContactInfoRow contact = carListings.ContactInfo.FindByListingID(row.ListingID);
+                    if (contact != null)
+                    {
+                        //Default value is a single space, check for a longer value.
+                        table += cellStart + "<div title=\"" + (contact.Name.Length > 1 ? contact.Name + ": " : "") + (contact.Phone.Length > 1 ? contact.Phone : "") + "\">" + row.City + "</div>" + cellEnd;
+                    }
+                    else table += cellStart + row.City + cellEnd;
+
+                    table += cellStart + row.Description.Remove(Math.Min(Properties.Settings.Default.Truncate_Desc_Column, row.Description.Length)-1) + "..." + cellEnd;
+
                     table += rowClose;
                 }
 
@@ -1158,6 +1187,44 @@ namespace KSL.Cars.App
             dgvResults.Visible = true;
 
             btnCancel.Enabled = false;
+        }
+
+        /// <summary>
+        /// Loads the last data, runs a search with the last given parameters, and then only emails any new results.
+        /// </summary>
+        public void DeltaSearch()
+        {
+            LoadData(false);
+
+            //Backup the original data
+            CarListings originalData = (CarListings)carListings.Copy();
+
+            carListings.Highlights.Clear();
+            carListings.ContactInfo.Clear();
+            carListings.Listings.Clear();
+
+            //Fetch new data
+            parsePage(buildURL());
+
+            //only keep stuff we haven't seen before
+            foreach (CarListings.ListingsRow row in originalData.Listings.Rows)
+            {
+                if (carListings.Listings.Rows.Contains(row.ListingID))
+                {
+                    carListings.Listings.FindByListingID(row.ListingID).Delete();
+                }
+            }
+            computeStats();
+
+            CalcHighlights();
+
+            //email the new items
+            emailResults(false);
+
+            //merge the old and new data to have updated stuff for the next run.
+            carListings.Listings.Merge(originalData.Listings);
+
+            SaveData(true);
         }
     }
 }

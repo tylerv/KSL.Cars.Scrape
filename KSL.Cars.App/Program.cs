@@ -47,9 +47,17 @@ namespace KSL.Cars.App
                         case "email":
                             if (myProgram != null)
                             {
-                                myProgram.emailResults();
+                                myProgram.emailResults(false);
                             }
                             else EventLogger.LogEvent("Please make sure the 'lastsearch' parameter preceeds the 'email' parameter.");
+                            break;
+                        case "deltasearch":
+                            if (System.IO.File.Exists(Properties.Settings.Default.SettingsFileName))
+                            {
+                                myProgram = new frmMain();
+                                myProgram.DeltaSearch();
+                            }
+                            else EventLogger.LogEvent("Invalid URL! Do you have proper search parameters in the settings file?", System.Diagnostics.EventLogEntryType.Error);
                             break;
                     }
                 }
