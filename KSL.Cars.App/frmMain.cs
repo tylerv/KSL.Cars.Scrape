@@ -171,9 +171,11 @@ namespace KSL.Cars.App
                 case "City":
                     //Add tooltip for contact information
                     CarListings.ContactInfoRow row = carListings.ContactInfo.FindByListingID(ListingID);
-
-                    //Default value is a single space, check for a longer value.
-                    cell.ToolTipText = (row.Name.Length > 1 ? row.Name + ": " : "") + (row.Phone.Length > 1 ? row.Phone : "");
+                    if (row != null)
+                    {
+                        //Default value is a single space, check for a longer value.
+                        cell.ToolTipText = (row.Name.Length > 1 ? row.Name + ": " : "") + (row.Phone.Length > 1 ? row.Phone : "");
+                    }
                     break;
             }
         }
@@ -352,7 +354,7 @@ namespace KSL.Cars.App
             {
                 Dictionary<Label, Control> items = new Dictionary<Label, Control>();
 
-                foreach (XmlNode node in updateFile.SelectSingleNode("/KSL.Cars.App").ChildNodes)
+                foreach (XmlNode node in updateFile.SelectSingleNode(Properties.Settings.Default.UpdateXPath).ChildNodes)
                 {
                     if (node.Attributes != null && node.Attributes.Count == 2)
                     {

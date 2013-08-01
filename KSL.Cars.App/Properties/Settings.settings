@@ -77,6 +77,9 @@
     <Setting Name="UpdateFileURL" Type="System.String" Scope="Application">
       <Value Profile="(Default)">http://www.voorheis.info/files/update.xml</Value>
     </Setting>
+    <Setting Name="UpdateXPath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">//KSL.Cars.App</Value>
+    </Setting>
     <Setting Name="SettingsFileName" Type="System.String" Scope="Application">
       <Value Profile="(Default)">KSL.Cars.App.Settings</Value>
     </Setting>

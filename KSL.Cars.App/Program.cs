@@ -14,59 +14,66 @@ namespace KSL.Cars.App
         [STAThread]
         static void Main(string[] args)
         {
-            if (args.Length > 0)
+            try
             {
-                frmMain myProgram = null;
-
-                foreach (string arg in args)
+                if (args.Length > 0)
                 {
-                    switch (arg.Replace("/", "").Replace("-", "").ToLower())
+                    frmMain myProgram = null;
+
+                    foreach (string arg in args)
                     {
-                        case "lastsearch":
-                            if (System.IO.File.Exists(Properties.Settings.Default.SettingsFileName))
-                            {
-                                myProgram = new frmMain();
-                                myProgram.LoadData(true);
-                                string url = myProgram.buildURL();
-                                if (url.Length > 0)
+                        switch (arg.Replace("/", "").Replace("-", "").ToLower())
+                        {
+                            case "lastsearch":
+                                if (System.IO.File.Exists(Properties.Settings.Default.SettingsFileName))
                                 {
-                                    myProgram.parsePage(url);
-                                    myProgram.SaveData(true);
+                                    myProgram = new frmMain();
+                                    myProgram.LoadData(true);
+                                    string url = myProgram.buildURL();
+                                    if (url.Length > 0)
+                                    {
+                                        myProgram.parsePage(url);
+                                        myProgram.SaveData(true);
+                                    }
+                                    else EventLogger.LogEvent("Invalid URL! Do you have proper search parameters in the settings file?", System.Diagnostics.EventLogEntryType.Error);
+                                }
+                                else EventLogger.LogEvent();
+                                break;
+                            case "update":
+                                //Check for a /y or /yes to suppress the yes/no prompt on downloading the update.
+                                if (args.Contains("yes") || args.Contains("y")) Updater.GetUpdate(true);
+
+                                //otherwise, just check for updates and ask to download.
+                                else Updater.GetUpdate();
+                                break;
+                            case "email":
+                                if (myProgram != null)
+                                {
+                                    myProgram.emailResults(false);
+                                }
+                                else EventLogger.LogEvent("Please make sure the 'lastsearch' parameter preceeds the 'email' parameter.");
+                                break;
+                            case "deltasearch":
+                                if (System.IO.File.Exists(Properties.Settings.Default.SettingsFileName))
+                                {
+                                    myProgram = new frmMain();
+                                    myProgram.DeltaSearch();
                                 }
                                 else EventLogger.LogEvent("Invalid URL! Do you have proper search parameters in the settings file?", System.Diagnostics.EventLogEntryType.Error);
-                            }
-                            else EventLogger.LogEvent();
-                            break;
-                        case "update":
-                            //Check for a /y or /yes to suppress the yes/no prompt on downloading the update.
-                            if (args.Contains("yes") || args.Contains("y")) Updater.GetUpdate(true);
-                            
-                            //otherwise, just check for updates and ask to download.
-                            else Updater.GetUpdate();
-                            break;
-                        case "email":
-                            if (myProgram != null)
-                            {
-                                myProgram.emailResults(false);
-                            }
-                            else EventLogger.LogEvent("Please make sure the 'lastsearch' parameter preceeds the 'email' parameter.");
-                            break;
-                        case "deltasearch":
-                            if (System.IO.File.Exists(Properties.Settings.Default.SettingsFileName))
-                            {
-                                myProgram = new frmMain();
-                                myProgram.DeltaSearch();
-                            }
-                            else EventLogger.LogEvent("Invalid URL! Do you have proper search parameters in the settings file?", System.Diagnostics.EventLogEntryType.Error);
-                            break;
+                                break;
+                        }
                     }
                 }
+                else
+                {
+                    Application.EnableVisualStyles();
+                    Application.SetCompatibleTextRenderingDefault(false);
+                    Application.Run(new frmMain());
+                }
             }
-            else
+            catch (Exception ex)
             {
-                Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new frmMain());
+                EventLogger.LogEvent(ex.Message, System.Diagnostics.EventLogEntryType.Error, EventLogger.DestinationType.EventLog);
             }
         }
     }

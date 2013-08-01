@@ -253,6 +253,15 @@ namespace KSL.Cars.App.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("//KSL.Cars.App")]
+        public string UpdateXPath {
+            get {
+                return ((string)(this["UpdateXPath"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("KSL.Cars.App.Settings")]
         public string SettingsFileName {
             get {
