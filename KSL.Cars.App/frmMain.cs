@@ -16,6 +16,15 @@ namespace KSL.Cars.App
 {
     public partial class frmMain : Form
     {
+        /// <summary>
+        /// Enum to pass to the filter function to remove certain types of results.
+        /// </summary>
+        private enum ListingTypes
+        {
+            Scam,
+            Value,
+            Normal
+        }
 
         public frmMain()
         {
@@ -97,6 +106,10 @@ namespace KSL.Cars.App
             if (LoadData(false))
             {
                 dgvResults.Visible = true;
+
+                ApplyHighlighting();
+
+                dgvResults.Sort(dgvResults.SortedColumn, ListSortDirection.Ascending);
             }
         }
 
@@ -187,6 +200,14 @@ namespace KSL.Cars.App
         /// <param name="e"></param>
         private void dgvResults_Sorted(object sender, EventArgs e)
         {
+            ApplyHighlighting();
+        }
+
+        /// <summary>
+        /// Applies the highlighting in the Highlights Table
+        /// </summary>
+        private void ApplyHighlighting()
+        {
             foreach (DataGridViewRow row in dgvResults.Rows)
             {
 
@@ -194,7 +215,7 @@ namespace KSL.Cars.App
 
                 if (highlight != null)
                 {
-                    row.DefaultCellStyle.BackColor = highlight.Color;
+                    row.DefaultCellStyle.BackColor = Color.FromName(highlight.Color);
                     row.Cells["Price"].ToolTipText = highlight.ToolTipText;
                 }
             }
@@ -228,6 +249,7 @@ namespace KSL.Cars.App
 
                 settings.SaveSearchResults = settingsFrm.chkSaveLastListings.Checked;
                 settings.LoadLastSearchParams = settingsFrm.chkKeepSearchParameters.Checked;
+                settings.OnlyEmailValid = settingsFrm.chkOnlyEmailNonScam.Checked;
 
 
                 settings.SMTPHost = settingsFrm.txtSMTPHost.Text;
@@ -299,7 +321,9 @@ namespace KSL.Cars.App
 
                 computeStats();
 
-                CalcHighlights();
+                CalcStats();
+
+                HighlightScams();
 
                 AddGraphLinks();
 
@@ -423,6 +447,42 @@ namespace KSL.Cars.App
             else MessageBox.Show("Email settings seem to be incomplete, please check them.");
         }
 
+        /// <summary>
+        /// Removes certain types of results from the list
+        /// </summary>
+        /// <param name="resultType"></param>
+        private void RemoveResults(ListingTypes resultType)
+        {
+            switch (resultType)
+            {
+                case ListingTypes.Normal:
+                    //Remove All Non-highlighted Results
+                    foreach (CarListings.ListingsRow row in carListings.Listings.Rows)
+                    {
+                        if (carListings.Highlights.FindByListingID(row.ListingID) == null)
+                        {
+                            carListings.Listings.FindByListingID(row.ListingID).Delete();
+                        }
+                    }
+                    break;
+                case ListingTypes.Scam:
+                    //Remove All Scams
+                    DataRow[] scams = carListings.Highlights.Select("Color = 'Red'");
+                    foreach (CarListings.HighlightsRow row in scams)
+                    {
+                        carListings.Listings.FindByListingID(row.ListingID).Delete();
+                    }
+                    break;
+                case ListingTypes.Value:
+                    DataRow[] values = carListings.Highlights.Select("Color = Yellow");
+                    foreach (CarListings.HighlightsRow row in values)
+                    {
+                        carListings.Listings.FindByListingID(row.ListingID).Delete();
+                    }
+                    //Remove All Value Results
+                    break;
+            }
+        }
 
         /// <summary>
         /// Calculates the basic stats for year, make and models found in the dataset.
@@ -587,13 +647,65 @@ namespace KSL.Cars.App
         }
 
         /// <summary>
-        /// Highlights certain rows based on price and the presence of contact information. Also adds tooltips to rows.
+        /// Calculates Stats and adds the rows to the Highlights table
         /// </summary>
-        private void CalcHighlights()
+        private void CalcStats()
         {
             CarListings.HighlightsRow highlightRow;
 
-            
+            foreach (CarListings.ListingsRow row in carListings.Listings.Rows)
+            {
+                CarListings.StatsByYearRow yearStats = carListings.StatsByYear.FindByYear(row.Year);
+                CarListings.StatsByMakeRow makeStats = carListings.StatsByMake.FindByMake(row.Make);
+                CarListings.StatsByModelRow modelStats = carListings.StatsByModel.FindByModel(row.Model);
+
+                CarListings.ListingsRow matchingListing = carListings.Listings.FindByListingID(row.ListingID);
+
+                if (yearStats != null && makeStats != null && matchingListing != null)
+                {
+                    bool highlight = false;
+
+                    string matchingColumn = "";
+
+                    if ((matchingListing.Price < (yearStats.Avg - yearStats.StDev)))
+                    {
+                        matchingColumn = "Year";
+                        highlight = true;
+
+                    }
+                    else if ((matchingListing.Price < (modelStats.Avg - modelStats.StDev)))
+                    {
+                        matchingColumn = "Model";
+                        highlight = true;
+                    }
+                    else if ((matchingListing.Price < (makeStats.Avg - makeStats.StDev)))
+                    {
+                        matchingColumn = "Make";
+                        highlight = true;
+                    }
+
+                    if (highlight)
+                    {
+                        highlightRow = carListings.Highlights.NewHighlightsRow();
+
+                        highlightRow.ListingID = row.ListingID;
+                        highlightRow.ToolTipText = "Price is significantly lower than average for a " + row[matchingColumn];
+                        highlightRow.Color = Color.Yellow.Name;
+
+                        carListings.Highlights.AddHighlightsRow(highlightRow);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Highlights certain rows based on price and the presence of contact information. Also adds tooltips to rows.
+        /// TODO: Add in user-defined scams, I.E. User specifies a field, then what the suspect values are, and a warning message for the tooltip.
+        /// </summary>
+        private void HighlightScams()
+        {
+            CarListings.HighlightsRow highlightRow;
+
             foreach (CarListings.ListingsRow row in carListings.Listings.Rows)
             {
                 CarListings.ContactInfoRow contactInfo = carListings.ContactInfo.FindByListingID(row.ListingID);
@@ -602,60 +714,22 @@ namespace KSL.Cars.App
                 //check for that or smaller for phone number.
                 if (contactInfo.Phone.Length <= 1)
                 {
-                    highlightRow = carListings.Highlights.NewHighlightsRow();
+                    highlightRow = carListings.Highlights.FindByListingID(row.ListingID);
 
-                    highlightRow.ListingID = row.ListingID;
-                    highlightRow.ToolTipText = "This car does not have a phone number listed (properly). Beware a scam...";
-                    highlightRow.Color = Color.Red;
-
-                    carListings.Highlights.AddHighlightsRow(highlightRow);
-                }
-                else
-                {
-                    CarListings.StatsByYearRow yearStats = carListings.StatsByYear.FindByYear(row.Year);
-                    CarListings.StatsByMakeRow makeStats = carListings.StatsByMake.FindByMake(row.Make);
-                    CarListings.StatsByModelRow modelStats = carListings.StatsByModel.FindByModel(row.Model);
-
-                    CarListings.ListingsRow matchingListing = carListings.Listings.FindByListingID(row.ListingID);
-
-                    if (yearStats != null && makeStats != null && matchingListing != null)
+                    if (highlightRow == null)
                     {
-                        bool highlight = false;
-
-                        string matchingColumn = "";
-
-                        if ((matchingListing.Price < (yearStats.Avg - yearStats.StDev)))
-                        {
-                            matchingColumn = "Year";
-                            highlight = true;
-
-                        }
-                        else if ((matchingListing.Price < (modelStats.Avg - modelStats.StDev)))
-                        {
-                            matchingColumn = "Model";
-                            highlight = true;
-                        }
-                        else if ((matchingListing.Price < (makeStats.Avg - makeStats.StDev)))
-                        {
-                            matchingColumn = "Make";
-                            highlight = true;
-                        }
-
-                        if (highlight)
-                        {
-                            highlightRow = carListings.Highlights.NewHighlightsRow();
-
-                            highlightRow.ListingID = row.ListingID;
-                            highlightRow.ToolTipText = "Price is significantly lower than average for a " + row[matchingColumn];
-                            highlightRow.Color = Color.Yellow;
-
-                            carListings.Highlights.AddHighlightsRow(highlightRow);
-                        }
+                        highlightRow = carListings.Highlights.NewHighlightsRow();
+                        highlightRow.ListingID = row.ListingID;
+                        carListings.Highlights.AddHighlightsRow(highlightRow);
                     }
+
+                    highlightRow.ToolTipText = "This car does not have a phone number listed (properly). Beware a scam...";
+                    highlightRow.Color = Color.Red.Name;
+
                 }
             }
         }
-
+        
         /// <summary>
         /// Workhorse that gets the HTML and parses it into the datatable.
         /// </summary>
@@ -861,7 +935,7 @@ namespace KSL.Cars.App
             if (System.IO.File.Exists(Properties.Settings.Default.SettingsFileName))
             {
                 carListings.ReadXml(Properties.Settings.Default.SettingsFileName);
-
+                
                 //You need to run the program from the GUI at least once before running from the commandline
                 if (CmdLine)
                 {
@@ -977,10 +1051,15 @@ namespace KSL.Cars.App
         /// </summary>
         public void emailResults(bool showMessages)
         {
+            CarListings.SettingsRow currentSettings = carListings.Settings.First();
+
+            if (currentSettings.OnlyEmailValid)
+            {
+                RemoveResults(ListingTypes.Scam);
+            }
+
             if (carListings.Listings.Count > 0)
             {
-                CarListings.SettingsRow currentSettings = carListings.Settings.First();
-
                 Mailer postman = new Mailer(currentSettings.Username,
                                             Encryption.Decrypt(currentSettings.Password),
                                             currentSettings.FromAddress,
@@ -1063,7 +1142,7 @@ namespace KSL.Cars.App
                     if (highlights != null)
                     {
                         // style="background-color:red">
-                        table += rowStart.Replace(">", " style=\"background-color:" + highlights.Color.Name.ToLower() + "\">");
+                        table += rowStart.Replace(">", " style=\"background-color:" + highlights.Color.ToLower() + "\">");
                     }
                     else table += rowStart; 
 
@@ -1218,7 +1297,9 @@ namespace KSL.Cars.App
             }
             computeStats();
 
-            CalcHighlights();
+            CalcStats();
+
+            HighlightScams();
 
             //email the new items
             emailResults(false);
@@ -1227,6 +1308,11 @@ namespace KSL.Cars.App
             carListings.Listings.Merge(originalData.Listings);
 
             SaveData(true);
+        }
+
+        private void removeScamsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RemoveResults(ListingTypes.Scam);
         }
     }
 }

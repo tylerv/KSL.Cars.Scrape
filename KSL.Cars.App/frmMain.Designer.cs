@@ -35,6 +35,16 @@
             this.btnScrape = new System.Windows.Forms.Button();
             this.grpResults = new System.Windows.Forms.GroupBox();
             this.dgvResults = new System.Windows.Forms.DataGridView();
+            this.Delete = new System.Windows.Forms.DataGridViewLinkColumn();
+            this.Price = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Year = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Mileage = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Link = new System.Windows.Forms.DataGridViewLinkColumn();
+            this.VIN = new System.Windows.Forms.DataGridViewLinkColumn();
+            this.Make = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Model = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.City = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Description = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.carListingsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.carListings = new KSL.Cars.App.CarListings();
             this.grpStats = new System.Windows.Forms.GroupBox();
@@ -52,6 +62,7 @@
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.updateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.emailResultsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.removeScamsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.btnCancel = new System.Windows.Forms.Button();
             this.minimumWageWorker = new System.ComponentModel.BackgroundWorker();
             this.grpSearchParams = new System.Windows.Forms.GroupBox();
@@ -74,16 +85,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.numMileageLow = new System.Windows.Forms.NumericUpDown();
             this.Label3 = new System.Windows.Forms.Label();
-            this.Delete = new System.Windows.Forms.DataGridViewLinkColumn();
-            this.Price = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Year = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Mileage = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Link = new System.Windows.Forms.DataGridViewLinkColumn();
-            this.VIN = new System.Windows.Forms.DataGridViewLinkColumn();
-            this.Make = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Model = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.City = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Description = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.grpResults.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvResults)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.carListingsBindingSource)).BeginInit();
@@ -156,6 +157,93 @@
             this.dgvResults.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvResults_CellContentClick);
             this.dgvResults.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgvResults_CellFormatting);
             this.dgvResults.Sorted += new System.EventHandler(this.dgvResults_Sorted);
+            // 
+            // Delete
+            // 
+            this.Delete.HeaderText = "Delete";
+            this.Delete.Name = "Delete";
+            this.Delete.ReadOnly = true;
+            this.Delete.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.Delete.Text = "Delete";
+            this.Delete.TrackVisitedState = false;
+            this.Delete.UseColumnTextForLinkValue = true;
+            this.Delete.Width = 44;
+            // 
+            // Price
+            // 
+            this.Price.DataPropertyName = "Price";
+            dataGridViewCellStyle1.Format = "C2";
+            dataGridViewCellStyle1.NullValue = null;
+            this.Price.DefaultCellStyle = dataGridViewCellStyle1;
+            this.Price.HeaderText = "Price";
+            this.Price.Name = "Price";
+            this.Price.ReadOnly = true;
+            this.Price.Width = 56;
+            // 
+            // Year
+            // 
+            this.Year.DataPropertyName = "Year";
+            this.Year.HeaderText = "Year";
+            this.Year.Name = "Year";
+            this.Year.ReadOnly = true;
+            this.Year.Width = 54;
+            // 
+            // Mileage
+            // 
+            this.Mileage.DataPropertyName = "Mileage";
+            this.Mileage.HeaderText = "Mileage";
+            this.Mileage.Name = "Mileage";
+            this.Mileage.ReadOnly = true;
+            this.Mileage.Width = 69;
+            // 
+            // Link
+            // 
+            this.Link.DataPropertyName = "ListingID";
+            this.Link.HeaderText = "Link";
+            this.Link.Name = "Link";
+            this.Link.ReadOnly = true;
+            this.Link.Text = "Link";
+            this.Link.Width = 33;
+            // 
+            // VIN
+            // 
+            this.VIN.DataPropertyName = "VIN";
+            this.VIN.HeaderText = "VIN";
+            this.VIN.Name = "VIN";
+            this.VIN.ReadOnly = true;
+            this.VIN.Width = 31;
+            // 
+            // Make
+            // 
+            this.Make.DataPropertyName = "Make";
+            this.Make.HeaderText = "Make";
+            this.Make.Name = "Make";
+            this.Make.ReadOnly = true;
+            this.Make.Width = 59;
+            // 
+            // Model
+            // 
+            this.Model.DataPropertyName = "Model";
+            this.Model.HeaderText = "Model";
+            this.Model.Name = "Model";
+            this.Model.ReadOnly = true;
+            this.Model.Width = 61;
+            // 
+            // City
+            // 
+            this.City.DataPropertyName = "City";
+            this.City.HeaderText = "City";
+            this.City.Name = "City";
+            this.City.ReadOnly = true;
+            this.City.Width = 49;
+            // 
+            // Description
+            // 
+            this.Description.DataPropertyName = "Description";
+            this.Description.HeaderText = "Description";
+            this.Description.Name = "Description";
+            this.Description.ReadOnly = true;
+            this.Description.Width = 85;
             // 
             // carListingsBindingSource
             // 
@@ -268,7 +356,8 @@
             this.settingsToolStripMenuItem,
             this.aboutToolStripMenuItem,
             this.updateToolStripMenuItem,
-            this.emailResultsToolStripMenuItem});
+            this.emailResultsToolStripMenuItem,
+            this.removeScamsToolStripMenuItem});
             this.mainMenu.Location = new System.Drawing.Point(0, 0);
             this.mainMenu.Name = "mainMenu";
             this.mainMenu.Size = new System.Drawing.Size(745, 24);
@@ -302,6 +391,13 @@
             this.emailResultsToolStripMenuItem.Size = new System.Drawing.Size(91, 20);
             this.emailResultsToolStripMenuItem.Text = "Email Results!";
             this.emailResultsToolStripMenuItem.Click += new System.EventHandler(this.emailResultsToolStripMenuItem_Click);
+            // 
+            // removeScamsToolStripMenuItem
+            // 
+            this.removeScamsToolStripMenuItem.Name = "removeScamsToolStripMenuItem";
+            this.removeScamsToolStripMenuItem.Size = new System.Drawing.Size(99, 20);
+            this.removeScamsToolStripMenuItem.Text = "Remove Scams";
+            this.removeScamsToolStripMenuItem.Click += new System.EventHandler(this.removeScamsToolStripMenuItem_Click);
             // 
             // btnCancel
             // 
@@ -662,93 +758,6 @@
             this.Label3.TabIndex = 32;
             this.Label3.Text = "-";
             // 
-            // Delete
-            // 
-            this.Delete.HeaderText = "Delete";
-            this.Delete.Name = "Delete";
-            this.Delete.ReadOnly = true;
-            this.Delete.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.Delete.Text = "Delete";
-            this.Delete.TrackVisitedState = false;
-            this.Delete.UseColumnTextForLinkValue = true;
-            this.Delete.Width = 44;
-            // 
-            // Price
-            // 
-            this.Price.DataPropertyName = "Price";
-            dataGridViewCellStyle1.Format = "C2";
-            dataGridViewCellStyle1.NullValue = null;
-            this.Price.DefaultCellStyle = dataGridViewCellStyle1;
-            this.Price.HeaderText = "Price";
-            this.Price.Name = "Price";
-            this.Price.ReadOnly = true;
-            this.Price.Width = 56;
-            // 
-            // Year
-            // 
-            this.Year.DataPropertyName = "Year";
-            this.Year.HeaderText = "Year";
-            this.Year.Name = "Year";
-            this.Year.ReadOnly = true;
-            this.Year.Width = 54;
-            // 
-            // Mileage
-            // 
-            this.Mileage.DataPropertyName = "Mileage";
-            this.Mileage.HeaderText = "Mileage";
-            this.Mileage.Name = "Mileage";
-            this.Mileage.ReadOnly = true;
-            this.Mileage.Width = 69;
-            // 
-            // Link
-            // 
-            this.Link.DataPropertyName = "ListingID";
-            this.Link.HeaderText = "Link";
-            this.Link.Name = "Link";
-            this.Link.ReadOnly = true;
-            this.Link.Text = "Link";
-            this.Link.Width = 33;
-            // 
-            // VIN
-            // 
-            this.VIN.DataPropertyName = "VIN";
-            this.VIN.HeaderText = "VIN";
-            this.VIN.Name = "VIN";
-            this.VIN.ReadOnly = true;
-            this.VIN.Width = 31;
-            // 
-            // Make
-            // 
-            this.Make.DataPropertyName = "Make";
-            this.Make.HeaderText = "Make";
-            this.Make.Name = "Make";
-            this.Make.ReadOnly = true;
-            this.Make.Width = 59;
-            // 
-            // Model
-            // 
-            this.Model.DataPropertyName = "Model";
-            this.Model.HeaderText = "Model";
-            this.Model.Name = "Model";
-            this.Model.ReadOnly = true;
-            this.Model.Width = 61;
-            // 
-            // City
-            // 
-            this.City.DataPropertyName = "City";
-            this.City.HeaderText = "City";
-            this.City.Name = "City";
-            this.City.ReadOnly = true;
-            this.City.Width = 49;
-            // 
-            // Description
-            // 
-            this.Description.DataPropertyName = "Description";
-            this.Description.HeaderText = "Description";
-            this.Description.Name = "Description";
-            this.Description.ReadOnly = true;
-            this.Description.Width = 85;
-            // 
             // frmMain
             // 
             this.AcceptButton = this.btnScrape;
@@ -848,6 +857,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Model;
         private System.Windows.Forms.DataGridViewTextBoxColumn City;
         private System.Windows.Forms.DataGridViewTextBoxColumn Description;
+        private System.Windows.Forms.ToolStripMenuItem removeScamsToolStripMenuItem;
     }
 }
 

@@ -245,6 +245,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="grey_car.ico" />
+    <Content Include="TODO.txt" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
@@ -281,7 +282,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildVersioningStyle="None.MonthStamp.DayStamp.Increment" BuildVersion_StartDate="2013/6/12" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" />
+      <UserProperties BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_StartDate="2013/6/12" BuildVersion_BuildVersioningStyle="None.MonthStamp.DayStamp.Increment" />
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>

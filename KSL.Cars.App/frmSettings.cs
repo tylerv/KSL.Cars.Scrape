@@ -19,6 +19,7 @@ namespace KSL.Cars.App
             {
                 chkKeepSearchParameters.Checked = currentSettings.LoadLastSearchParams;
                 chkSaveLastListings.Checked = currentSettings.SaveSearchResults;
+                chkOnlyEmailNonScam.Checked = currentSettings.OnlyEmailValid;
 
                 txtSMTPHost.Text = currentSettings.SMTPHost;
                 txtPort.Text = currentSettings.PortNumber.ToString();
@@ -91,6 +92,11 @@ namespace KSL.Cars.App
                 if (results == System.Windows.Forms.DialogResult.Yes) System.IO.File.Delete(Properties.Settings.Default.SettingsFileName);
             }
             else MessageBox.Show("No existing settings file found...");
+        }
+
+        private void frmSettings_Load(object sender, EventArgs e)
+        {
+
         }
 
     }

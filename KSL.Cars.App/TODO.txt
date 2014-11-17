@@ -1,0 +1,12 @@
+﻿Implement option to only send emails if there's valid results (don't email suspected scams)
+
+Update Scam filtering to include keymap/dictionary of places to look, and suspect values (Contact: Text Me!)
+
+
+Include pricing "research"
+http://autos.msn.com/research/vip/pricing.aspx?year=2006&make=Dodge&model=Caravan
+
+
+create a page to manage alert email, so you can have multiple alerts.
+
+update page search html parsing to use xml transform
